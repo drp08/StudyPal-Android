@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    kotlin("kapt")
-    alias(libs.plugins.google.dagger.hilt.android)
+//    alias(libs.plugins.google.dagger.hilt.android)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.androidx.room)
 }
 
 android {
@@ -50,6 +51,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -73,17 +77,22 @@ dependencies {
     implementation(project(":shared"))
 
     implementation(libs.compose.navigation)
-    implementation(libs.dagger.hilt)
-    kapt(libs.dagger.compiler)
-    implementation(libs.dagger.hilt.compose)
+
+//    implementation(libs.hilt)
+//    kapt(libs.hilt.compiler)
+//    implementation(libs.hilt.compose)
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.contentNegotiation)
     implementation(libs.ktor.serialization)
     implementation(libs.ktor.client.resources)
+
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
 }
 
-kapt {
-    correctErrorTypes = true
-}
+//kapt {
+//    correctErrorTypes = true
+//}

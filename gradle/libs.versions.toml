@@ -13,8 +13,10 @@ ktor = "2.3.11"
 serialization = "1.9.0"
 logback = "1.5.6"
 voyager = "1.0.0"
-hilt = "2.44"
+hilt = "2.49"
 hiltCompose = "1.2.0"
+room = "2.6.1"
+ksp = "1.9.0-1.0.13"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,10 +45,12 @@ ktor-client-contentNegotiation = { module = "io.ktor:ktor-client-content-negotia
 ktor-client-resources = { module = "io.ktor:ktor-client-resources", version.ref = "ktor" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 compose-navigation = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
-dagger-hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-dagger-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
-dagger-hilt-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltCompose" }
-
+hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
+hilt-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltCompose" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -54,3 +58,5 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
 google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+androidx-room = { id = "androidx.room", version.ref = "room" }
+google-ksp = { id = "com.google.devtools.ksp", version.ref="ksp" }

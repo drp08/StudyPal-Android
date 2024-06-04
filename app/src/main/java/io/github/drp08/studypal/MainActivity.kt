@@ -4,15 +4,25 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.room.Room
+import io.github.drp08.studypal.db.SessionDatabase
 import io.github.drp08.studypal.presentation.App
 
 class MainActivity : ComponentActivity() {
+
+    val sessionDb by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            SessionDatabase::class.java,
+            "sessionDb"
+        ).build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            App()
+            App(sessionDb.sessionDao)
         }
     }
 }

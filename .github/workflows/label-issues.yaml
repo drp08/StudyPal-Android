@@ -1,0 +1,46 @@
+name: Automatic labelling of new issues
+
+on:
+  issues:
+    types:
+      - opened
+      - reopened
+
+jobs:
+  add-milestone:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Add to Milestone 1
+        run: gh issue edit "$NUMBER" --milestone "$MILESTONE"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          MILESTONE: Milestone 3
+
+  label-issues:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+
+    steps:
+      - name: Maybe label as Feature
+        if: ${{ startsWith(github.event.issue.title, '[Feat]') }}
+        run: gh issue edit "$NUMBER" --add-label "$LABEL"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          LABEL: feature request
+
+      - name: Maybe label as Bug
+        if: ${{ startsWith(github.event.issue.title, '[Bug]') }}
+        run: gh issue edit "$NUMBER" --add-label "$LABEL"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+          LABEL: bug

@@ -1,0 +1,23 @@
+name: Add User Story
+description: Create a card for someone to tackle.
+body:
+  - type: textarea
+    attributes:
+      label: User Story
+      description: What is the user story?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Technical Details
+      description: What are the technical details required to implement this?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: Is there any other information required for this card?
+    validations:
+      required: false

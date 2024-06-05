@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.room.Room
-import io.github.drp08.studypal.db.SessionDatabase
+import io.github.drp08.studypal.db.ClientDatabase
 import io.github.drp08.studypal.presentation.App
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
     val sessionDb by lazy {
         Room.databaseBuilder(
             applicationContext,
-            SessionDatabase::class.java,
+            ClientDatabase::class.java,
             "sessionDb"
         ).build()
     }

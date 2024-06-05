@@ -12,9 +12,10 @@ fun Route.scheduleRouting() {
         val oneHour = 60 * 60
 
         val session = Session(
-            name = it.name,
-            startTime = Database.startTime,
-            endTime = Database.startTime + oneHour,
+            sessionId = 1,
+            topic = it.name,
+            startTime = 10000,
+            endTime = 16000,
             totalSessions = 6
         )
 

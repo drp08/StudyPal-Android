@@ -2,22 +2,16 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f1fb0afaae476f6892b8b4342d49ab2c",
+    "identityHash": "f1ba3805a932298f0c08febac43a02a7",
     "entities": [
       {
-        "tableName": "SessionEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `subject` TEXT NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `totalSessions` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
+        "tableName": "session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `totalSessions` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
         "fields": [
           {
             "fieldPath": "sessionId",
             "columnName": "sessionId",
             "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "subject",
-            "columnName": "subject",
-            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -93,7 +87,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "TopicEntity",
+        "tableName": "topic",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, PRIMARY KEY(`name`))",
         "fields": [
           {
@@ -114,7 +108,7 @@
       },
       {
         "tableName": "SubjectEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `confidenceLevel` INTEGER NOT NULL, `totalNumOfSessions` INTEGER NOT NULL, `numSessionsCompleted` INTEGER NOT NULL, `numSessionsScheduled` INTEGER NOT NULL, `topics` TEXT NOT NULL, PRIMARY KEY(`name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `confidenceLevel` INTEGER NOT NULL, `totalNumOfSessions` INTEGER NOT NULL, `numSessionsCompleted` INTEGER NOT NULL, `numSessionsScheduled` INTEGER NOT NULL, PRIMARY KEY(`name`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -145,12 +139,6 @@
             "columnName": "numSessionsScheduled",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "topics",
-            "columnName": "topics",
-            "affinity": "TEXT",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -166,7 +154,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f1fb0afaae476f6892b8b4342d49ab2c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f1ba3805a932298f0c08febac43a02a7')"
     ]
   }
 }

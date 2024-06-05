@@ -13,7 +13,7 @@ data class SubjectEntity(
     var totalNumOfSessions: Int,
     var numSessionsCompleted: Int,
     var numSessionsScheduled: Int,
-    var topics: List<Topic>
+//    var topics: List<Topic>
 ) {
     fun toSerializable() : Subject {
         return Subject(
@@ -22,7 +22,7 @@ data class SubjectEntity(
             totalNumOfSessions,
             numSessionsCompleted,
             numSessionsScheduled,
-            topics
+//            topics
         )
     }
     companion object {
@@ -33,7 +33,7 @@ data class SubjectEntity(
                 subject.totalNumOfSessions,
                 subject.numSessionsCompleted,
                 subject.numSessionsScheduled,
-                subject.topics
+//                subject.topics
             )
         }
     }

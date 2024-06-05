@@ -83,7 +83,7 @@ object HomeScreen : Screen {
                         ) {
                             Text(text = "Next Revision/Event: ")
                             Text(
-                                text = session.subject,
+                                text = "Subject",
                                 modifier = Modifier
                                     .align(Alignment.CenterHorizontally),
                                 fontSize = 18.sp

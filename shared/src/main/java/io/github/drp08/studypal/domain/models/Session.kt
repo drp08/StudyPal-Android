@@ -5,7 +5,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Session(
     val sessionId: Int,
-    val subject: String,
     val topic: String,
     val startTime: Int, // Second of the day
     val endTime: Int, // Second of the day

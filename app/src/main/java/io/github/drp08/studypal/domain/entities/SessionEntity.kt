@@ -1,17 +1,17 @@
 package io.github.drp08.studypal.domain.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import io.github.drp08.studypal.domain.models.Session
 import io.github.drp08.studypal.domain.models.Subject
 import io.github.drp08.studypal.domain.models.Topic
 
-@Entity
+@Entity(tableName = "session")
 data class SessionEntity(
     @PrimaryKey
-    val sessionId:Int,
-    val subject: String, // Subject Name
-    val topic: String, // Topic Name
+    val sessionId: Int,
+    val topic: String, // The foreign to the topic name
     val startTime: Int, // Second of the day
     val endTime: Int, // Second of the day
     val totalSessions: Int
@@ -19,7 +19,6 @@ data class SessionEntity(
     fun toSerializable(): Session {
         return Session(
             sessionId,
-            subject,
             topic,
             startTime,
             endTime,
@@ -31,7 +30,6 @@ data class SessionEntity(
         fun fromSerializable(session: Session): SessionEntity {
             return SessionEntity(
                 session.sessionId,
-                session.subject,
                 session.topic,
                 session.startTime,
                 session.endTime,

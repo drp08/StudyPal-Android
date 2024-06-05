@@ -9,5 +9,5 @@ data class Subject(
     var totalNumOfSessions: Int,
     var numSessionsCompleted: Int,
     var numSessionsScheduled: Int,
-    var topics: List<Topic>
+//    var topics: List<Topic>
 )

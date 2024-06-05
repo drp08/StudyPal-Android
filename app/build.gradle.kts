@@ -93,6 +93,9 @@ dependencies {
     implementation(libs.room.ktx)
 
     implementation(libs.date.time.picker)
+
+    implementation("androidx.compose.material:material:1.6.7") // TODO
+
 }
 
 //kapt {

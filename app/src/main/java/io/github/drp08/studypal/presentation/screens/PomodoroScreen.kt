@@ -17,7 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -28,27 +28,30 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import kotlinx.coroutines.delay
+import java.time.Instant
 import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 data class PomodoroScreen(
-    private val endTime: Int
+    private val startTime: Long,
+    private val endTime: Long
 ) : Screen {
     @Composable
     override fun Content() {
-        val current = LocalTime.now().toSecondOfDay()
-        val totalTimeLeft = endTime - current - 10 // 10 minute break, hardcoded
-        var timeLeft by remember { mutableStateOf(totalTimeLeft) }
+        val current = System.currentTimeMillis()
+        val totalTimeLeft = endTime - startTime
+        var timeLeft by remember { mutableLongStateOf(endTime - current) }
 
         LaunchedEffect(key1 = timeLeft) {
-            while (timeLeft > 0) {
+            if (timeLeft > 0) {
                 delay(1000L)
-                timeLeft--
+                timeLeft -= 1000L
             }
         }
 
         Scaffold(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         ) { paddingValues ->
             Box(
                 modifier = Modifier
@@ -75,9 +78,9 @@ data class PomodoroScreen(
                         }
                     }
 
-                    val end = LocalTime.now().plusHours(1)
+                    val endTimeStr = formatTime(endTime)
                     Text(
-                        text = "Session finishes at ${end.hour}:${end.minute}",
+                        text = "Session finishes at $endTimeStr",
                         modifier = Modifier
                             .padding(vertical = 16.dp)
                             .fillMaxWidth(),
@@ -92,14 +95,13 @@ data class PomodoroScreen(
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
                                 .aspectRatio(1f),
-                            progress = (timeLeft.toFloat() / totalTimeLeft),
+                            progress = { timeLeft.toFloat() / totalTimeLeft },
                             strokeWidth = 12.dp,
                             strokeCap = StrokeCap.Round
                         )
 
-                        val remainingTime = LocalTime.of(0, 30)
                         Text(
-                            text = "${remainingTime.minute}:${remainingTime.second}",
+                            text = formatTime(timeLeft),
                             fontSize = 32.sp
                         )
                     }
@@ -111,5 +113,13 @@ data class PomodoroScreen(
                 }
             }
         }
+    }
+
+    private fun formatTime(timeLeft: Long): String {
+        val instant = Instant.ofEpochMilli(timeLeft)
+        val localTime = instant.atZone(ZoneId.systemDefault()).toLocalTime()
+
+        val formatter = DateTimeFormatter.ofPattern("mm:ss")
+        return localTime.format(formatter)
     }
 }

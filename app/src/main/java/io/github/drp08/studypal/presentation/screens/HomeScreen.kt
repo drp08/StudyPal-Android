@@ -30,17 +30,17 @@ import io.github.drp08.studypal.data.SchedulingRepositoryImpl
 import io.github.drp08.studypal.presentation.components.fab.ExpandableFab
 import io.github.drp08.studypal.presentation.components.fab.FabItem
 import io.github.drp08.studypal.presentation.viewmodels.HomeViewModel
+import io.github.drp08.studypal.utils.LocalDatabase
 import io.github.drp08.studypal.utils.client
 import kotlinx.coroutines.delay
-import java.time.LocalTime
 
 object HomeScreen : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel = HomeViewModel(SchedulingRepositoryImpl(client))
-        val sessions by viewModel.sessions.collectAsState()
-        val currentTime = LocalTime.now().toSecondOfDay()
+        val viewModel = HomeViewModel(SchedulingRepositoryImpl(client), LocalDatabase.current.subjectDao, LocalDatabase.current.sessionDao)
+        val items by viewModel.items.collectAsState()
+        val currentTime = System.currentTimeMillis()
 
         val navigator = LocalNavigator.currentOrThrow
 
@@ -59,7 +59,7 @@ object HomeScreen : Screen {
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                if (sessions.isEmpty()) {
+                if (items.isEmpty()) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -70,7 +70,7 @@ object HomeScreen : Screen {
                         )
                     }
                 } else {
-                    val session = sessions[0]
+                    val item = items[0]
 
                     Card(
                         modifier = Modifier
@@ -88,22 +88,24 @@ object HomeScreen : Screen {
                                     .align(Alignment.CenterHorizontally),
                                 fontSize = 18.sp
                             )
-                            if (session.startTime > currentTime) {
+                            if (item.session.startTime > currentTime) {
                                 Text(text = "Starts in")
                                 Countdown(
-                                    from = session.startTime - currentTime,
+                                    from = item.session.startTime - currentTime,
                                     modifier = Modifier.align(Alignment.CenterHorizontally)
                                 ) {
                                     CheckInButton(
                                         navigator,
-                                        session.endTime,
+                                        item.session.startTime,
+                                        item.session.endTime,
                                         modifier = Modifier.align(Alignment.CenterHorizontally)
                                     )
                                 }
                             } else {
                                 CheckInButton(
                                     navigator = navigator,
-                                    endTime = session.endTime,
+                                    startTime = item.session.startTime,
+                                    endTime = item.session.endTime,
                                     modifier = Modifier.align(Alignment.CenterHorizontally)
                                 )
                             }
@@ -111,7 +113,7 @@ object HomeScreen : Screen {
                     }
                 }
 
-                if (sessions.size > 1)
+                if (items.size > 1)
                     Card(
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -129,7 +131,7 @@ object HomeScreen : Screen {
                             LazyColumn(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                items(sessions.drop(1)) {
+                                items(items.drop(1)) {
                                     Text(text = "Hi")
                                 }
                             }
@@ -142,7 +144,7 @@ object HomeScreen : Screen {
 
     @Composable
     private fun Countdown(
-        from: Int,
+        from: Long,
         modifier: Modifier = Modifier,
         onFinish: @Composable () -> Unit = {}
     ) {
@@ -172,11 +174,12 @@ object HomeScreen : Screen {
     @Composable
     private fun CheckInButton(
         navigator: Navigator,
-        endTime: Int,
+        startTime: Long,
+        endTime: Long,
         modifier: Modifier = Modifier
     ) {
         Button(
-            onClick = { navigator.push(PomodoroScreen(10) )},
+            onClick = { navigator.push(PomodoroScreen(startTime, endTime) )},
             modifier = modifier
         ) {
             Text(text = "Check-in")

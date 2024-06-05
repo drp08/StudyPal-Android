@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
+import io.github.drp08.studypal.db.ClientDatabase
 import io.github.drp08.studypal.db.daos.SessionDao
 import io.github.drp08.studypal.presentation.navigation.BottomNavBar
 import io.github.drp08.studypal.presentation.navigation.BottomNavItem
@@ -15,9 +16,7 @@ import io.github.drp08.studypal.presentation.screens.BlankScreen
 import io.github.drp08.studypal.presentation.theme.StudyPalAndroidTheme
 
 @Composable
-fun App(
-    sessionDao: SessionDao
-) {
+fun App() {
     StudyPalAndroidTheme(darkTheme = false) {
         Navigator(screen = BlankScreen) { navigator ->
             if (navigator.lastItem is BlankScreen) {

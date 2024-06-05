@@ -13,7 +13,7 @@ import io.github.drp08.studypal.utils.LocalDatabase
 
 class MainActivity : ComponentActivity() {
 
-    val clientDb by lazy {
+    private val clientDb by lazy {
         Room.databaseBuilder(
             applicationContext,
             ClientDatabase::class.java,

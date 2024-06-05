@@ -12,14 +12,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import io.github.drp08.studypal.presentation.controllers.ViewController
 
 object RegistrationScreen : Screen {
     @Composable
     override fun Content() {
         val viewController = remember { ViewController() }
-        val navigator = LocalNavigator.currentOrThrow
 
         Column(
             modifier = Modifier
@@ -142,25 +140,3 @@ object RegistrationScreen : Screen {
     }
 }
 
-class ViewController {
-    var name by mutableStateOf("")
-    var workingHoursStart by mutableStateOf("")
-    var workingHoursEnd by mutableStateOf("")
-    var hoursPerDay by mutableStateOf("")
-
-    fun onNameChange(newValue: String) {
-        name = newValue
-    }
-
-    fun onWorkingHoursStartChange(newValue: String) {
-        workingHoursStart = newValue
-    }
-
-    fun onWorkingHoursEndChange(newValue: String) {
-        workingHoursEnd = newValue
-    }
-
-    fun onHoursPerDayChange(newValue: String) {
-        hoursPerDay = newValue
-    }
-}

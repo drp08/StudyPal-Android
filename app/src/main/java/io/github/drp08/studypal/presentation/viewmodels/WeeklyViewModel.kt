@@ -5,21 +5,18 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
-import network.chaintech.utils.now
 
 data class Activity(
     val title: String,
     val startTime: String,
     val endTime: String
 )
-class WeeklyViewModel : ViewModel(){
+
+class WeeklyViewModel : ViewModel() {
     private val _currentDate = MutableStateFlow(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
     val currentDate: StateFlow<LocalDate> = _currentDate
 
@@ -48,9 +45,5 @@ class WeeklyViewModel : ViewModel(){
 
     fun getActivitiesForDay(dayOfWeek: DayOfWeek, currentDate: LocalDate): List<Activity> {
         return activities[dayOfWeek] ?: emptyList()
-    }
-
-    private fun LocalDate.plusDays(days: Int): LocalDate {
-        return this.plus(days, DateTimeUnit.DAY)
     }
 }

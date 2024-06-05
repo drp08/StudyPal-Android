@@ -17,6 +17,7 @@ hilt = "2.49"
 hiltCompose = "1.2.0"
 room = "2.6.1"
 ksp = "1.9.0-1.0.13"
+dateTimePicker = "1.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +52,7 @@ hilt-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref =
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+date-time-picker = { module = "network.chaintech:kmp-date-time-picker", version.ref = "dateTimePicker" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

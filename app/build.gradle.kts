@@ -91,6 +91,8 @@ dependencies {
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
+
+    implementation(libs.date.time.picker)
 }
 
 //kapt {

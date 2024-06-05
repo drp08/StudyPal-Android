@@ -2,11 +2,19 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
+<<<<<<< HEAD
     "identityHash": "ce50804db9645dac6cece4e2ece35af4",
     "entities": [
       {
         "tableName": "session",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
+=======
+    "identityHash": "ab842971fe0f1470b1bc4f4a7c38e833",
+    "entities": [
+      {
+        "tableName": "session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `totalSessions` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
+>>>>>>> origin/main
         "fields": [
           {
             "fieldPath": "sessionId",
@@ -31,6 +39,15 @@
             "columnName": "endTime",
             "affinity": "INTEGER",
             "notNull": true
+<<<<<<< HEAD
+=======
+          },
+          {
+            "fieldPath": "totalSessions",
+            "columnName": "totalSessions",
+            "affinity": "INTEGER",
+            "notNull": true
+>>>>>>> origin/main
           }
         ],
         "primaryKey": {
@@ -154,7 +171,11 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+<<<<<<< HEAD
       "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ce50804db9645dac6cece4e2ece35af4')"
+=======
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ab842971fe0f1470b1bc4f4a7c38e833')"
+>>>>>>> origin/main
     ]
   }
 }

@@ -3,26 +3,23 @@ package io.github.drp08.studypal.domain.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import io.github.drp08.studypal.domain.models.Subject
-import io.github.drp08.studypal.domain.models.Topic
 
-@Entity
+@Entity(tableName = "subject")
 data class SubjectEntity(
     @PrimaryKey
     val name: String,
-    var confidenceLevel: Int,
-    var totalNumOfSessions: Int,
-    var numSessionsCompleted: Int,
-    var numSessionsScheduled: Int,
-//    var topics: List<Topic>
+    val confidenceLevel: Int,
+    val totalSessions: Int,
+    val completedSessions: Int,
+    val scheduledSessions: Int,
 ) {
     fun toSerializable() : Subject {
         return Subject(
             name,
             confidenceLevel,
-            totalNumOfSessions,
-            numSessionsCompleted,
-            numSessionsScheduled,
-//            topics
+            totalSessions,
+            completedSessions,
+            scheduledSessions
         )
     }
     companion object {
@@ -30,10 +27,9 @@ data class SubjectEntity(
             return SubjectEntity(
                 subject.name,
                 subject.confidenceLevel,
-                subject.totalNumOfSessions,
-                subject.numSessionsCompleted,
-                subject.numSessionsScheduled,
-//                subject.topics
+                subject.totalSessions,
+                subject.completedSessions,
+                subject.scheduledSessions
             )
         }
     }

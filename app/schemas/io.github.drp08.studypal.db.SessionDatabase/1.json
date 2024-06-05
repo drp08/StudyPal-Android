@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f1ba3805a932298f0c08febac43a02a7",
+    "identityHash": "ab842971fe0f1470b1bc4f4a7c38e833",
     "entities": [
       {
         "tableName": "session",
@@ -88,11 +88,17 @@
       },
       {
         "tableName": "topic",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, PRIMARY KEY(`name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `subject` TEXT NOT NULL, PRIMARY KEY(`name`))",
         "fields": [
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject",
+            "columnName": "subject",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -107,8 +113,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "SubjectEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `confidenceLevel` INTEGER NOT NULL, `totalNumOfSessions` INTEGER NOT NULL, `numSessionsCompleted` INTEGER NOT NULL, `numSessionsScheduled` INTEGER NOT NULL, PRIMARY KEY(`name`))",
+        "tableName": "subject",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `confidenceLevel` INTEGER NOT NULL, `totalSessions` INTEGER NOT NULL, `completedSessions` INTEGER NOT NULL, `scheduledSessions` INTEGER NOT NULL, PRIMARY KEY(`name`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -123,20 +129,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "totalNumOfSessions",
-            "columnName": "totalNumOfSessions",
+            "fieldPath": "totalSessions",
+            "columnName": "totalSessions",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "numSessionsCompleted",
-            "columnName": "numSessionsCompleted",
+            "fieldPath": "completedSessions",
+            "columnName": "completedSessions",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "numSessionsScheduled",
-            "columnName": "numSessionsScheduled",
+            "fieldPath": "scheduledSessions",
+            "columnName": "scheduledSessions",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -154,7 +160,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f1ba3805a932298f0c08febac43a02a7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ab842971fe0f1470b1bc4f4a7c38e833')"
     ]
   }
 }

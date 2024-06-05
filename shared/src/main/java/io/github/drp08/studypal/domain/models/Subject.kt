@@ -5,9 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Subject(
     val name: String,
-    var confidenceLevel: Int,
-    var totalNumOfSessions: Int,
-    var numSessionsCompleted: Int,
-    var numSessionsScheduled: Int,
-//    var topics: List<Topic>
+    val confidenceLevel: Int,
+    val totalSessions: Int,
+    val completedSessions: Int,
+    val scheduledSessions: Int,
 )

@@ -10,6 +10,7 @@ import io.github.drp08.studypal.presentation.screens.DailyCalendarScreen
 import io.github.drp08.studypal.presentation.screens.HomeScreen
 import io.github.drp08.studypal.presentation.screens.MonthlyCalendarScreen
 import io.github.drp08.studypal.presentation.screens.ProfileScreen
+import io.github.drp08.studypal.presentation.screens.WeeklyCalendarScreen
 
 sealed class BottomNavItem(
     val label: String,
@@ -21,6 +22,6 @@ sealed class BottomNavItem(
     }
 
     data object Home : BottomNavItem("Home", Icons.Default.Home, HomeScreen)
-    data object Calendar : BottomNavItem("Calendar", Icons.Default.DateRange, MonthlyCalendarScreen)
+    data object Calendar : BottomNavItem("Calendar", Icons.Default.DateRange, WeeklyCalendarScreen)
     data object Profile : BottomNavItem("Profile", Icons.Default.Person, ProfileScreen)
 }

@@ -8,5 +8,4 @@ data class Session(
     val topic: String,
     val startTime: Int, // Second of the day
     val endTime: Int, // Second of the day
-    val totalSessions: Int
 )

@@ -14,15 +14,13 @@ data class SessionEntity(
     val topic: String, // The foreign to the topic name
     val startTime: Int, // Second of the day
     val endTime: Int, // Second of the day
-    val totalSessions: Int
 ) {
     fun toSerializable(): Session {
         return Session(
             sessionId,
             topic,
             startTime,
-            endTime,
-            totalSessions
+            endTime
         )
     }
 
@@ -32,8 +30,7 @@ data class SessionEntity(
                 session.sessionId,
                 session.topic,
                 session.startTime,
-                session.endTime,
-                session.totalSessions
+                session.endTime
             )
         }
     }

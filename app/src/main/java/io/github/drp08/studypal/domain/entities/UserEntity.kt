@@ -26,7 +26,7 @@ data class UserEntity(
                 user.name,
                 user.startWorkingHours,
                 user.endWorkingHours,
-                user.maxNumberOfStudyHours
+                user.maxStudyHours
             )
         }
     }

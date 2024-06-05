@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ab842971fe0f1470b1bc4f4a7c38e833",
+    "identityHash": "ce50804db9645dac6cece4e2ece35af4",
     "entities": [
       {
         "tableName": "session",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `totalSessions` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
         "fields": [
           {
             "fieldPath": "sessionId",
@@ -29,12 +29,6 @@
           {
             "fieldPath": "endTime",
             "columnName": "endTime",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "totalSessions",
-            "columnName": "totalSessions",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -160,7 +154,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ab842971fe0f1470b1bc4f4a7c38e833')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ce50804db9645dac6cece4e2ece35af4')"
     ]
   }
 }

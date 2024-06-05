@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenu
@@ -170,19 +173,34 @@ object AddSubjectScreen : Screen {
         var studyHours by rememberSaveable { mutableStateOf(studyHoursToChoose[0]) }
 
         Row (
-
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier
+                .padding(start = 56.dp, end = 56.dp, bottom = 8.dp, top = 4.dp)
+                .background(Color.Transparent)
+                .fillMaxWidth(),
         ) {
+            Text("Hours of study per week: ")
             Box(
                 contentAlignment = Alignment.CenterStart,
-                modifier = Modifier.clickable {
-                    expanded.value = !expanded.value
-                }
+                modifier = Modifier
+                    .size(40.dp, 32.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .border(
+                        width = (0.9).dp,
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(5.dp)
+                    )
+                    .clickable { expanded.value = !expanded.value }
             ) {
                 Text(
                     text = studyHours,
+                    modifier = Modifier.padding(start = 8.dp)
                 )
-                Icon(
-                    Icons.Filled.ArrowDropDown, "Amount of study hours per week?"
+                Icon (
+                    Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    Modifier.align(Alignment.CenterEnd).fillMaxHeight()
                 )
                 DropdownMenu(
                     expanded = expanded.value,
@@ -194,7 +212,8 @@ object AddSubjectScreen : Screen {
                             onClick = {
                                 studyHours = item
                                 expanded.value = false
-                            }
+                            },
+                            modifier = Modifier.fillMaxSize()
                         )
                     }
                 }

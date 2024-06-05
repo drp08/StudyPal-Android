@@ -10,8 +10,8 @@ import io.github.drp08.studypal.domain.models.Topic
 data class SessionEntity(
     @PrimaryKey
     val sessionId:Int,
-    val subject: Subject,
-    val topic: Topic,
+    val subject: String, // Subject Name
+    val topic: String, // Topic Name
     val startTime: Int, // Second of the day
     val endTime: Int, // Second of the day
     val totalSessions: Int

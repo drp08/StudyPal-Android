@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -17,59 +19,84 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeConfidence
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeExamDate
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeStudyHours
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeSubject
+import io.github.drp08.studypal.utils.formatTime
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toJavaLocalDateTime
 import network.chaintech.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.utils.DateTimePickerView
 import network.chaintech.utils.MAX
 import network.chaintech.utils.MIN
 import network.chaintech.utils.TimeFormat
 import network.chaintech.utils.WheelPickerDefaults
-import network.chaintech.utils.dateTimeToString
 import network.chaintech.utils.now
-import kotlin.math.roundToInt
+import java.time.ZoneId
 
 object AddEventScreen : Screen {
+
+    private val viewModel = AddEventViewModel()
+
     @Composable
     override fun Content() {
+        val state by viewModel.state.collectAsState()
+
         Column {
-            SubjectNameTextField()
-            ExamDateDialogueBox()
-            StudyHoursDropDown()
-            ConfidenceSlider()
+            SubjectNameTextField(
+                name = state.subjectName,
+                onNameChange = { viewModel.on(ChangeSubject(it)) }
+            )
+            ExamDateDialogueBox(
+                examEpoch = state.examEpoch,
+                onDateChange = { viewModel.on(ChangeExamDate(it)) }
+            )
+            StudyHoursDropDown(
+                studyHours = state.studyHours,
+                onChange = { viewModel.on(ChangeStudyHours(it)) }
+            )
+            ConfidenceSlider(
+                confidence = state.confidence,
+                onConfidenceChange = { viewModel.on(ChangeConfidence(it)) }
+            )
         }
     }
 
     @Composable
-    fun SubjectNameTextField() {
-        var subjectName by rememberSaveable { mutableStateOf("") }
-
+    fun SubjectNameTextField(
+        name: String,
+        onNameChange: (String) -> Unit
+    ) {
         OutlinedTextField(
-            value = subjectName,
-            onValueChange = { subjectName = it },
+            value = name,
+            onValueChange = onNameChange,
             label = { Text("Subject Name") }
         )
     }
 
     // Todo: Change exam date to not include time
     @Composable
-    fun ExamDateDialogueBox() {
+    fun ExamDateDialogueBox(
+        examEpoch: Long,
+        onDateChange: (Long) -> Unit
+    ) {
         var showDateTimePicker by remember { mutableStateOf(false) }
-        var dateTime by rememberSaveable { mutableStateOf("") }
 
         if (showDateTimePicker) {
             WheelDateTimePickerView(
@@ -94,47 +121,53 @@ object AddEventScreen : Screen {
                 containerColor = Color.White,
                 shape = RoundedCornerShape(10.dp),
                 dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
-                onDoneClick = { dateTime = dateTimeToString(it, "hh:mm dd-MM-yyyy")
-                              showDateTimePicker = false},
+                onDoneClick = {
+                    onDateChange(
+                        it.toJavaLocalDateTime()
+                            .atZone(ZoneId.systemDefault())
+                            .toEpochSecond()
+                    )
+                    showDateTimePicker = false
+                },
                 selectorProperties = WheelPickerDefaults.selectorProperties(borderColor = Color.DarkGray),
-                onDismiss = { showDateTimePicker = false}
+                onDismiss = { showDateTimePicker = false }
             )
         }
 
         OutlinedButton(onClick = { showDateTimePicker = true }) {
             Text("Exam Date? (Optional)")
         }
-        Text(text = dateTime, textAlign = TextAlign.Left)
+        Text(
+            text = formatTime(examEpoch, "HH:mm dd-MM-yyyy"),
+            textAlign = TextAlign.Left
+        )
     }
 
     @Composable
-    fun StudyHoursDropDown() {
-        val studyHoursToChoose = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+    fun StudyHoursDropDown(
+        studyHours: Int,
+        onChange: (Int) -> Unit
+    ) {
         val expanded = remember { mutableStateOf(false) }
-        var studyHours by rememberSaveable { mutableStateOf(studyHoursToChoose[0]) }
 
         Box(
             contentAlignment = Alignment.CenterStart,
-            modifier = Modifier.clickable {
-                expanded.value = !expanded.value
-            }
+            modifier = Modifier.clickable { expanded.value = !expanded.value }
         ) {
-            Text (
-                text = studyHours,
-            )
-            Icon (
-                Icons.Filled.ArrowDropDown, "Amount of study hours per week?"
+            Text(text = studyHours.toString())
+            Icon(
+                imageVector = Icons.Filled.ArrowDropDown,
+                contentDescription = "Amount of study hours per week?"
             )
             DropdownMenu(
                 expanded = expanded.value,
                 onDismissRequest = { expanded.value = false }
             ) {
-                studyHoursToChoose.forEach {
-                        item ->
+                (1..9).forEach { item ->
                     DropdownMenuItem(
-                        text = { Text(text = item) },
+                        text = { Text(text = item.toString()) },
                         onClick = {
-                            studyHours = item
+                            onChange(item)
                             expanded.value = false
                         }
                     )
@@ -144,21 +177,39 @@ object AddEventScreen : Screen {
     }
 
     @Composable
-    fun ConfidenceSlider() {
-        var confidence by remember { mutableFloatStateOf(0f) }
+    fun ConfidenceSlider(
+        confidence: Float,
+        onConfidenceChange: (Float) -> Unit
+    ) {
         Column {
             Slider(
                 value = confidence,
-                onValueChange = { confidence = it.roundToInt().toFloat() },
+                onValueChange = onConfidenceChange,
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.secondary,
                     activeTrackColor = MaterialTheme.colorScheme.secondary,
                     inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer
                 ),
-                steps = 10,
-                valueRange = 0f..10f
+                steps = 9
             )
-            Text(text = confidence.toString())
+            Text(text = (confidence * 10).toInt().toString())
         }
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun AddEventScreenPreview() {
+    AddEventScreen.Content()
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ConfidenceSliderPreview() {
+    var confidence by remember { mutableFloatStateOf(0.3f) }
+
+    AddEventScreen.ConfidenceSlider(
+        confidence = confidence,
+        onConfidenceChange = { confidence = it }
+    )
 }

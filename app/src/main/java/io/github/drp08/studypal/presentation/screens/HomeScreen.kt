@@ -48,7 +48,10 @@ object HomeScreen : Screen {
             modifier = Modifier.fillMaxSize(),
             floatingActionButton = {
                 ExpandableFab(
-                    items = listOf(FabItem("Subject"), FabItem("Event"))
+                    items = listOf(
+                        FabItem("Subject", AddEventScreen),
+                        FabItem("Event", AddEventScreen)
+                    )
                 )
             }
         ) { paddingValues ->

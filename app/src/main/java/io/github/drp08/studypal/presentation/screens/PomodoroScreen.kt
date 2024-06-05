@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import io.github.drp08.studypal.utils.formatTime
 import kotlinx.coroutines.delay
 import java.time.Instant
 import java.time.LocalTime
@@ -78,7 +79,7 @@ data class PomodoroScreen(
                         }
                     }
 
-                    val endTimeStr = formatTime(endTime)
+                    val endTimeStr = formatTime(endTime, "mm:ss")
                     Text(
                         text = "Session finishes at $endTimeStr",
                         modifier = Modifier
@@ -101,7 +102,7 @@ data class PomodoroScreen(
                         )
 
                         Text(
-                            text = formatTime(timeLeft),
+                            text = formatTime(timeLeft, "HH:mm"),
                             fontSize = 32.sp
                         )
                     }
@@ -115,11 +116,4 @@ data class PomodoroScreen(
         }
     }
 
-    private fun formatTime(timeLeft: Long): String {
-        val instant = Instant.ofEpochMilli(timeLeft)
-        val localTime = instant.atZone(ZoneId.systemDefault()).toLocalTime()
-
-        val formatter = DateTimeFormatter.ofPattern("mm:ss")
-        return localTime.format(formatter)
-    }
 }

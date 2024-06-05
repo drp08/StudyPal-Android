@@ -61,7 +61,7 @@ object AddSubjectScreen : Screen {
                 modifier = Modifier
                     .size(320.dp, 330.dp)
                     .border(
-                        width = (0.9).dp,
+                        width = 1.dp,
                         color = Color.LightGray,
                         shape = RoundedCornerShape(3.dp)
                     ),
@@ -163,7 +163,7 @@ object AddSubjectScreen : Screen {
                 onClick = { showDatePicker = true },
                 modifier = Modifier
                     .border(
-                        width = (0.9).dp,
+                        width = 1.dp,
                         color = Color.DarkGray,
                         shape = RoundedCornerShape(5.dp)
                     )
@@ -198,7 +198,7 @@ object AddSubjectScreen : Screen {
                     .size(40.dp, 32.dp)
                     .clip(RoundedCornerShape(2.dp))
                     .border(
-                        width = (0.9).dp,
+                        width = 1.dp,
                         color = Color.LightGray,
                         shape = RoundedCornerShape(5.dp)
                     )

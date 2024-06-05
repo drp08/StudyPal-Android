@@ -12,6 +12,6 @@ interface SessionDao {
     @Upsert
     suspend fun upsertSession(sessionEntity: SessionEntity)
 
-    @Query("SELECT * from sessionentity")
+    @Query("SELECT * from session")
     fun getAllSessions(): Flow<List<SessionEntity>>
 }

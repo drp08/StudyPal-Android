@@ -52,18 +52,27 @@ import kotlin.math.roundToInt
 object AddSubjectScreen : Screen {
     @Composable
     override fun Content() {
-        Row (
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1060.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column {
-                SubjectNameTextField()
-                ExamDateDialogueBox()
-                StudyHoursDropDown()
-                ConfidenceSlider()
+            Box(
+                modifier = Modifier
+                    .size(320.dp, 330.dp)
+                    .border(
+                        width = (0.9).dp,
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(3.dp)
+                    ),
+                contentAlignment = Alignment.Center,
+            ) {
+                Column {
+                    SubjectNameTextField()
+                    ExamDateDialogueBox()
+                    StudyHoursDropDown()
+                    ConfidenceSlider()
+                }
             }
         }
     }
@@ -145,7 +154,7 @@ object AddSubjectScreen : Screen {
 
         Box(
             modifier = Modifier
-                .padding(start = 56.dp, end = 80.dp)
+                .padding(start = 20.dp, end = 10.dp)
                 .background(Color.Transparent)
                 .fillMaxWidth(),
             contentAlignment = Alignment.CenterStart,
@@ -176,11 +185,13 @@ object AddSubjectScreen : Screen {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start,
             modifier = Modifier
-                .padding(start = 56.dp, end = 56.dp, bottom = 8.dp, top = 4.dp)
+                .padding(start = 20.dp, end = 20.dp, bottom = 6.dp, top = 6.dp)
                 .background(Color.Transparent)
                 .fillMaxWidth(),
         ) {
-            Text("Hours of study per week: ")
+            Text(
+                text = "Hours of study per week: ",
+            )
             Box(
                 contentAlignment = Alignment.CenterStart,
                 modifier = Modifier
@@ -225,9 +236,18 @@ object AddSubjectScreen : Screen {
     fun ConfidenceSlider() {
         var confidence by remember { mutableFloatStateOf(0f) }
         Column {
+            Text(
+                text = "How confident are you with this",
+                modifier = Modifier
+                    .padding(start = 20.dp))
+            Text(
+                text = "subject?",
+                modifier = Modifier
+                    .padding(start = 20.dp))
             Slider(
                 value = confidence,
                 onValueChange = { confidence = it.roundToInt().toFloat() },
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.secondary,
                     activeTrackColor = MaterialTheme.colorScheme.secondary,
@@ -236,7 +256,26 @@ object AddSubjectScreen : Screen {
                 steps = 10,
                 valueRange = 0f..10f
             )
-            Text(text = confidence.toString())
+            Row (
+                modifier = Modifier
+                    .padding(start = 35.dp, end = 35.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text (text = "Not", fontSize = 12.sp)
+                Text (text = "Very", fontSize = 12.sp)
+            }
+            Row (
+                modifier = Modifier
+                    .padding(start = 20.dp, end = 20.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text (text = "Confident", fontSize = 12.sp)
+                Text (text = "Confident", fontSize = 12.sp)
+            }
         }
     }
 }

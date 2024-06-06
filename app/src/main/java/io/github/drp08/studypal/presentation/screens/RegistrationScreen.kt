@@ -18,12 +18,13 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.drp08.studypal.presentation.viewmodels.RegistrationViewModel
 
 object RegistrationScreen : Screen {
     @Composable
     override fun Content() {
-        val viewController = remember { RegistrationViewModel() }
+        val viewModel = viewModel<RegistrationViewModel>()
         val navigator = LocalNavigator.currentOrThrow
 
         Column(
@@ -42,8 +43,8 @@ object RegistrationScreen : Screen {
             )
 
             TextField(
-                value = viewController.name,
-                onValueChange = viewController::onNameChange,
+                value = viewModel.name,
+                onValueChange = viewModel::onNameChange,
                 label = { Text("Your name") },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -67,8 +68,8 @@ object RegistrationScreen : Screen {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextField(
-                    value = viewController.workingHoursStart,
-                    onValueChange = viewController::onWorkingHoursStartChange,
+                    value = viewModel.workingHoursStart,
+                    onValueChange = viewModel::onWorkingHoursStartChange,
                     label = { Text("Start") },
                     modifier = Modifier
                         .weight(1f)
@@ -86,8 +87,8 @@ object RegistrationScreen : Screen {
                 )
 
                 TextField(
-                    value = viewController.workingHoursEnd,
-                    onValueChange = viewController::onWorkingHoursEndChange,
+                    value = viewModel.workingHoursEnd,
+                    onValueChange = viewModel::onWorkingHoursEndChange,
                     label = { Text("End") },
                     modifier = Modifier
                         .weight(1f)
@@ -100,8 +101,8 @@ object RegistrationScreen : Screen {
             }
 
             TextField(
-                value = viewController.hoursPerDay,
-                onValueChange = viewController::onHoursPerDayChange,
+                value = viewModel.hoursPerDay,
+                onValueChange = viewModel::onHoursPerDayChange,
                 label = { Text("I want to work ... Hours per day") },
                 modifier = Modifier
                     .fillMaxWidth()

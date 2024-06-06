@@ -30,17 +30,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.R
 import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
-import io.github.drp08.studypal.presentation.viewmodels.MonthlyCalendarView
+import io.github.drp08.studypal.presentation.viewmodels.MonthlyCalendarViewModel
 import io.ktor.util.date.WeekDay
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import network.chaintech.format
 import network.chaintech.utils.now
 
 object MonthlyCalendarScreen : Screen {
@@ -71,7 +71,7 @@ object MonthlyCalendarScreen : Screen {
 
     @Composable
     fun MonthlyView() {
-        val viewModel = MonthlyCalendarView()
+        val viewModel = viewModel<MonthlyCalendarViewModel>()
         val currentDate by viewModel.currentDate.collectAsState()
         val currentMonth = remember { mutableStateOf(currentDate) }
 
@@ -117,7 +117,7 @@ object MonthlyCalendarScreen : Screen {
                 )
             }
             Text(
-                text = "$ formattedMonthName ${currentMonth.year}",
+                text = "$formattedMonthName ${currentMonth.year}",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )

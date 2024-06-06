@@ -9,12 +9,16 @@ import io.github.drp08.studypal.domain.SchedulingRepository
 import io.github.drp08.studypal.domain.entities.SessionEntity
 import io.github.drp08.studypal.domain.entities.SubjectEntity
 import io.github.drp08.studypal.domain.entities.TopicEntity
+import io.github.drp08.studypal.domain.models.PostBody
 import io.github.drp08.studypal.domain.models.Session
 import io.github.drp08.studypal.routes.Schedule
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get
+import io.ktor.client.plugins.resources.post
+import io.ktor.client.request.setBody
 import io.ktor.http.isSuccess
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 
@@ -30,7 +34,7 @@ class SchedulingRepositoryImpl(
         private const val TAG = "SchedulingRepositoryImp"
     }
 
-    override suspend fun rescheduleAllSessions() = flow {
+    override suspend fun rescheduleAllSessions() = channelFlow {
         val subjects = subjectDao.getAllSubjects()
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
@@ -41,16 +45,25 @@ class SchedulingRepositoryImpl(
                 topics.collectLatest { tops ->
                     sessions.collectLatest { sess ->
                         users.collectLatest { user ->
-                            val response = client.get(Schedule(
-                                subjects = subs.map(SubjectEntity::toSerializable),
-                                topics = tops.map(TopicEntity::toSerializable),
-                                sessions = sess.map(SessionEntity::toSerializable),
-                                user = user.toSerializable()
-                            ))
-                            emit(response.status.isSuccess())
+                            val response = client.post(Schedule()) {
+                                setBody(
+                                    PostBody(
+                                        subs.map(SubjectEntity::toSerializable),
+                                        sess.map(SessionEntity::toSerializable),
+                                        tops.map(TopicEntity::toSerializable),
+                                        user.toSerializable()
+                                    )
+
+                                )
+                            }
+                            send(response.status.isSuccess())
 
                             response.body<List<Session>>().forEach { sessionResponse ->
-                                sessionDao.upsertSession(SessionEntity.fromSerializable(sessionResponse))
+                                sessionDao.upsertSession(
+                                    SessionEntity.fromSerializable(
+                                        sessionResponse
+                                    )
+                                )
                             }
                         }
                     }
@@ -59,7 +72,7 @@ class SchedulingRepositoryImpl(
         } catch (e: Exception) {
             Log.e(TAG, "rescheduleAllSessions: ${e.message}", e)
         } finally {
-            emit(false)
+            send(false)
         }
     }
 }

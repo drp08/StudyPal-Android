@@ -10,8 +10,8 @@ data class SessionEntity(
     @PrimaryKey
     val sessionId: Int,
     val topic: String, // The foreign to the topic name
-    val startTime: Int, // Second of the day
-    val endTime: Int, // Second of the day
+    val startTime: Long, // Epoch millis
+    val endTime: Long, // Epoch millis
     val totalSessions: Int
 ) {
     fun toSerializable(): Session {

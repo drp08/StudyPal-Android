@@ -29,6 +29,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -44,14 +45,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel
+import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.*
 import network.chaintech.ui.datepicker.WheelDatePickerView
 import network.chaintech.utils.DateTimePickerView
 import network.chaintech.utils.WheelPickerDefaults
 import kotlin.math.roundToInt
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.drp08.studypal.utils.formatTime
+import kotlinx.datetime.toJavaLocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZoneOffset
 
 object AddSubjectScreen : Screen {
     @Composable
     override fun Content() {
+        val viewModel = viewModel<AddSubjectViewModel>()
+        val state by viewModel.state.collectAsState()
+
         Column (
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -68,19 +80,32 @@ object AddSubjectScreen : Screen {
                 contentAlignment = Alignment.Center,
             ) {
                 Column {
-                    SubjectNameTextField()
-                    ExamDateDialogueBox()
-                    StudyHoursDropDown()
-                    ConfidenceSlider()
+                    SubjectNameTextField(
+                        name = state.name,
+                        onNameChange = { viewModel.on(ChangeSubject(it)) }
+                    )
+                    ExamDateDialogueBox(
+                        examDate = state.examEpoch,
+                        onDateChange = { viewModel.on(ChangeExamDate(it)) }
+                    )
+                    StudyHoursDropDown(
+                        studyHours = state.hoursPerWeek,
+                        onChange = { viewModel.on(ChangeStudyHours(it)) }
+                    )
+                    ConfidenceSlider(
+                        confidence = state.confidenceLevel,
+                        onConfidenceChange = { viewModel.on(ChangeConfidence(it)) }
+                    )
                 }
             }
         }
     }
 
     @Composable
-    fun SubjectNameTextField() {
-        var subjectName by rememberSaveable { mutableStateOf("") }
-
+    fun SubjectNameTextField(
+        name: String,
+        onNameChange: (String) -> Unit
+    ) {
         Box (
             modifier = Modifier
                 .padding(start = 1.dp, end = 1.dp)
@@ -90,17 +115,19 @@ object AddSubjectScreen : Screen {
             contentAlignment = Alignment.Center,
         ) {
             OutlinedTextField(
-                value = subjectName,
-                onValueChange = { subjectName = it },
+                value = name,
+                onValueChange = onNameChange,
                 label = { Text(text = "Subject Name", color = Color.DarkGray) },
             )
         }
     }
 
     @Composable
-    fun ExamDateDialogueBox() {
+    fun ExamDateDialogueBox(
+        examDate: Long?,
+        onDateChange: (Long) -> Unit
+    ) {
         var showDatePicker by remember { mutableStateOf(false) }
-        var examDate by rememberSaveable { mutableStateOf("Exam Date (Optional)") }
 
         if (showDatePicker) {
             WheelDatePickerView(
@@ -142,8 +169,14 @@ object AddSubjectScreen : Screen {
                 shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
                 dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
                 onDoneClick = {
-                    examDate = ("Exam Date: ").plus(it.toString())
-                    showDatePicker = false },
+                    onDateChange(
+                        it.toJavaLocalDate()
+                            .atStartOfDay()
+                            .atZone(ZoneId.systemDefault())
+                            .toEpochSecond() * 1000
+                    )
+                    showDatePicker = false
+                },
                 selectorProperties = WheelPickerDefaults.selectorProperties(
                     borderColor = Color.DarkGray
                 ),
@@ -168,17 +201,27 @@ object AddSubjectScreen : Screen {
                     )
                     .padding()
             ) {
-                Text(text = examDate, color = Color.DarkGray)
+                if (examDate == null)
+                    Text(
+                        text = "Exam Date (Optional)",
+                        color = Color.DarkGray
+                    )
+                else {
+                    val date = formatTime(examDate, "dd-MM-yyyy")
+                    Text(text = "Exam Date: $date", color = Color.DarkGray)
+                }
             }
         }
     }
 
 
     @Composable
-    fun StudyHoursDropDown() {
-        val studyHoursToChoose = arrayOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+    fun StudyHoursDropDown(
+        studyHours: Int,
+        onChange: (Int) -> Unit
+    ) {
+        val studyHoursToChoose = arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
         val expanded = remember { mutableStateOf(false) }
-        var studyHours by rememberSaveable { mutableStateOf(studyHoursToChoose[0]) }
 
         Row (
             verticalAlignment = Alignment.CenterVertically,
@@ -204,7 +247,7 @@ object AddSubjectScreen : Screen {
                     .clickable { expanded.value = !expanded.value }
             ) {
                 Text(
-                    text = studyHours,
+                    text = studyHours.toString(),
                     modifier = Modifier.padding(start = 8.dp)
                 )
                 Icon (
@@ -218,9 +261,9 @@ object AddSubjectScreen : Screen {
                 ) {
                     studyHoursToChoose.forEach { item ->
                         DropdownMenuItem(
-                            text = { Text(text = item) },
+                            text = { Text(text = item.toString()) },
                             onClick = {
-                                studyHours = item
+                                onChange(item)
                                 expanded.value = false
                             },
                             modifier = Modifier.fillMaxSize()
@@ -232,8 +275,10 @@ object AddSubjectScreen : Screen {
     }
 
     @Composable
-    fun ConfidenceSlider() {
-        var confidence by remember { mutableFloatStateOf(0f) }
+    fun ConfidenceSlider(
+        confidence: Float,
+        onConfidenceChange: (Float) -> Unit
+    ) {
         Column {
             Text(
                 text = "How confident are you with this",
@@ -245,15 +290,14 @@ object AddSubjectScreen : Screen {
                     .padding(start = 20.dp))
             Slider(
                 value = confidence,
-                onValueChange = { confidence = it.roundToInt().toFloat() },
+                onValueChange = onConfidenceChange,
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp),
                 colors = SliderDefaults.colors(
                     thumbColor = MaterialTheme.colorScheme.secondary,
                     activeTrackColor = MaterialTheme.colorScheme.secondary,
                     inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer
                 ),
-                steps = 10,
-                valueRange = 0f..10f
+                steps = 9,
             )
             Row (
                 modifier = Modifier

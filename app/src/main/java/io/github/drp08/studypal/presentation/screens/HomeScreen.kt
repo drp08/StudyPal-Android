@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
@@ -38,7 +39,11 @@ object HomeScreen : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel = HomeViewModel(SchedulingRepositoryImpl(client), LocalDatabase.current.subjectDao, LocalDatabase.current.sessionDao)
+        val subjectDao = LocalDatabase.current.subjectDao
+        val sessionDao = LocalDatabase.current.sessionDao
+        val viewModel = viewModel {
+            HomeViewModel(SchedulingRepositoryImpl(client), subjectDao, sessionDao)
+        }
         val items by viewModel.items.collectAsState()
         val currentTime = System.currentTimeMillis()
 

@@ -1,11 +1,9 @@
 package io.github.drp08.studypal.domain.entities
 
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import io.github.drp08.studypal.domain.models.Session
-import io.github.drp08.studypal.domain.models.Subject
-import io.github.drp08.studypal.domain.models.Topic
+
 
 @Entity(tableName = "session")
 data class SessionEntity(

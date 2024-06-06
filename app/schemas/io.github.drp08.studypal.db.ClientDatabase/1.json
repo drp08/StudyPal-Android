@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ce50804db9645dac6cece4e2ece35af4",
+    "identityHash": "8458ef460deef888a79a35a500532848",
     "entities": [
       {
         "tableName": "session",
@@ -108,7 +108,7 @@
       },
       {
         "tableName": "subject",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `confidenceLevel` INTEGER NOT NULL, `totalSessions` INTEGER NOT NULL, `completedSessions` INTEGER NOT NULL, `scheduledSessions` INTEGER NOT NULL, PRIMARY KEY(`name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `confidenceLevel` REAL NOT NULL, `totalSessions` INTEGER NOT NULL, `completedSessions` INTEGER NOT NULL, `scheduledSessions` INTEGER NOT NULL, `hoursPerWeek` INTEGER NOT NULL, `examEpoch` INTEGER NOT NULL, PRIMARY KEY(`name`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -119,7 +119,7 @@
           {
             "fieldPath": "confidenceLevel",
             "columnName": "confidenceLevel",
-            "affinity": "INTEGER",
+            "affinity": "REAL",
             "notNull": true
           },
           {
@@ -139,6 +139,18 @@
             "columnName": "scheduledSessions",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "hoursPerWeek",
+            "columnName": "hoursPerWeek",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "examEpoch",
+            "columnName": "examEpoch",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -154,7 +166,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ce50804db9645dac6cece4e2ece35af4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8458ef460deef888a79a35a500532848')"
     ]
   }
 }

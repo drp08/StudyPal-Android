@@ -6,6 +6,6 @@ import kotlinx.serialization.Serializable
 data class Session(
     val sessionId: Int,
     val topic: String,
-    val startTime: Int, // Second of the day
-    val endTime: Int, // Second of the day
+    val startTime: Long, // Epoch millis
+    val endTime: Long, // Epoch millis
 )

@@ -12,12 +12,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import io.github.drp08.studypal.presentation.controllers.ViewController
+import io.github.drp08.studypal.presentation.navigation.BottomNavItem
 
 object RegistrationScreen : Screen {
     @Composable
     override fun Content() {
         val viewController = remember { ViewController() }
+        val navigator = LocalNavigator.currentOrThrow
 
         Column(
             modifier = Modifier
@@ -128,7 +132,7 @@ object RegistrationScreen : Screen {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = {/* handle registration */},
+                onClick = {navigator.push(HomeScreen)}, /* will need to handle registration then navigate to the home screen */
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

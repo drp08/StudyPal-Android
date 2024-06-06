@@ -174,7 +174,7 @@ object WeeklyCalendarScreen : Screen {
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = activity.title,
+                                        text = activity.topic,
                                         fontSize = 16.sp,
                                         textAlign = TextAlign.Center,
                                         modifier = Modifier.padding(vertical = 4.dp)

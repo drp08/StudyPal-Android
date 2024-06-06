@@ -12,6 +12,8 @@ import io.github.drp08.studypal.db.daos.SessionDao
 import io.github.drp08.studypal.presentation.navigation.BottomNavBar
 import io.github.drp08.studypal.presentation.navigation.BottomNavItem
 import io.github.drp08.studypal.presentation.screens.BlankScreen
+import io.github.drp08.studypal.presentation.screens.HomeScreen
+import io.github.drp08.studypal.presentation.screens.RegistrationScreen
 import io.github.drp08.studypal.presentation.theme.StudyPalAndroidTheme
 
 @Composable
@@ -19,8 +21,8 @@ fun App(
     sessionDao: SessionDao
 ) {
     StudyPalAndroidTheme(darkTheme = false) {
-        Navigator(screen = BlankScreen) { navigator ->
-            if (navigator.lastItem is BlankScreen) {
+        Navigator(screen = RegistrationScreen) { navigator ->
+            if (navigator.lastItem is HomeScreen) {
                 Navigator(BottomNavItem.Home.screen) { _ ->
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),

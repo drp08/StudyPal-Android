@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
@@ -35,9 +36,11 @@ data class PomodoroScreen(
 ) : Screen {
     @Composable
     override fun Content() {
+
         val current = LocalTime.now().toSecondOfDay()
         val totalTimeLeft = endTime - current - 10 // 10 minute break, hardcoded
         var timeLeft by remember { mutableStateOf(totalTimeLeft) }
+
 
         LaunchedEffect(key1 = timeLeft) {
             while (timeLeft > 0) {
@@ -105,9 +108,18 @@ data class PomodoroScreen(
                     }
                     Text(
                         text = "Until Break",
-                        modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(vertical = 16.dp)
+                            .fillMaxWidth(),
                         textAlign = TextAlign.Center
                     )
+                    Spacer(modifier = Modifier.height(16.dp))
+//                    Button(onClick = {
+//                        timeLeft += 5 * 60
+//                        extendedEndTime += 5 * 60
+//                    }) {
+//                        Text(text = "Extend by 5 minutes")
+//                    }
                 }
             }
         }

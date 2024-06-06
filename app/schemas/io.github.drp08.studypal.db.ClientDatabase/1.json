@@ -6,7 +6,7 @@
     "entities": [
       {
         "tableName": "session",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `totalSessions` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
         "fields": [
           {
             "fieldPath": "sessionId",
@@ -29,12 +29,6 @@
           {
             "fieldPath": "endTime",
             "columnName": "endTime",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "totalSessions",
-            "columnName": "totalSessions",
             "affinity": "INTEGER",
             "notNull": true
           }

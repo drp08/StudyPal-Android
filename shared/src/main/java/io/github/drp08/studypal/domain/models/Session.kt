@@ -8,5 +8,4 @@ data class Session(
     val topic: String,
     val startTime: Long, // Epoch millis
     val endTime: Long, // Epoch millis
-    val totalSessions: Int
 )

@@ -15,8 +15,7 @@ fun Route.scheduleRouting() {
             sessionId = 1,
             topic = it.name,
             startTime = 10000,
-            endTime = 16000,
-            totalSessions = 6
+            endTime = 16000
         )
 
         Database.startTime += oneHour

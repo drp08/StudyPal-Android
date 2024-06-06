@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "ca55be9aaf7e4bb2022e87cb9dfe617e",
+    "version": 3,
+    "identityHash": "ee47d25acbf31e877e25f394cdc26a1d",
     "entities": [
       {
         "tableName": "session",
@@ -43,7 +43,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "UserEntity",
+        "tableName": "user",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `startWorkingHours` INTEGER NOT NULL, `endWorkingHours` INTEGER NOT NULL, `maxStudyingHours` INTEGER NOT NULL, PRIMARY KEY(`name`))",
         "fields": [
           {
@@ -166,7 +166,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ca55be9aaf7e4bb2022e87cb9dfe617e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ee47d25acbf31e877e25f394cdc26a1d')"
     ]
   }
 }

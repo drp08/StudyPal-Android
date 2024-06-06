@@ -11,6 +11,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 
 
@@ -36,12 +37,12 @@ class MonthlyCalendarViewModel : ViewModel() {
     fun getEventsForDate(date: LocalDate): List<SessionEntity> {
         return _events.value.filter { event ->
             val eventStartDate = LocalDateTime(
-                date.year, date.monthNumber, date.dayOfMonth,
-                event.startTime / 3600, (event.startTime % 3600) / 60
+                date.year, date.month.number, date.dayOfMonth,
+                (event.startTime / 3600).toInt(), ((event.startTime % 3600) / 60).toInt()
             )
             val eventEndDate = LocalDateTime(
-                date.year, date.monthNumber, date.dayOfMonth,
-                event.endTime / 3600, (event.endTime % 3600) / 60
+                date.year, date.month.number, date.dayOfMonth,
+                (event.endTime / 3600).toInt(), ((event.endTime % 3600) / 60).toInt()
             )
             eventStartDate.date == date || eventEndDate.date == date || (eventStartDate.date < date && eventEndDate.date > date)
         }

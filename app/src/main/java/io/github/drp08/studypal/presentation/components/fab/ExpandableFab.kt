@@ -38,6 +38,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.github.drp08.studypal.presentation.screens.AddEventScreen
 import io.github.drp08.studypal.presentation.screens.AddSubjectScreen
+import io.github.drp08.studypal.presentation.screens.RegistrationScreen
 
 @Composable
 fun ExpandableFab(
@@ -105,7 +106,7 @@ private fun FabMenu(
     modifier: Modifier = Modifier
 ) {
     val navigator = LocalNavigator.currentOrThrow
-    val screenToChoose = arrayOf(AddSubjectScreen, AddEventScreen)
+    val screenToChoose = arrayOf(AddSubjectScreen, AddEventScreen, RegistrationScreen)
     Column(
         modifier = modifier
             .fillMaxWidth(),

@@ -54,8 +54,9 @@ object HomeScreen : Screen {
             floatingActionButton = {
                 ExpandableFab(
                     items = listOf(
-                        FabItem("Subject", AddEventScreen),
-                        FabItem("Event", AddEventScreen)
+                        FabItem("Subject", AddSubjectScreen),
+                        FabItem("Event", AddEventScreen),
+                        FabItem("Import Calendar", RegistrationScreen)
                     )
                 )
             }

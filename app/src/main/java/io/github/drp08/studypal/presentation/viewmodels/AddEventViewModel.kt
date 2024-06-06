@@ -3,27 +3,36 @@ package io.github.drp08.studypal.presentation.viewmodels
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
 import androidx.lifecycle.ViewModel
+import io.github.drp08.studypal.domain.entities.SubjectEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class AddEventViewModel : ViewModel() {
 
-    private val _state = MutableStateFlow(State())
+    private val _state = MutableStateFlow(SubjectEntity(
+        name = "",
+        confidenceLevel = 0f,
+        totalSessions = 0,
+        completedSessions = 0,
+        scheduledSessions = 0,
+        hoursPerWeek = 0,
+        examEpoch = 0L
+    ))
     val state = _state.asStateFlow()
 
     fun on(action: UiAction) {
         when (action) {
             is UiAction.ChangeSubject -> {
-                _state.value = state.value.copy(subjectName = action.subjectName)
+                _state.value = state.value.copy(name = action.subjectName)
             }
             is UiAction.ChangeExamDate -> {
                 _state.value = state.value.copy(examEpoch = action.examEpoch)
             }
             is UiAction.ChangeStudyHours -> {
-                _state.value = state.value.copy(studyHours = action.studyHours)
+                _state.value = state.value.copy(hoursPerWeek = action.studyHours)
             }
             is UiAction.ChangeConfidence -> {
-                _state.value = state.value.copy(confidence = action.confidence)
+                _state.value = state.value.copy(confidenceLevel = action.confidence)
             }
         }
     }

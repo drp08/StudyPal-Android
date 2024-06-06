@@ -60,7 +60,7 @@ object AddEventScreen : Screen {
 
         Column {
             SubjectNameTextField(
-                name = state.subjectName,
+                name = state.name,
                 onNameChange = { viewModel.on(ChangeSubject(it)) }
             )
             ExamDateDialogueBox(
@@ -68,11 +68,11 @@ object AddEventScreen : Screen {
                 onDateChange = { viewModel.on(ChangeExamDate(it)) }
             )
             StudyHoursDropDown(
-                studyHours = state.studyHours,
+                studyHours = state.hoursPerWeek,
                 onChange = { viewModel.on(ChangeStudyHours(it)) }
             )
             ConfidenceSlider(
-                confidence = state.confidence,
+                confidence = state.confidenceLevel,
                 onConfidenceChange = { viewModel.on(ChangeConfidence(it)) }
             )
         }

@@ -3,7 +3,11 @@ package io.github.drp08.studypal.presentation.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,13 +18,12 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.github.drp08.studypal.presentation.controllers.ViewController
-import io.github.drp08.studypal.presentation.navigation.BottomNavItem
+import io.github.drp08.studypal.presentation.viewmodels.RegistrationViewModel
 
 object RegistrationScreen : Screen {
     @Composable
     override fun Content() {
-        val viewController = remember { ViewController() }
+        val viewController = remember { RegistrationViewModel() }
         val navigator = LocalNavigator.currentOrThrow
 
         Column(
@@ -31,10 +34,10 @@ object RegistrationScreen : Screen {
         ) {
             Text(
                 text = "StudyPal",
-                style = MaterialTheme.typography.h3.copy(
+                style = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold
                 ),
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
@@ -47,15 +50,13 @@ object RegistrationScreen : Screen {
                     .padding(vertical = 8.dp),
                 singleLine = true,
                 shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MaterialTheme.colors.surface
-                )
+                colors = TextFieldDefaults.colors()
             )
 
             Text(
                 text = "I would like revision to be scheduled between",
                 modifier = Modifier.padding(top = 8.dp, bottom = 4.dp),
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.bodySmall
             )
 
             Row(
@@ -74,16 +75,14 @@ object RegistrationScreen : Screen {
                         .padding(end = 8.dp),
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = MaterialTheme.colors.surface
-                    ),
+                    colors = TextFieldDefaults.colors(),
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 )
 
                 Text(
                     text = "and",
                     modifier = Modifier.padding(horizontal = 8.dp),
-                    style = MaterialTheme.typography.body1
+                    style = MaterialTheme.typography.bodySmall
                 )
 
                 TextField(
@@ -95,9 +94,7 @@ object RegistrationScreen : Screen {
                         .padding(start = 8.dp),
                     singleLine = true,
                     shape = RoundedCornerShape(8.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = MaterialTheme.colors.surface
-                    ),
+                    colors = TextFieldDefaults.colors(),
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
                 )
             }
@@ -111,9 +108,7 @@ object RegistrationScreen : Screen {
                     .padding(vertical = 8.dp),
                 singleLine = true,
                 shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = MaterialTheme.colors.surface
-                ),
+                colors = TextFieldDefaults.colors(),
                 keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
             )
 

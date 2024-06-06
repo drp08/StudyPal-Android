@@ -1,10 +1,13 @@
-package io.github.drp08.studypal.presentation.controllers
+package io.github.drp08.studypal.presentation.viewmodels
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 
-class ViewController {
+class RegistrationViewModel : ViewModel() {
     var name by mutableStateOf("")
     var workingHoursStart by mutableStateOf("")
     var workingHoursEnd by mutableStateOf("")

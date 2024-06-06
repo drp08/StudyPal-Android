@@ -9,6 +9,9 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import kotlinx.datetime.LocalDateTime
 
 data class Activity(
     val title: String,
@@ -16,8 +19,18 @@ data class Activity(
     val endTime: String
 )
 
+@Entity(tableName = "activities")
+data class ActivityEntity(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val title: String,
+    val startTime: LocalDateTime,
+    val endTime: LocalDateTime,
+    val dayOfWeek: DayOfWeek
+)
+
 class WeeklyViewModel : ViewModel() {
-    private val _currentDate = MutableStateFlow(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
+    private val _currentDate =
+        MutableStateFlow(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
     val currentDate: StateFlow<LocalDate> = _currentDate
 
     private val activities = mutableMapOf<DayOfWeek, List<Activity>>()

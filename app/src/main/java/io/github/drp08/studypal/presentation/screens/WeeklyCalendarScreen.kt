@@ -35,12 +35,12 @@ import io.github.drp08.studypal.presentation.viewmodels.WeeklyViewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
+import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 object WeeklyCalendarScreen : Screen {
-    private fun readResolve(): Any = WeeklyCalendarScreen
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -82,7 +82,9 @@ object WeeklyCalendarScreen : Screen {
 
             WeekHeader(
                 currentWeek = currentWeek.value,
-                onPreviousWeek = { currentWeek.value = currentWeek.value.minus(7, DateTimeUnit.DAY) },
+                onPreviousWeek = {
+                    currentWeek.value = currentWeek.value.minus(7, DateTimeUnit.DAY)
+                },
                 onNextWeek = { currentWeek.value = currentWeek.value.plus(7, DateTimeUnit.DAY) }
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -93,6 +95,7 @@ object WeeklyCalendarScreen : Screen {
 
     @Composable
     fun WeekHeader(currentWeek: LocalDate, onPreviousWeek: () -> Unit, onNextWeek: () -> Unit) {
+        val formattedWeek = currentWeek.month.name.lowercase().replaceFirstChar { it.uppercase() }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -107,7 +110,7 @@ object WeeklyCalendarScreen : Screen {
                 )
             }
             Text(
-                text = "${currentWeek.month.name.lowercase().replaceFirstChar { it.uppercase() }} ${currentWeek.year}",
+                text = "$formattedWeek ${currentWeek.year}",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -190,9 +193,11 @@ object WeeklyCalendarScreen : Screen {
             }
         }
     }
+
     fun LocalDate.plusDays(days: Int): LocalDate {
         return this.plus(days, DateTimeUnit.DAY)
     }
+
     private fun LocalDate.atStartOfWeek(): LocalDate {
         val dayOfWeek = this.dayOfWeek.ordinal
         return this.minus(dayOfWeek, DateTimeUnit.DAY)

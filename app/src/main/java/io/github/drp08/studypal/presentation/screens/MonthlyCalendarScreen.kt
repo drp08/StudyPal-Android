@@ -32,18 +32,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.R
+import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
 import io.github.drp08.studypal.presentation.viewmodels.MonthlyCalendarView
 import io.ktor.util.date.WeekDay
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
-import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
+import network.chaintech.format
 import network.chaintech.utils.now
 
 object MonthlyCalendarScreen : Screen {
-    private fun readResolve(): Any = MonthlyCalendarScreen
 
     @Composable
     override fun Content() {
@@ -101,6 +101,8 @@ object MonthlyCalendarScreen : Screen {
         onPreviousMonth: () -> Unit,
         onNextMonth: () -> Unit
     ) {
+        val formattedMonthName = currentMonth.month.name.lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -115,10 +117,7 @@ object MonthlyCalendarScreen : Screen {
                 )
             }
             Text(
-                text = "${
-                    currentMonth.month.name.lowercase()
-                        .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
-                } ${currentMonth.year}",
+                text = "$ formattedMonthName ${currentMonth.year}",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -209,7 +208,11 @@ object MonthlyCalendarScreen : Screen {
                             }
                         } else {
                             // Add spacer for empty slots
-                            Spacer(modifier = Modifier.width(48.dp).height(48.dp))
+                            Spacer(
+                                modifier = Modifier
+                                    .width(48.dp)
+                                    .height(48.dp)
+                            )
                         }
                     }
                 }

@@ -1,4 +1,4 @@
-package io.github.drp08.studypal.presentation.screens
+package io.github.drp08.studypal.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -7,6 +7,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import io.github.drp08.studypal.presentation.screens.CalendarView
 
 @Composable
 fun CalendarViewSwitcher(currentView: CalendarView,

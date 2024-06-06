@@ -43,7 +43,7 @@ object HomeScreen : Screen {
         val sessionDao = LocalDatabase.current.sessionDao
         val userDao = LocalDatabase.current.userDao
         val viewModel = viewModel {
-            HomeViewModel(SchedulingRepositoryImpl(client), subjectDao, sessionDao, userDao)
+            HomeViewModel(subjectDao, sessionDao, userDao)
         }
         val items by viewModel.items.collectAsState()
         val currentTime = System.currentTimeMillis()

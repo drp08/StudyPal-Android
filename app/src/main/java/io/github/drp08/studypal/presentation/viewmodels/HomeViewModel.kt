@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-    private val schedulingRepository: SchedulingRepository,
     private val subjectDao: SubjectDao,
     private val sessionDao: SessionDao,
     private val userDao: UserDao
@@ -28,11 +27,7 @@ class HomeViewModel(
 
     init {
         viewModelScope.launch {
-            userDao.getUser().collectLatest {
-                Log.d(TAG, "userEntity: $it")
-            }
-
-            subjectDao.getAllSubjects().collectLatest { subjectTopics ->
+            subjectDao.getAllSubjectsWithTopics().collectLatest { subjectTopics ->
                 for ((subject, topics) in subjectTopics) {
                     topics.forEach { topic ->
                         sessionDao.getSessionsOfTopic(topic.name).collectLatest { sessions ->

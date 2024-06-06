@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.room.Room
+import androidx.room.migration.Migration
 import io.github.drp08.studypal.db.ClientDatabase
 import io.github.drp08.studypal.presentation.App
 import io.github.drp08.studypal.utils.LocalDatabase
@@ -18,7 +19,9 @@ class MainActivity : ComponentActivity() {
             applicationContext,
             ClientDatabase::class.java,
             "clientDb"
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

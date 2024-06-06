@@ -117,7 +117,7 @@ object MonthlyCalendarScreen : Screen {
                 )
             }
             Text(
-                text = "$ formattedMonthName ${currentMonth.year}",
+                text = "$formattedMonthName ${currentMonth.year}",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )

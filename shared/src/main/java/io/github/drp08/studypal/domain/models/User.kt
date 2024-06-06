@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class User (
     val name: String,
-    val startWorkingHours: Int, // Second of the day?
-    val endWorkingHours: Int, // Second of the day?
-    val maxNumberOfStudyHours: Int
+    val startWorkingHours: Long, // Epoch millis
+    val endWorkingHours: Long, // Epoch millis
+    val maxStudyingHours: Int
 )

@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.github.drp08.studypal.presentation.screens.AddSubjectScreen
 
 @Composable
 fun ExpandableFab(
@@ -53,7 +52,8 @@ fun ExpandableFab(
 
     val animatedIconRotation by animateFloatAsState(
         targetValue = iconRotation,
-        animationSpec = tween(durationMillis = 150)
+        animationSpec = tween(durationMillis = 150),
+        label = "iconRotation"
     )
 
     Column(
@@ -103,13 +103,14 @@ private fun FabMenu(
     modifier: Modifier = Modifier
 ) {
     val navigator = LocalNavigator.currentOrThrow
+
     Column(
         modifier = modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items.forEachIndexed { i, menuItem ->
+        items.forEach { menuItem ->
             AnimatedVisibility(
                 visible = visible,
                 enter = expandVertically(animationSpec = tween(durationMillis = 150))
@@ -119,7 +120,7 @@ private fun FabMenu(
             ) {
                 FabMenuItem(
                     item = menuItem,
-                    onItemClick = { navigator.push(AddSubjectScreen) }
+                    onItemClick = { navigator.push(menuItem.screen) }
                 )
             }
         }

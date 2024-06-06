@@ -34,6 +34,9 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import io.github.drp08.studypal.presentation.screens.AddSubjectScreen
 
 @Composable
 fun ExpandableFab(
@@ -99,6 +102,7 @@ private fun FabMenu(
     visible: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val navigator = LocalNavigator.currentOrThrow
     Column(
         modifier = modifier
             .fillMaxWidth(),
@@ -115,7 +119,7 @@ private fun FabMenu(
             ) {
                 FabMenuItem(
                     item = menuItem,
-                    onItemClick = {}
+                    onItemClick = { navigator.push(AddSubjectScreen) }
                 )
             }
         }

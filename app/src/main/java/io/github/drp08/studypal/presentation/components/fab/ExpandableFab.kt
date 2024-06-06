@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.github.drp08.studypal.presentation.screens.AddEventScreen
+import io.github.drp08.studypal.presentation.screens.AddSubjectScreen
 
 @Composable
 fun ExpandableFab(
@@ -103,14 +105,14 @@ private fun FabMenu(
     modifier: Modifier = Modifier
 ) {
     val navigator = LocalNavigator.currentOrThrow
-
+    val screenToChoose = arrayOf(AddSubjectScreen, AddEventScreen)
     Column(
         modifier = modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items.forEach { menuItem ->
+        items.forEachIndexed { i, menuItem ->
             AnimatedVisibility(
                 visible = visible,
                 enter = expandVertically(animationSpec = tween(durationMillis = 150))
@@ -120,7 +122,7 @@ private fun FabMenu(
             ) {
                 FabMenuItem(
                     item = menuItem,
-                    onItemClick = { navigator.push(menuItem.screen) }
+                    onItemClick = { navigator.push(screenToChoose[i]) }
                 )
             }
         }

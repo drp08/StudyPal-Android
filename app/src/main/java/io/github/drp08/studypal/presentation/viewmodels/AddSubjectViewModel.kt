@@ -6,8 +6,12 @@ import androidx.lifecycle.ViewModel
 import io.github.drp08.studypal.domain.entities.SubjectEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
-class AddEventViewModel : ViewModel() {
+class AddSubjectViewModel : ViewModel() {
 
     private val _state = MutableStateFlow(SubjectEntity(
         name = "",
@@ -16,7 +20,7 @@ class AddEventViewModel : ViewModel() {
         completedSessions = 0,
         scheduledSessions = 0,
         hoursPerWeek = 0,
-        examEpoch = 0L
+        examEpoch = null
     ))
     val state = _state.asStateFlow()
 
@@ -39,7 +43,9 @@ class AddEventViewModel : ViewModel() {
 
     data class State(
         val subjectName: String = "",
-        val examEpoch: Long = System.currentTimeMillis(),
+        val examEpoch: LocalDate =
+            Clock.System.now().toLocalDateTime(
+                TimeZone.currentSystemDefault()).date,
         @IntRange(from = 1, to = 9)
         val studyHours: Int = 1,
         @FloatRange(from = 0.0, to = 1.0)

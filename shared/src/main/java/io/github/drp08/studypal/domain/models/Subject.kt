@@ -10,5 +10,5 @@ data class Subject(
     val completedSessions: Int,
     val scheduledSessions: Int,
     val hoursPerWeek: Int,
-    val examEpoch: Long
+    val examEpoch: Long?
 )

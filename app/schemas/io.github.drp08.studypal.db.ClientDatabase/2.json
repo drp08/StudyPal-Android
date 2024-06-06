@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "1a1b25a74723bbf76697059c815ae9c8",
+    "version": 2,
+    "identityHash": "de8c4b60bee1e4ea28db5238170adc18",
     "entities": [
       {
         "tableName": "session",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `totalSessions` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
         "fields": [
           {
             "fieldPath": "sessionId",
@@ -29,6 +29,12 @@
           {
             "fieldPath": "endTime",
             "columnName": "endTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalSessions",
+            "columnName": "totalSessions",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -108,7 +114,7 @@
       },
       {
         "tableName": "subject",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `confidenceLevel` REAL NOT NULL, `totalSessions` INTEGER NOT NULL, `completedSessions` INTEGER NOT NULL, `scheduledSessions` INTEGER NOT NULL, `hoursPerWeek` INTEGER NOT NULL, `examEpoch` INTEGER NOT NULL, PRIMARY KEY(`name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `confidenceLevel` REAL NOT NULL, `totalSessions` INTEGER NOT NULL, `completedSessions` INTEGER NOT NULL, `scheduledSessions` INTEGER NOT NULL, `hoursPerWeek` INTEGER NOT NULL, `examEpoch` INTEGER, PRIMARY KEY(`name`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -150,7 +156,7 @@
             "fieldPath": "examEpoch",
             "columnName": "examEpoch",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -166,7 +172,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1a1b25a74723bbf76697059c815ae9c8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'de8c4b60bee1e4ea28db5238170adc18')"
     ]
   }
 }

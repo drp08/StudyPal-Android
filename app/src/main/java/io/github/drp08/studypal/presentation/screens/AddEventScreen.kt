@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeConfidence
@@ -52,10 +53,9 @@ import java.time.ZoneId
 
 object AddEventScreen : Screen {
 
-    private val viewModel = AddEventViewModel()
-
     @Composable
     override fun Content() {
+        val viewModel = viewModel<AddEventViewModel>()
         val state by viewModel.state.collectAsState()
 
         Column {

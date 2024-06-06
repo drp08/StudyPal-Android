@@ -4,17 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.room.Room
 import io.github.drp08.studypal.db.ClientDatabase
 import io.github.drp08.studypal.presentation.App
+import io.github.drp08.studypal.utils.LocalDatabase
 
 class MainActivity : ComponentActivity() {
 
-    val sessionDb by lazy {
+    private val clientDb by lazy {
         Room.databaseBuilder(
             applicationContext,
             ClientDatabase::class.java,
-            "sessionDb"
+            "clientDb"
         ).build()
     }
 
@@ -22,7 +25,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            App(sessionDb.sessionDao)
+            CompositionLocalProvider(LocalDatabase provides clientDb) {
+                App()
+            }
         }
     }
 }

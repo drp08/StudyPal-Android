@@ -14,4 +14,7 @@ interface SessionDao {
 
     @Query("SELECT * from session")
     fun getAllSessions(): Flow<List<SessionEntity>>
+
+    @Query("SELECT * from session WHERE session.topic = :topic")
+    fun getSessionsOfTopic(topic: String): Flow<List<SessionEntity>>
 }

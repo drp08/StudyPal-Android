@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
 import io.github.drp08.studypal.presentation.viewmodels.DailyCalendarView
@@ -50,7 +51,7 @@ object DailyCalendarScreen : Screen {
 
 @Composable
 fun DailyView() {
-    val viewModel = DailyCalendarView()
+    val viewModel = viewModel<DailyCalendarView>()
     val currentDate by viewModel.currentDate.collectAsState(
         initial = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
     )

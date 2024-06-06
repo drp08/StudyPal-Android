@@ -54,7 +54,8 @@ fun ExpandableFab(
 
     val animatedIconRotation by animateFloatAsState(
         targetValue = iconRotation,
-        animationSpec = tween(durationMillis = 150)
+        animationSpec = tween(durationMillis = 150),
+        label = "iconRotation"
     )
 
     Column(

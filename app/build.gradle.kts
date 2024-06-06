@@ -94,6 +94,7 @@ dependencies {
     implementation(libs.room.ktx)
 
     implementation(libs.date.time.picker)
+    implementation(libs.lifecycle.viewmodel.compose)
 }
 
 //kapt {

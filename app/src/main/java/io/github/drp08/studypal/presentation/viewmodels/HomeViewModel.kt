@@ -2,30 +2,38 @@ package io.github.drp08.studypal.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.drp08.studypal.db.daos.SessionDao
+import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.domain.SchedulingRepository
-import io.github.drp08.studypal.domain.models.Session
+import io.github.drp08.studypal.presentation.models.HomeSessionItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 class HomeViewModel(
-    private val schedulingRepository: SchedulingRepository
+    private val schedulingRepository: SchedulingRepository,
+    private val subjectDao: SubjectDao,
+    private val sessionDao: SessionDao
 ): ViewModel() {
-    private val _sessions = MutableStateFlow(emptyList<Session>())
-    val sessions = _sessions.asStateFlow()
+    private val _sessions = MutableStateFlow<List<HomeSessionItem>>(emptyList())
+    val items = _sessions.asStateFlow()
 
-    private val subjects = listOf("Chemistry", "Computer Science", "Mathematics", "Biology", "Physics",
-        "Economics", "Accounting", "History", "Geography", "Sociology", "Literature", "Psychology")
-
-    fun addNewSession() {
+    init {
         viewModelScope.launch {
-            val randomIndex = Random.nextInt(subjects.size)
-            val randomSubject = subjects[randomIndex]
-
-            val subject = schedulingRepository.getScheduleForSubject(randomSubject)
-
-            _sessions.value = sessions.value + subject
+            subjectDao.getAllSubjects().collectLatest { subjectTopics ->
+                for ((subject, topics) in subjectTopics) {
+                    topics.forEach { topic ->
+                        sessionDao.getSessionsOfTopic(topic.name).collectLatest { sessions ->
+                            sessions.forEach { session ->
+                                val newSession = HomeSessionItem(subject, topic, session)
+                                val newSessionList = this@HomeViewModel.items.value + newSession
+                                _sessions.value = newSessionList.sortedBy { it.session.startTime }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

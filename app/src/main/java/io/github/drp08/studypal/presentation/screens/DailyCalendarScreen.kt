@@ -8,6 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,39 +28,62 @@ object DailyCalendarScreen : Screen {
 
     @Composable
     override fun Content() {
-            val viewModel = DailyCalendarView()
-            val currentDate by viewModel.currentDate.collectAsState(initial = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
-            val events by viewModel.events.collectAsState(initial = emptyList())
+//            val viewModel = DailyCalendarView()
+//            val currentDate by viewModel.currentDate.collectAsState(initial = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
+//            val events by viewModel.events.collectAsState(initial = emptyList())
+        var currentView by remember { mutableStateOf(CalendarView.DAILY) }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            CalendarViewSwitcher(
+                currentView = currentView,
+                onViewChange = { newView -> currentView = newView })
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
+            when (currentView) {
+                CalendarView.DAILY -> DailyView()
+                CalendarView.WEEKLY -> WeeklyCalendarScreen.Content()
+                CalendarView.MONTHLY -> MonthlyCalendarScreen.Content()
+            }
+        }
+    }
+    }
+
+@Composable
+fun DailyView() {
+    val viewModel = DailyCalendarView()
+    val currentDate by viewModel.currentDate.collectAsState(initial = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
+    val events by viewModel.events.collectAsState(initial = emptyList())
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "${currentDate.dayOfWeek}, ${currentDate.month} ${currentDate.dayOfMonth}, ${currentDate.year}",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Box(modifier = Modifier.fillMaxSize()) {
+            val timeSlots = generateTimeSlots(LocalTime(8, 0), LocalTime(18, 0))
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.Start,
             ) {
-                Text(
-                    text = "${currentDate.dayOfWeek}, ${currentDate.month} ${currentDate.dayOfMonth}, ${currentDate.year}",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Box(modifier = Modifier.fillMaxSize()) {
-                    val timeSlots = generateTimeSlots(LocalTime(8, 0), LocalTime(18, 0))
-
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.Start,
-                    ) {
-                        items(timeSlots) { slot ->
-                            TimeSlotRow(slot, events)
-                        }
-                    }
+                items(timeSlots) { slot ->
+                    TimeSlotRow(slot, events)
                 }
             }
         }
     }
+}
 
     @Composable
     fun TimeSlotRow(time: LocalTime, events: List<Event>) {
@@ -74,11 +100,15 @@ object DailyCalendarScreen : Screen {
             Text(
                 text = formattedTime,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp).width(60.dp)
+                modifier = Modifier
+                    .padding(8.dp)
+                    .width(60.dp)
             )
 
             Column(
-                modifier = Modifier.fillMaxHeight().weight(1f)
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1f)
             ) {
                 eventsInSlot.forEach { event ->
                     EventBlock(event, time)

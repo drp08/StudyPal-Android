@@ -33,14 +33,10 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import io.github.drp08.studypal.presentation.viewmodels.WeeklyViewModel
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
-
 import kotlinx.datetime.Clock
-
-import kotlinx.datetime.DayOfWeek
-
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
 object WeeklyCalendarScreen : Screen {
@@ -49,15 +45,41 @@ object WeeklyCalendarScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val viewModel = WeeklyViewModel()
-        val currentDate by viewModel.currentDate.collectAsState()
-        val currentWeek = remember { mutableStateOf(currentDate) }
+        var currentView by remember { mutableStateOf(CalendarView.WEEKLY) }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            CalendarViewSwitcher(
+                currentView = currentView,
+                onViewChange = { newView -> currentView = newView }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            when (currentView) {
+                CalendarView.DAILY -> DailyCalendarScreen.Content()
+                CalendarView.WEEKLY -> WeeklyView()
+                CalendarView.MONTHLY -> MonthlyCalendarScreen.Content()
+            }
+        }
+    }
+
+    @Composable
+    fun WeeklyView() {
+        val viewModel = WeeklyViewModel()
+        val currentDate by viewModel.currentDate.collectAsState()
+        val currentWeek = remember { mutableStateOf(currentDate) }
+
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+
             WeekHeader(
                 currentWeek = currentWeek.value,
                 onPreviousWeek = { currentWeek.value = currentWeek.value.minus(7, DateTimeUnit.DAY) },
@@ -68,7 +90,7 @@ object WeeklyCalendarScreen : Screen {
         }
     }
 
-    @OptIn(ExperimentalMaterial3Api::class)
+
     @Composable
     fun WeekHeader(currentWeek: LocalDate, onPreviousWeek: () -> Unit, onNextWeek: () -> Unit) {
         Row(

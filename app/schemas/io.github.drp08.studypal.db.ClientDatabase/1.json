@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8458ef460deef888a79a35a500532848",
+    "identityHash": "1a1b25a74723bbf76697059c815ae9c8",
     "entities": [
       {
         "tableName": "session",
@@ -50,7 +50,7 @@
       },
       {
         "tableName": "UserEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `startWorkingHours` INTEGER NOT NULL, `endWorkingHours` INTEGER NOT NULL, `maxNumberOfStudyHours` INTEGER NOT NULL, PRIMARY KEY(`name`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `startWorkingHours` INTEGER NOT NULL, `endWorkingHours` INTEGER NOT NULL, `maxStudyingHours` INTEGER NOT NULL, PRIMARY KEY(`name`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -71,8 +71,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "maxNumberOfStudyHours",
-            "columnName": "maxNumberOfStudyHours",
+            "fieldPath": "maxStudyingHours",
+            "columnName": "maxStudyingHours",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -172,7 +172,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8458ef460deef888a79a35a500532848')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1a1b25a74723bbf76697059c815ae9c8')"
     ]
   }
 }

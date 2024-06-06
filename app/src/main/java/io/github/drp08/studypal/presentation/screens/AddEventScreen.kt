@@ -1,215 +1,380 @@
 package io.github.drp08.studypal.presentation.screens
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SmallFloatingActionButton
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.semantics.Role.Companion.Switch
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel
-import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeConfidence
-import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeExamDate
-import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeStudyHours
-import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeSubject
-import io.github.drp08.studypal.utils.formatTime
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toJavaLocalDateTime
+import network.chaintech.ui.datepicker.WheelDatePickerView
 import network.chaintech.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.utils.DateTimePickerView
-import network.chaintech.utils.MAX
-import network.chaintech.utils.MIN
 import network.chaintech.utils.TimeFormat
 import network.chaintech.utils.WheelPickerDefaults
-import network.chaintech.utils.now
-import java.time.ZoneId
+import network.chaintech.utils.dateTimeToString
 
 object AddEventScreen : Screen {
-
     @Composable
     override fun Content() {
-        val viewModel = viewModel<AddEventViewModel>()
-        val state by viewModel.state.collectAsState()
-
-        Column {
-            SubjectNameTextField(
-                name = state.name,
-                onNameChange = { viewModel.on(ChangeSubject(it)) }
-            )
-            ExamDateDialogueBox(
-                examEpoch = state.examEpoch,
-                onDateChange = { viewModel.on(ChangeExamDate(it)) }
-            )
-            StudyHoursDropDown(
-                studyHours = state.hoursPerWeek,
-                onChange = { viewModel.on(ChangeStudyHours(it)) }
-            )
-            ConfidenceSlider(
-                confidence = state.confidenceLevel,
-                onConfidenceChange = { viewModel.on(ChangeConfidence(it)) }
-            )
-        }
-    }
-
-    @Composable
-    fun SubjectNameTextField(
-        name: String,
-        onNameChange: (String) -> Unit
-    ) {
-        OutlinedTextField(
-            value = name,
-            onValueChange = onNameChange,
-            label = { Text("Subject Name") }
-        )
-    }
-
-    // Todo: Change exam date to not include time
-    @Composable
-    fun ExamDateDialogueBox(
-        examEpoch: Long,
-        onDateChange: (Long) -> Unit
-    ) {
-        var showDateTimePicker by remember { mutableStateOf(false) }
-
-        if (showDateTimePicker) {
-            WheelDateTimePickerView(
-                modifier = Modifier
-                    .padding(top = 18.dp, bottom = 10.dp)
-                    .fillMaxWidth(),
-                showDatePicker = showDateTimePicker,
-                title = "Add Date/Time",
-                doneLabel = "Okay",
-                timeFormat = TimeFormat.HOUR_24,
-                titleStyle = LocalTextStyle.current,
-                doneLabelStyle = LocalTextStyle.current,
-                startDate = LocalDateTime.now(),
-                minDate = LocalDateTime.MIN(),
-                maxDate = LocalDateTime.MAX(),
-                yearsRange = IntRange(2024, 2300),
-                height = 170.dp,
-                rowCount = 5,
-                dateTextStyle = MaterialTheme.typography.displayMedium,
-                dateTextColor = LocalContentColor.current,
-                hideHeader = false,
-                containerColor = Color.White,
-                shape = RoundedCornerShape(10.dp),
-                dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
-                onDoneClick = {
-                    onDateChange(
-                        it.toJavaLocalDateTime()
-                            .atZone(ZoneId.systemDefault())
-                            .toEpochSecond()
-                    )
-                    showDateTimePicker = false
-                },
-                selectorProperties = WheelPickerDefaults.selectorProperties(borderColor = Color.DarkGray),
-                onDismiss = { showDateTimePicker = false }
-            )
-        }
-
-        OutlinedButton(onClick = { showDateTimePicker = true }) {
-            Text("Exam Date? (Optional)")
-        }
-        Text(
-            text = formatTime(examEpoch, "HH:mm dd-MM-yyyy"),
-            textAlign = TextAlign.Left
-        )
-    }
-
-    @Composable
-    fun StudyHoursDropDown(
-        studyHours: Int,
-        onChange: (Int) -> Unit
-    ) {
-        val expanded = remember { mutableStateOf(false) }
-
-        Box(
-            contentAlignment = Alignment.CenterStart,
-            modifier = Modifier.clickable { expanded.value = !expanded.value }
+        var checked by remember { mutableStateOf(false) }
+        var numberDatesAdded by remember { mutableStateOf(1) }
+        Column (
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = studyHours.toString())
-            Icon(
-                imageVector = Icons.Filled.ArrowDropDown,
-                contentDescription = "Amount of study hours per week?"
-            )
-            DropdownMenu(
-                expanded = expanded.value,
-                onDismissRequest = { expanded.value = false }
+            Box(
+                modifier = Modifier
+                    .animateContentSize()
+                    .height(if (checked) (320 + 50 * numberDatesAdded).dp else 200.dp)
+                    .width(320.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(3.dp)
+                    ),
+                contentAlignment = Alignment.Center,
             ) {
-                (1..9).forEach { item ->
-                    DropdownMenuItem(
-                        text = { Text(text = item.toString()) },
-                        onClick = {
-                            onChange(item)
-                            expanded.value = false
+                Column {
+                    EventNameTextField()
+                    EventDateTimeDialogueBox()
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp)
+                            .background(Color.Transparent)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Recurring event?")
+                        Switch(
+                            checked = checked,
+                            onCheckedChange = {
+                                checked = it
+                            },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                                uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                            )
+                        )
+                    }
+                    if (checked) {
+                        var i = 0
+                        Column {
+                            while (i < numberDatesAdded) {
+                                Row(
+                                    modifier = Modifier
+                                        .padding(start = 20.dp, end = 20.dp, bottom = 2.dp)
+                                        .background(Color.Transparent)
+                                        .fillMaxWidth(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    SmallFloatingActionButton(
+                                        onClick = { numberDatesAdded++ }
+                                    ) {
+                                        Icon(Icons.Filled.Add, "Add button")
+                                    }
+                                    EventDateTimeDialogueBox()
+                                }
+                                i++
+                            }
+                            RepeatsWeekDropDown()
+                            Row(
+                                modifier = Modifier
+                                    .padding(start = 20.dp, end = 20.dp)
+                                    .background(Color.Transparent)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(text = "until")
+                                UntilDateDialogueBox()
+                            }
                         }
-                    )
+                    } else {
+                        numberDatesAdded = 1
+                    }
                 }
             }
         }
     }
 
     @Composable
-    fun ConfidenceSlider(
-        confidence: Float,
-        onConfidenceChange: (Float) -> Unit
-    ) {
-        Column {
-            Slider(
-                value = confidence,
-                onValueChange = onConfidenceChange,
-                colors = SliderDefaults.colors(
-                    thumbColor = MaterialTheme.colorScheme.secondary,
-                    activeTrackColor = MaterialTheme.colorScheme.secondary,
-                    inactiveTrackColor = MaterialTheme.colorScheme.secondaryContainer
-                ),
-                steps = 9
+    fun EventNameTextField() {
+        var eventName by rememberSaveable { mutableStateOf("") }
+
+        Box (
+            modifier = Modifier
+                .padding(start = 1.dp, end = 1.dp)
+                .height(80.dp)
+                .background(Color.Transparent)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            OutlinedTextField(
+                value = eventName,
+                onValueChange = { eventName = it },
+                label = { Text(text = "Event Name", color = Color.DarkGray) },
             )
-            Text(text = (confidence * 10).toInt().toString())
         }
     }
-}
 
-@Preview(showSystemUi = true)
-@Composable
-fun AddEventScreenPreview() {
-    AddEventScreen.Content()
-}
+    @Composable
+    fun EventDateTimeDialogueBox() {
+        var showDateTimePicker by remember { mutableStateOf(false) }
+        var eventDateTime by rememberSaveable { mutableStateOf("Event Date and Time") }
 
-@Preview(showBackground = true)
-@Composable
-fun ConfidenceSliderPreview() {
-    var confidence by remember { mutableFloatStateOf(0.3f) }
+        if (showDateTimePicker) {
+            WheelDateTimePickerView(
+                modifier = Modifier
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .fillMaxWidth(),
+                showDatePicker = showDateTimePicker,
+                title = "Add Event Date & Time",
+                doneLabel = "Okay",
+                titleStyle = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                ),
+                doneLabelStyle = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(600),
+                    color = Color.Black
+                ),
+                timeFormat = TimeFormat.AM_PM,
+                yearsRange = IntRange(2024, 2300),
+                height = 180.dp,
+                rowCount = 5,
+                dateTextStyle = TextStyle(
+                    fontWeight = FontWeight(400)
+                ),
+                dragHandle = {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .width(100.dp)
+                            .clip(CircleShape),
+                        thickness = 4.dp,
+                        color = Color.DarkGray
+                    )
+                },
+                dateTextColor = Color.DarkGray,
+                hideHeader = false,
+                containerColor = Color.White,
+                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+                onDoneClick = {
+                    eventDateTime = ("Event Date Time: ")
+                        .plus(dateTimeToString(it, "hh:mm a dd-MM-yyyy"))
+                    showDateTimePicker = false },
+                selectorProperties = WheelPickerDefaults.selectorProperties(
+                    borderColor = Color.DarkGray
+                ),
+                onDismiss = { showDateTimePicker = false }
+            )
+        }
 
-    AddEventScreen.ConfidenceSlider(
-        confidence = confidence,
-        onConfidenceChange = { confidence = it }
-    )
+        Box(
+            modifier = Modifier
+                .padding(start = 20.dp, end = 10.dp)
+                .background(Color.Transparent)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            TextButton(
+                onClick = { showDateTimePicker = true },
+                modifier = Modifier
+                    .border(
+                        width = 1.dp,
+                        color = Color.DarkGray,
+                        shape = RoundedCornerShape(5.dp)
+                    )
+                    .padding()
+            ) {
+                Text(text = eventDateTime, color = Color.DarkGray)
+            }
+        }
+    }
+
+    @Composable
+    fun RepeatsWeekDropDown() {
+        val numberOfWeeksToChoose = arrayOf("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")
+        val expanded = remember { mutableStateOf(false) }
+        var numberWeeks by rememberSaveable { mutableStateOf(numberOfWeeksToChoose[0]) }
+
+        Row (
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier
+                .padding(start = 20.dp, end = 20.dp, bottom = 6.dp, top = 6.dp)
+                .background(Color.Transparent)
+                .fillMaxWidth(),
+        ) {
+            Text(
+                text = "Repeats every ",
+            )
+            Box(
+                contentAlignment = Alignment.CenterStart,
+                modifier = Modifier
+                    .size(40.dp, 32.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .border(
+                        width = 1.dp,
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(5.dp)
+                    )
+                    .clickable { expanded.value = !expanded.value }
+            ) {
+                Text(
+                    text = numberWeeks,
+                    modifier = Modifier.padding(start = 8.dp)
+                )
+                Icon (
+                    Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .fillMaxHeight()
+                )
+                DropdownMenu(
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false }
+                ) {
+                    numberOfWeeksToChoose.forEach { item ->
+                        DropdownMenuItem(
+                            text = { Text(text = item) },
+                            onClick = {
+                                numberWeeks = item
+                                expanded.value = false
+                            },
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                }
+            }
+            Text(
+                text = " weeks"
+            )
+        }
+    }
+
+    @Composable
+    fun UntilDateDialogueBox() {
+        var showDatePicker by remember { mutableStateOf(false) }
+        var untilDate by rememberSaveable { mutableStateOf("Date") }
+
+        if (showDatePicker) {
+            WheelDatePickerView(
+                modifier = Modifier
+                    .padding(top = 10.dp, bottom = 10.dp)
+                    .fillMaxWidth(),
+                showDatePicker = showDatePicker,
+                title = "Add Date",
+                doneLabel = "Okay",
+                titleStyle = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                ),
+                doneLabelStyle = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight(600),
+                    color = Color.Black
+                ),
+                yearsRange = IntRange(2024, 2300),
+                height = 180.dp,
+                rowCount = 5,
+                dateTextStyle = TextStyle(
+                    fontWeight = FontWeight(400)
+                ),
+                dragHandle = {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .width(100.dp)
+                            .clip(CircleShape),
+                        thickness = 4.dp,
+                        color = Color.DarkGray
+                    )
+                },
+                dateTextColor = Color.DarkGray,
+                hideHeader = false,
+                containerColor = Color.White,
+                shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
+                dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
+                onDoneClick = {
+                    untilDate = ("Date: ").plus(it.toString())
+                    showDatePicker = false },
+                selectorProperties = WheelPickerDefaults.selectorProperties(
+                    borderColor = Color.DarkGray
+                ),
+                onDismiss = { showDatePicker = false }
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .padding(start = 20.dp, end = 10.dp)
+                .background(Color.Transparent)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            TextButton(
+                onClick = { showDatePicker = true },
+                modifier = Modifier
+                    .border(
+                        width = 1.dp,
+                        color = Color.DarkGray,
+                        shape = RoundedCornerShape(5.dp)
+                    )
+                    .padding()
+            ) {
+                Text(text = untilDate, color = Color.DarkGray)
+            }
+        }
+    }
 }

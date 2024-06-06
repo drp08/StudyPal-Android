@@ -97,7 +97,6 @@ object AddSubjectScreen : Screen {
         }
     }
 
-    // Todo: Change exam date to not include time
     @Composable
     fun ExamDateDialogueBox() {
         var showDatePicker by remember { mutableStateOf(false) }

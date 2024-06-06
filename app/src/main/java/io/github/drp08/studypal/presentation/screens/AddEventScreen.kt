@@ -1,10 +1,12 @@
 package io.github.drp08.studypal.presentation.screens
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,7 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -27,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.Role.Companion.Switch
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,6 +47,7 @@ import network.chaintech.utils.dateTimeToString
 object AddEventScreen : Screen {
     @Composable
     override fun Content() {
+        var checked by remember { mutableStateOf(false) }
         Column (
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -48,7 +55,9 @@ object AddEventScreen : Screen {
         ) {
             Box(
                 modifier = Modifier
-                    .size(320.dp, 150.dp)
+                    .animateContentSize()
+                    .height(if (checked) 400.dp else 200.dp)
+                    .width(320.dp)
                     .border(
                         width = 1.dp,
                         color = Color.LightGray,
@@ -59,6 +68,31 @@ object AddEventScreen : Screen {
                 Column {
                     EventNameTextField()
                     EventDateTimeDialogueBox()
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp)
+                            .background(Color.Transparent)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "Recurring event?")
+                        Switch(
+                            checked = checked,
+                            onCheckedChange = {
+                                checked = it
+                            },
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = MaterialTheme.colorScheme.primary,
+                                checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                                uncheckedThumbColor = MaterialTheme.colorScheme.secondary,
+                                uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer,
+                            )
+                        )
+                    }
+                    if (checked) {
+
+                    }
                 }
             }
         }
@@ -161,5 +195,4 @@ object AddEventScreen : Screen {
             }
         }
     }
-
 }

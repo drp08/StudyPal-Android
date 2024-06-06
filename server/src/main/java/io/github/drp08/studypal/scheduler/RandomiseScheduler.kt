@@ -13,14 +13,15 @@ class RandomiseScheduler : Scheduler {
         fixedSessions: List<Session>,
         user: User
     ): List<Session> {
+        val millisecondsInHour = 3600000
         val sessions: MutableList<Session> = mutableListOf<Session>().apply {
             addAll(fixedSessions)
         }
 
         // to ensure that a time isn't 'double-booked'
-        val scheduledHours: MutableList<Int> = mutableListOf(0)
+        val scheduledHours: MutableList<Long> = mutableListOf(0)
 
-        for (studyHours in 0..user.maxStudyHours) {
+        for (studyHours in 0..user.maxStudyingHours) {
             // chooses a random subject
             val subject: Subject = subjects.random()
 
@@ -32,9 +33,9 @@ class RandomiseScheduler : Scheduler {
             val topic: Topic = subjectTopics.random()
 
             // chooses a random start time that hasn't already been scheduled for
-            var time = 0
+            var time: Long = 0 // epoch time
             while (time in scheduledHours) {
-                time = Random.nextInt(user.startWorkingHours, user.endWorkingHours)
+                time = Random.nextInt(user.startWorkingHours.toInt(), user.endWorkingHours.toInt()).toLong()
             }
             scheduledHours.add(time)
 
@@ -44,7 +45,7 @@ class RandomiseScheduler : Scheduler {
                     sessionId = Random.nextInt(1, Int.MAX_VALUE),
                     topic = topic.name,
                     startTime = time,
-                    endTime = time + 60,
+                    endTime = time + millisecondsInHour,
                 )
 
             sessions.add(session)

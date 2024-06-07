@@ -26,7 +26,7 @@ val client by lazy {
             level = LogLevel.ALL
         }
         defaultRequest {
-            host = "9d61-2a02-6b6f-f0c5-d400-e394-240a-1849-c9f7.ngrok-free.app" // TODO this needs to change
+            host = "146.169.169.174" // TODO this needs to change
             port = 80
             url {
                 protocol = URLProtocol.HTTPS

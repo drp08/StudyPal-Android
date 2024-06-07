@@ -40,14 +40,14 @@ class SchedulingRepositoryImpl(
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
         val users = userDao.getUser()
-        val res = client.get("https://5b06-2a02-6b6f-f0c5-d400-e394-240a-1849-c9f7.ngrok-free.app//")
+        val res = client.get("http://146.169.169.174/")
         Log.d(TAG, "rescheduleAllSessions: get/ ${res.bodyAsText()}")
         try {
             subjects.collectLatest { subs ->
                 topics.collectLatest { tops ->
                     sessions.collectLatest { sess ->
                         users.collectLatest { user ->
-                            val response = client.post("https://5b06-2a02-6b6f-f0c5-d400-e394-240a-1849-c9f7.ngrok-free.app/schedule") {
+                            val response = client.post("http://146.169.169.174/schedule") {
                                 val body1 = Json.encodeToString(
                                     PostBody(
                                         subs.map(SubjectEntity::toSerializable).toTypedArray(),

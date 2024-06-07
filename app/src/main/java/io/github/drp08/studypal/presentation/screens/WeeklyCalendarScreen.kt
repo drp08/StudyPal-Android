@@ -60,9 +60,9 @@ object WeeklyCalendarScreen : Screen {
             Spacer(modifier = Modifier.height(16.dp))
 
             when (currentView) {
-                CalendarView.DAILY -> DailyCalendarScreen.Content()
+                CalendarView.DAILY -> DailyCalendarScreen.DailyView()
                 CalendarView.WEEKLY -> WeeklyView()
-                CalendarView.MONTHLY -> MonthlyCalendarScreen.Content()
+                CalendarView.MONTHLY -> MonthlyCalendarScreen.MonthlyView()
             }
         }
     }

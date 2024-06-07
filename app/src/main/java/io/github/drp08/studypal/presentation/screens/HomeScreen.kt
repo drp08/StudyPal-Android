@@ -41,8 +41,9 @@ object HomeScreen : Screen {
     override fun Content() {
         val subjectDao = LocalDatabase.current.subjectDao
         val sessionDao = LocalDatabase.current.sessionDao
+        val userDao = LocalDatabase.current.userDao
         val viewModel = viewModel {
-            HomeViewModel(SchedulingRepositoryImpl(client), subjectDao, sessionDao)
+            HomeViewModel(subjectDao, sessionDao, userDao)
         }
         val items by viewModel.items.collectAsState()
         val currentTime = System.currentTimeMillis()

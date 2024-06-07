@@ -1,24 +1,24 @@
 package io.github.drp08.studypal.routes
 
-import io.github.drp08.studypal.database.Database
-import io.github.drp08.studypal.domain.models.Session
+import io.github.drp08.studypal.domain.models.PostBody
+import io.github.drp08.studypal.scheduler.RandomiseScheduler
+import io.github.drp08.studypal.scheduler.Scheduler
 import io.ktor.server.application.call
-import io.ktor.server.resources.get
+import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.post
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 fun Route.scheduleRouting() {
-    get<Schedule> {
-        val oneHour = 60 * 60
-
-        val session = Session(
-            sessionId = 1,
-            topic = it.name,
-            startTime = 10000,
-            endTime = 16000
-        )
-
-        Database.startTime += oneHour
-        call.respond(session)
+    post("/schedule") {
+        val scheduler: Scheduler = RandomiseScheduler()
+        val str = call.receive<String>()
+        println(str)
+        val body = Json.decodeFromString<PostBody>(str)
+        println(body)
+        val newSessions = scheduler.schedule(body.subjects.toList(), body.topics.toList(), body.sessions.toList(), body.user)
+        call.respond(Json.encodeToString(newSessions))
     }
 }

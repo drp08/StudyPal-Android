@@ -13,5 +13,8 @@ interface SubjectDao {
     suspend fun upsertSubject(subjectEntity: SubjectEntity)
 
     @Query("SELECT * from subject JOIN topic ON subject.name = topic.subject")
-    fun getAllSubjects(): Flow<Map<SubjectEntity, List<TopicEntity>>>
+    fun getAllSubjectsWithTopics(): Flow<Map<SubjectEntity, List<TopicEntity>>>
+
+    @Query("SELECT * from subject")
+    fun getAllSubjects(): Flow<List<SubjectEntity>>
 }

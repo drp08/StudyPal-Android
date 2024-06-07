@@ -6,8 +6,6 @@ import io.github.drp08.studypal.domain.models.Topic
 import io.github.drp08.studypal.domain.models.User
 import java.time.LocalDate
 import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
 import kotlin.random.Random
 
 class RandomiseScheduler : Scheduler {
@@ -17,12 +15,13 @@ class RandomiseScheduler : Scheduler {
         fixedSessions: List<Session>,
         user: User
     ): List<Session> {
-        val millisecondsInHour = 60*60*10*10*10 // 3600 seconds * 10^3
+        val millisecondsInHour = 60 * 60 * 10 * 10 * 10 // 3600 seconds * 10^3
         val sessions: MutableList<Session> = mutableListOf<Session>().apply {
             addAll(fixedSessions)
         }
 
-        val startOfDay = LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toEpochSecond()
+        val startOfDay =
+            LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toEpochSecond()
 
         // to ensure that a time isn't 'double-booked'
         val scheduledHours: MutableList<Long> = mutableListOf(startOfDay)
@@ -39,15 +38,15 @@ class RandomiseScheduler : Scheduler {
             val topic: Topic = subjectTopics.random()
 
             // chooses a random start time that hasn't already been scheduled for
-            val startTime: Long = startOfDay + user.startWorkingHours // epoch time from the start of the day to the start of the working hour
+            val startTime: Long =
+                startOfDay + user.startWorkingHours // epoch time from the start of the day to the start of the working hour
             val endTime: Long = startOfDay + user.endWorkingHours
 
             var time: Long = startOfDay // epoch time
 
             while (time in scheduledHours) {
                 // generate a random epoch time between
-                time = Random.nextLong(startTime,endTime)
-//                time = Random.nextInt(user.startWorkingHours.toInt(), user.endWorkingHours.toInt()).toLong()
+                time = Random.nextLong(startTime, endTime)
             }
             scheduledHours.add(time)
 

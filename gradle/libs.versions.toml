@@ -57,6 +57,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 date-time-picker = { module = "network.chaintech:kmp-date-time-picker", version.ref = "dateTimePicker" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
+ktor-client-logging = {module = "io.ktor:ktor-client-logging", version.ref = "ktor"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

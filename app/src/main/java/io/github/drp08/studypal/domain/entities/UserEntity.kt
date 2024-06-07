@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import io.github.drp08.studypal.domain.models.User
 
-@Entity
+@Entity(tableName = "user")
 data class UserEntity(
     @PrimaryKey
     val name: String,

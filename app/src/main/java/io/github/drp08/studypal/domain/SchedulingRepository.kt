@@ -1,7 +1,7 @@
 package io.github.drp08.studypal.domain
 
-import io.github.drp08.studypal.domain.models.Session
+import kotlinx.coroutines.flow.Flow
 
 interface SchedulingRepository {
-    suspend fun getScheduleForSubject(subject: String): Session
+    suspend fun rescheduleAllSessions(): Flow<Boolean>
 }

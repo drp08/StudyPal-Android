@@ -13,7 +13,8 @@ import io.github.drp08.studypal.domain.models.PostBody
 import io.github.drp08.studypal.domain.models.Session
 import io.github.drp08.studypal.routes.Schedule
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.resources.post
+import io.ktor.client.request.get
+import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
@@ -39,13 +40,14 @@ class SchedulingRepositoryImpl(
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
         val users = userDao.getUser()
-
+        val res = client.get("https://5b06-2a02-6b6f-f0c5-d400-e394-240a-1849-c9f7.ngrok-free.app//")
+        Log.d(TAG, "rescheduleAllSessions: get/ ${res.bodyAsText()}")
         try {
             subjects.collectLatest { subs ->
                 topics.collectLatest { tops ->
                     sessions.collectLatest { sess ->
                         users.collectLatest { user ->
-                            val response = client.post(Schedule()) {
+                            val response = client.post("https://5b06-2a02-6b6f-f0c5-d400-e394-240a-1849-c9f7.ngrok-free.app/schedule") {
                                 val body1 = Json.encodeToString(
                                     PostBody(
                                         subs.map(SubjectEntity::toSerializable).toTypedArray(),

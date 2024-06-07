@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
+    implementation(libs.ktor.client.logging)
 
     implementation(libs.date.time.picker)
     implementation(libs.lifecycle.viewmodel.compose)

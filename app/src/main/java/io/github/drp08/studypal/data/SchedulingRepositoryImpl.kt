@@ -13,17 +13,12 @@ import io.github.drp08.studypal.domain.models.PostBody
 import io.github.drp08.studypal.domain.models.Session
 import io.github.drp08.studypal.routes.Schedule
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
-import io.ktor.client.request.forms.MultiPartFormDataContent
-import io.ktor.client.request.forms.formData
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -60,11 +55,11 @@ class SchedulingRepositoryImpl(
                                     )
                                 )
                                 Log.d(TAG, "rescheduleAllSessions: $body1")
-                                setBody(
-                                    body1
-
-                                )
+                                setBody(body1)
                             }
+                            Log.d(TAG, "rescheduleAllSessions: RequestObject: ${response.call.request}")
+                            Log.d(TAG, "rescheduleAllSessions: ResponseObject: ${response.call.response}")
+                            Log.d(TAG, "rescheduleAllSessions: Attributes: ${response.call.attributes}")
                             if (response.status.isSuccess()) {
                                 send(true)
                                 val body = response.bodyAsText()

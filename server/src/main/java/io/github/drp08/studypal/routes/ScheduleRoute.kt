@@ -5,14 +5,14 @@ import io.github.drp08.studypal.scheduler.RandomiseScheduler
 import io.github.drp08.studypal.scheduler.Scheduler
 import io.ktor.server.application.call
 import io.ktor.server.request.receive
-import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.post
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 fun Route.scheduleRouting() {
-    post<Schedule> {
+    post("/schedule") {
         val scheduler: Scheduler = RandomiseScheduler()
         val str = call.receive<String>()
         println(str)

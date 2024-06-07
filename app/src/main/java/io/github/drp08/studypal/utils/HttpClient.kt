@@ -17,7 +17,7 @@ val client by lazy {
             json()
         }
         defaultRequest {
-            host = "e110-2a02-6b6f-f0c5-d400-e394-240a-1849-c9f7.ngrok-free.app" // TODO this needs to change
+            host = "3a54-2a02-6b6f-f0c5-d400-e394-240a-1849-c9f7.ngrok-free.app" // TODO this needs to change
             port = 80
             url {
                 protocol = URLProtocol.HTTP

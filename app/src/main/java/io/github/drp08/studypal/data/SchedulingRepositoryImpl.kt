@@ -16,11 +16,16 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class SchedulingRepositoryImpl(
     private val client: HttpClient,
@@ -47,18 +52,24 @@ class SchedulingRepositoryImpl(
                         users.collectLatest { user ->
                             val response = client.post(Schedule()) {
                                 setBody(
-                                    PostBody(
-                                        subs.map(SubjectEntity::toSerializable),
-                                        sess.map(SessionEntity::toSerializable),
-                                        tops.map(TopicEntity::toSerializable),
-                                        user.toSerializable()
+                                    Json.encodeToString(
+                                        PostBody(
+                                            subs.map(SubjectEntity::toSerializable).toTypedArray(),
+                                            sess.map(SessionEntity::toSerializable).toTypedArray(),
+                                            tops.map(TopicEntity::toSerializable).toTypedArray(),
+                                            user.toSerializable()
+                                        )
                                     )
 
                                 )
                             }
                             send(response.status.isSuccess())
-
-                            response.body<List<Session>>().forEach { sessionResponse ->
+                            val body = response.bodyAsText()
+                            Json.decodeFromString<List<Session>>(body)
+                                .also {
+                                    Log.d(TAG, "rescheduleAllSessions: $it")
+                                }
+                                .forEach { sessionResponse ->
                                 sessionDao.upsertSession(
                                     SessionEntity.fromSerializable(
                                         sessionResponse

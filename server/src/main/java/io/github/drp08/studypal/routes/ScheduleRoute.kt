@@ -8,12 +8,15 @@ import io.ktor.server.request.receive
 import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 fun Route.scheduleRouting() {
     post<Schedule> {
         val scheduler: Scheduler = RandomiseScheduler()
-        val body = call.receive<PostBody>()
-        val newSessions = scheduler.schedule(body.subjects, body.topics, body.sessions, body.user)
-        call.respond(newSessions)
+        val str = call.receive<String>()
+        val body = Json.decodeFromString<PostBody>(str)
+        val newSessions = scheduler.schedule(body.subjects.toList(), body.topics.toList(), body.sessions.toList(), body.user)
+        call.respond(Json.encodeToString(newSessions))
     }
 }

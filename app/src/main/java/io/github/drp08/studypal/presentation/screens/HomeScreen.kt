@@ -33,6 +33,7 @@ import io.github.drp08.studypal.presentation.components.fab.FabItem
 import io.github.drp08.studypal.presentation.viewmodels.HomeViewModel
 import io.github.drp08.studypal.utils.LocalDatabase
 import io.github.drp08.studypal.utils.client
+import io.github.drp08.studypal.utils.formatTime
 import kotlinx.coroutines.delay
 
 object HomeScreen : Screen {
@@ -140,13 +141,15 @@ object HomeScreen : Screen {
                             LazyColumn(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                items(items.drop(1)) {
-                                    Text(text = "Hi")
+                                items(items.drop(1)) { item ->
+                                    val startFormat = formatTime(item.session.startTime + 3 * 60* 60 * 1000, "HH:mm a")
+                                    val endFormat = formatTime(item.session.endTime + 3 * 60* 60 * 1000 , "HH:mm a")
+                                    Text(text = "${item.subject.name} : ${item.topic.name} from $startFormat to $endFormat")
                                 }
                             }
                         }
                     }
-
+g
             }
         }
     }

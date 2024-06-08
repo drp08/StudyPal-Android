@@ -4,6 +4,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.github.drp08.studypal.utils.HttpConstants.HOSTNAME
+import io.github.drp08.studypal.utils.HttpConstants.PORT
+import io.github.drp08.studypal.utils.HttpConstants.PROTOCOL
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -15,7 +18,6 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.request.headers
 import io.ktor.http.HttpHeaders
-import io.ktor.http.URLProtocol
 import io.ktor.serialization.kotlinx.json.json
 import javax.inject.Singleton
 
@@ -35,11 +37,7 @@ object HttpModule {
                 level = LogLevel.ALL
             }
             defaultRequest {
-                host = "146.169.169.174" // TODO this needs to change
-                port = 80
-                url {
-                    protocol = URLProtocol.HTTPS
-                }
+                url("$PROTOCOL://$HOSTNAME:$PORT")
                 headers {
                     append(HttpHeaders.ContentType,"application/json")
                 }

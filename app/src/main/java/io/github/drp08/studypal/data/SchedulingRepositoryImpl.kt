@@ -42,14 +42,14 @@ class SchedulingRepositoryImpl @Inject constructor(
         val sessions = sessionDao.getAllSessions()
         val users = userDao.getUser()
         Log.d(TAG, "rescheduleAllSessions() called")
-        val res = client.get("http://146.169.169.174/")
-        Log.d(TAG, "rescheduleAllSessions: get/ ${res.bodyAsText()}")
+        val res = client.get("/")
+        Log.d(TAG, "rescheduleAllSessions: get / ${res.bodyAsText()}")
         try {
             subjects.collectLatest { subs ->
                 topics.collectLatest { tops ->
                     sessions.collectLatest { sess ->
                         users.collectLatest { user ->
-                            val response = client.post("http://146.169.169.174/schedule") {
+                            val response = client.post("/schedule") {
                                 val body1 = Json.encodeToString(
                                     PostBody(
                                         subs.map(SubjectEntity::toSerializable).toTypedArray(),

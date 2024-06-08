@@ -1,6 +1,7 @@
 package io.github.drp08.studypal.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.domain.entities.SessionEntity
 
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,9 +11,11 @@ import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import javax.inject.Inject
 
 
-class WeeklyViewModel : ViewModel() {
+@HiltViewModel
+class WeeklyViewModel @Inject constructor(): ViewModel() {
     private val _currentDate =
         MutableStateFlow(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
     val currentDate: StateFlow<LocalDate> = _currentDate

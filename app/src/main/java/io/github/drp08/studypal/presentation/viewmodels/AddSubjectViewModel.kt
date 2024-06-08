@@ -5,6 +5,7 @@ import androidx.annotation.IntRange
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.navigator.Navigator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.db.daos.TopicDao
 import io.github.drp08.studypal.domain.SchedulingRepository
@@ -18,8 +19,10 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import javax.inject.Inject
 
-class AddSubjectViewModel(
+@HiltViewModel
+class AddSubjectViewModel @Inject constructor(
     private val subjectDao: SubjectDao,
     private val topicDao: TopicDao,
     private val schedulingRepository: SchedulingRepository,

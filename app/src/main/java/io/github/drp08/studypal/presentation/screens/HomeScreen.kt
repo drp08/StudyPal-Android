@@ -22,17 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.github.drp08.studypal.data.SchedulingRepositoryImpl
 import io.github.drp08.studypal.presentation.components.fab.ExpandableFab
 import io.github.drp08.studypal.presentation.components.fab.FabItem
 import io.github.drp08.studypal.presentation.viewmodels.HomeViewModel
-import io.github.drp08.studypal.utils.LocalDatabase
-import io.github.drp08.studypal.utils.client
 import io.github.drp08.studypal.utils.formatTime
 import kotlinx.coroutines.delay
 
@@ -40,12 +37,7 @@ object HomeScreen : Screen {
 
     @Composable
     override fun Content() {
-        val subjectDao = LocalDatabase.current.subjectDao
-        val sessionDao = LocalDatabase.current.sessionDao
-        val userDao = LocalDatabase.current.userDao
-        val viewModel = viewModel {
-            HomeViewModel(subjectDao, sessionDao, userDao)
-        }
+        val viewModel = hiltViewModel<HomeViewModel>()
         val items by viewModel.items.collectAsState()
         val currentTime = System.currentTimeMillis()
 
@@ -142,8 +134,14 @@ object HomeScreen : Screen {
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 items(items.drop(1)) { item ->
-                                    val startFormat = formatTime(item.session.startTime + 3 * 60* 60 * 1000, "HH:mm a")
-                                    val endFormat = formatTime(item.session.endTime + 3 * 60* 60 * 1000 , "HH:mm a")
+                                    val startFormat = formatTime(
+                                        item.session.startTime + 3 * 60 * 60 * 1000,
+                                        "HH:mm a"
+                                    )
+                                    val endFormat = formatTime(
+                                        item.session.endTime + 3 * 60 * 60 * 1000,
+                                        "HH:mm a"
+                                    )
                                     Text(text = "${item.subject.name} : ${item.topic.name} from $startFormat to $endFormat")
                                 }
                             }
@@ -190,7 +188,7 @@ object HomeScreen : Screen {
         modifier: Modifier = Modifier
     ) {
         Button(
-            onClick = { navigator.push(PomodoroScreen(startTime, endTime) )},
+            onClick = { navigator.push(PomodoroScreen(startTime, endTime)) },
             modifier = modifier
         ) {
             Text(text = "Check-in")

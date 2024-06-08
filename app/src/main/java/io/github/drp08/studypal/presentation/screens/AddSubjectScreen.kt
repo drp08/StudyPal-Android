@@ -44,19 +44,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import io.github.drp08.studypal.data.SchedulingRepositoryImpl
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel
+import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.AddSubject
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeConfidence
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeExamDate
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeStudyHours
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeSubject
-import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.AddSubject
-import io.github.drp08.studypal.utils.LocalDatabase
-import io.github.drp08.studypal.utils.client
 import io.github.drp08.studypal.utils.formatTime
 import kotlinx.datetime.toJavaLocalDate
 import network.chaintech.ui.datepicker.WheelDatePickerView
@@ -67,20 +64,9 @@ import java.time.ZoneId
 object AddSubjectScreen : Screen {
     @Composable
     override fun Content() {
-        val subjectDao = LocalDatabase.current.subjectDao
-        val topicsDao = LocalDatabase.current.topicDao
-        val sessionDao = LocalDatabase.current.sessionDao
-        val user = LocalDatabase.current.userDao
         val navigator = LocalNavigator.currentOrThrow
-        val repository = SchedulingRepositoryImpl(client, subjectDao, topicsDao, sessionDao, user)
 
-        val viewModel = viewModel {
-            AddSubjectViewModel(
-                subjectDao = subjectDao,
-                topicDao = topicsDao,
-                schedulingRepository = repository
-            )
-        }
+        val viewModel = hiltViewModel<AddSubjectViewModel>()
         val state by viewModel.state.collectAsState()
 
         Column(

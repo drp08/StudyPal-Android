@@ -22,8 +22,9 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import javax.inject.Inject
 
-class SchedulingRepositoryImpl(
+class SchedulingRepositoryImpl @Inject constructor(
     private val client: HttpClient,
     private val subjectDao: SubjectDao,
     private val topicDao: TopicDao,
@@ -40,6 +41,7 @@ class SchedulingRepositoryImpl(
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
         val users = userDao.getUser()
+        Log.d(TAG, "rescheduleAllSessions() called")
         val res = client.get("http://146.169.169.174/")
         Log.d(TAG, "rescheduleAllSessions: get/ ${res.bodyAsText()}")
         try {

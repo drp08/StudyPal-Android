@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-//    alias(libs.plugins.google.dagger.hilt.android)
+    alias(libs.plugins.google.dagger.hilt.android)
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.androidx.room)
@@ -79,9 +79,9 @@ dependencies {
 
     implementation(libs.compose.navigation)
 
-//    implementation(libs.hilt)
-//    kapt(libs.hilt.compiler)
-//    implementation(libs.hilt.compose)
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.compose)
 
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
@@ -97,7 +97,3 @@ dependencies {
     implementation(libs.date.time.picker)
     implementation(libs.lifecycle.viewmodel.compose)
 }
-
-//kapt {
-//    correctErrorTypes = true
-//}

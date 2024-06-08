@@ -11,9 +11,7 @@ import io.github.drp08.studypal.domain.entities.SubjectEntity
 import io.github.drp08.studypal.domain.entities.TopicEntity
 import io.github.drp08.studypal.domain.models.PostBody
 import io.github.drp08.studypal.domain.models.Session
-import io.github.drp08.studypal.routes.Schedule
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -41,9 +39,6 @@ class SchedulingRepositoryImpl @Inject constructor(
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
         val users = userDao.getUser()
-        Log.d(TAG, "rescheduleAllSessions() called")
-        val res = client.get("/")
-        Log.d(TAG, "rescheduleAllSessions: get / ${res.bodyAsText()}")
         try {
             subjects.collectLatest { subs ->
                 topics.collectLatest { tops ->
@@ -58,20 +53,12 @@ class SchedulingRepositoryImpl @Inject constructor(
                                         user.toSerializable()
                                     )
                                 )
-                                Log.d(TAG, "rescheduleAllSessions: $body1")
                                 setBody(body1)
                             }
-                            Log.d(TAG, "rescheduleAllSessions: RequestObject: ${response.call.request}")
-                            Log.d(TAG, "rescheduleAllSessions: ResponseObject: ${response.call.response}")
-                            Log.d(TAG, "rescheduleAllSessions: Attributes: ${response.call.attributes}")
                             if (response.status.isSuccess()) {
                                 send(true)
                                 val body = response.bodyAsText()
-                                Log.d(TAG, "rescheduleAllSessions: $body")
                                 Json.decodeFromString<List<Session>>(body)
-                                    .also {
-                                        Log.d(TAG, "rescheduleAllSessions: $it")
-                                    }
                                     .forEach { sessionResponse ->
                                         sessionDao.upsertSession(
                                             SessionEntity.fromSerializable(
@@ -80,7 +67,11 @@ class SchedulingRepositoryImpl @Inject constructor(
                                         )
                                     }
                             } else {
-                                Log.e(TAG, "rescheduleAllSessions: ${response.bodyAsText()}", null)
+                                Log.e(
+                                    TAG,
+                                    "rescheduleAllSessions: Response status is not successful. Body: ${response.bodyAsText()}",
+                                    null
+                                )
                             }
                         }
                     }

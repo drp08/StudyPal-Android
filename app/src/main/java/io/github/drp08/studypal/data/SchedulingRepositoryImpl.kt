@@ -38,11 +38,9 @@ class SchedulingRepositoryImpl @Inject constructor(
         val subjects = subjectDao.getAllSubjects()
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
-        val user = userSession.getCurrentUser().first() ?: kotlin.run {
-            Log.e(TAG, "rescheduleAllSessions: User object is null!")
-            throw IllegalStateException("User object is null!")
-        }
         try {
+            val user = userSession.getCurrentUser().first()
+                ?: throw IllegalStateException("User object is null!")
             val response = client.post("/schedule") {
                 val body1 = Json.encodeToString(
                     PostBody(

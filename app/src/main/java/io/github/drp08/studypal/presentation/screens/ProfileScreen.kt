@@ -8,9 +8,6 @@ import io.github.drp08.studypal.MainActivity
 object ProfileScreen : Screen {
     @Composable
     override fun Content() {
-        val sharedPrefs = MainActivity.prefs
-        sharedPrefs.getString("name","Default")?.let { Text(text = "Welcome $it") }
-
-//        Text(text = "Profile Screen")
+        Text(text = "Profile Screen")
     }
 }

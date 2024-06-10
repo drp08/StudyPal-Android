@@ -1,5 +1,3 @@
 <resources>
     <string name="app_name">StudyPal-Android</string>
-    <string name="app_shared_prefs">com.pp.sharedprefs.PREFERENCES_FILE_KEY</string>
-    <string name="first_time_opening">FIRST_TIME_OPENING_KEY</string>
 </resources>

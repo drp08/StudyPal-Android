@@ -23,7 +23,6 @@ class RegistrationViewModel @Inject constructor(
     var workingHoursStart by mutableStateOf(7 * 60 * 60 * 1000L)
     var workingHoursEnd by mutableStateOf(16 * 60 * 60 * 1000L)
     var hoursPerDay by mutableStateOf(6)
-    var sharedPrefs = MainActivity.prefs
 
     fun onNameChange(newValue: String) {
         name = newValue
@@ -52,13 +51,6 @@ class RegistrationViewModel @Inject constructor(
                 endWorkingHours = workingHoursEnd,
                 maxStudyingHours = hoursPerDay
             ))
-            with(sharedPrefs.edit()){
-                putString("name",name)
-                putLong("startWorkingHours",workingHoursStart)
-                putLong("endWorkingHours",workingHoursEnd)
-                putInt("maxStudyingHours",hoursPerDay)
-                apply()
-            }
 
             navigator.push(HomeScreen)
         }

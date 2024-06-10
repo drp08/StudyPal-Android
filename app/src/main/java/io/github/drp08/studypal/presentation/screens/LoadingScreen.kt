@@ -19,7 +19,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import io.github.drp08.studypal.presentation.navigation.HomeNavigator
 import io.github.drp08.studypal.presentation.viewmodels.LoadingViewModel
 
-object LoadingScreen : Screen {
+data object LoadingScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel = hiltViewModel<LoadingViewModel>()

@@ -61,7 +61,7 @@ import network.chaintech.utils.DateTimePickerView
 import network.chaintech.utils.WheelPickerDefaults
 import java.time.ZoneId
 
-object AddSubjectScreen : Screen {
+data object AddSubjectScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow

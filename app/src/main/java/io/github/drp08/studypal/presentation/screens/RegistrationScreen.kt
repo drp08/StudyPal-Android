@@ -45,7 +45,7 @@ import network.chaintech.utils.DateTimePickerView
 import network.chaintech.utils.TimeFormat
 import network.chaintech.utils.WheelPickerDefaults
 
-object RegistrationScreen : Screen {
+data object RegistrationScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel = hiltViewModel<RegistrationViewModel>()

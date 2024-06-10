@@ -53,7 +53,7 @@ import network.chaintech.utils.TimeFormat
 import network.chaintech.utils.WheelPickerDefaults
 import network.chaintech.utils.dateTimeToString
 
-object AddEventScreen : Screen {
+data object AddEventScreen : Screen {
     @Composable
     override fun Content() {
         var checked by remember { mutableStateOf(false) }

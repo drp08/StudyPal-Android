@@ -7,7 +7,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.MainActivity
 import io.github.drp08.studypal.presentation.viewmodels.ProfileViewModel
 
-object ProfileScreen : Screen {
+data object ProfileScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel = hiltViewModel<ProfileViewModel>()

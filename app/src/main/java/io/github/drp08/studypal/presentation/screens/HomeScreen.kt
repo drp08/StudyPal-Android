@@ -33,7 +33,7 @@ import io.github.drp08.studypal.presentation.viewmodels.HomeViewModel
 import io.github.drp08.studypal.utils.formatTime
 import kotlinx.coroutines.delay
 
-object HomeScreen : Screen {
+data object HomeScreen : Screen {
 
     @Composable
     override fun Content() {

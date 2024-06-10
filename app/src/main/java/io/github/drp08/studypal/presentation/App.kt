@@ -20,13 +20,12 @@ import io.github.drp08.studypal.presentation.theme.StudyPalAndroidTheme
 
 @Composable
 fun App() {
-  val firstTime = MainActivity.firstTimeOpening
-    var screen: Screen = HomeScreen
-    if (firstTime){
-        screen = RegistrationScreen
+    var startScreen: Screen = HomeScreen
+    if (MainActivity.firstTimeOpening){
+        startScreen = RegistrationScreen
     }
     StudyPalAndroidTheme(darkTheme = false) {
-        Navigator(screen = screen) { navigator ->
+        Navigator(screen = startScreen) { navigator ->
             if (navigator.lastItem is HomeScreen) {
                 Navigator(BottomNavItem.Home.screen) { _ ->
                     Scaffold(

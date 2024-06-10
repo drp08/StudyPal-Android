@@ -7,9 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.drp08.studypal.MainActivity
 import io.github.drp08.studypal.db.daos.UserDao
 import io.github.drp08.studypal.domain.entities.UserEntity
 import io.github.drp08.studypal.presentation.screens.HomeScreen
+import io.ktor.utils.io.concurrent.shared
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +23,7 @@ class RegistrationViewModel @Inject constructor(
     var workingHoursStart by mutableStateOf(7 * 60 * 60 * 1000L)
     var workingHoursEnd by mutableStateOf(16 * 60 * 60 * 1000L)
     var hoursPerDay by mutableStateOf(6)
+    var sharedPrefs = MainActivity.prefs
 
     fun onNameChange(newValue: String) {
         name = newValue
@@ -49,6 +52,14 @@ class RegistrationViewModel @Inject constructor(
                 endWorkingHours = workingHoursEnd,
                 maxStudyingHours = hoursPerDay
             ))
+            with(sharedPrefs.edit()){
+                putString("name",name)
+                putLong("startWorkingHours",workingHoursStart)
+                putLong("endWorkingHours",workingHoursEnd)
+                putInt("maxStudyingHours",hoursPerDay)
+                apply()
+            }
+
             navigator.push(HomeScreen)
         }
     }

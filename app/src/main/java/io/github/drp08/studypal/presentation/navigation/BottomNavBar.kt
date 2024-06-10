@@ -1,19 +1,14 @@
 package io.github.drp08.studypal.presentation.navigation
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemColors
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 
@@ -21,23 +16,27 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 fun BottomNavBar(modifier: Modifier = Modifier) {
     val navigator = LocalNavigator.currentOrThrow
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(color = Color.Blue)
-            .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+    NavigationBar(
+        modifier = modifier,
+        containerColor = Color.Blue,
+        contentColor = Color.White
     ) {
         BottomNavItem.values().forEach {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .clickable { navigator.push(it.screen) }
-            ) {
-                Image(imageVector = it.icon, contentDescription = null, modifier = Modifier)
-                Text(text = it.label, color = Color.White)
-            }
+            NavigationBarItem(
+                selected = navigator.lastItem == it.screen,
+                onClick = { navigator.push(it.screen) },
+                icon = { Icon(imageVector = it.icon, contentDescription = null) },
+                label = { Text(text = it.label) },
+                colors = NavigationBarItemColors(
+                    selectedIndicatorColor = Color.White,
+                    selectedIconColor = Color.Black,
+                    selectedTextColor = Color.White,
+                    unselectedIconColor = Color.White,
+                    unselectedTextColor = Color.White,
+                    disabledIconColor = Color.Gray,
+                    disabledTextColor = Color.Gray
+                )
+            )
         }
     }
 }

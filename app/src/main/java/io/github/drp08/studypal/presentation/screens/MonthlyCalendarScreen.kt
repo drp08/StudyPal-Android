@@ -44,7 +44,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import network.chaintech.utils.now
 
-object MonthlyCalendarScreen : Screen {
+data object MonthlyCalendarScreen : Screen {
 
     @Composable
     override fun Content() {

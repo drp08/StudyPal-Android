@@ -45,11 +45,13 @@ import network.chaintech.utils.DateTimePickerView
 import network.chaintech.utils.TimeFormat
 import network.chaintech.utils.WheelPickerDefaults
 
-object RegistrationScreen : Screen {
+data object RegistrationScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel = hiltViewModel<RegistrationViewModel>()
         val navigator = LocalNavigator.currentOrThrow
+
+        val user = viewModel.user
 
         Column(
             modifier = Modifier
@@ -67,7 +69,7 @@ object RegistrationScreen : Screen {
             )
 
             TextField(
-                value = viewModel.name,
+                value = user.name,
                 onValueChange = viewModel::onNameChange,
                 label = { Text("Your name") },
                 modifier = Modifier
@@ -144,7 +146,7 @@ object RegistrationScreen : Screen {
                     colors = ButtonDefaults.buttonColors(),
                     onClick = { showStartTimeDialog = true }
                 ) {
-                    val timeFormat = formatTime(viewModel.workingHoursStart, "HH:mm a")
+                    val timeFormat = formatTime(user.startWorkingHours, "HH:mm a")
                     Text(text = "Start: $timeFormat")
                 }
 
@@ -207,13 +209,13 @@ object RegistrationScreen : Screen {
                     colors = ButtonDefaults.buttonColors(),
                     onClick = { showEndTimeDialog = true }
                 ) {
-                    val timeFormat = formatTime(viewModel.workingHoursEnd, "HH:mm a")
+                    val timeFormat = formatTime(user.endWorkingHours, "HH:mm a")
                     Text(text = "End: $timeFormat")
                 }
             }
 
             TextField(
-                value = viewModel.hoursPerDay.toString(),
+                value = user.maxStudyingHours.toString(),
                 onValueChange = {
                     viewModel.onHoursPerDayChange(it.toInt())
                 },

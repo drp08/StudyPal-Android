@@ -51,7 +51,7 @@ class RegistrationViewModel @Inject constructor(
         viewModelScope.launch {
             userSession.setUser(user)
 
-            navigator.replace(HomeNavigator(startScreen = HomeScreen))
+            navigator.replace(HomeNavigator(startScreen = HomeScreen, user = user))
         }
     }
 }

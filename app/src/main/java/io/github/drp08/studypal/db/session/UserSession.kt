@@ -1,5 +1,6 @@
 package io.github.drp08.studypal.db.session
 
+import androidx.compose.runtime.compositionLocalOf
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -18,6 +19,8 @@ class UserSession @Inject constructor(
 ) {
     companion object {
         const val USER = "user"
+
+        val ActiveUser = compositionLocalOf<User> { error("No active user was found!") }
     }
 
     private val name = stringPreferencesKey("USER_NAME")

@@ -26,8 +26,9 @@ data object LoadingScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         LaunchedEffect(key1 = Unit) {
-            if (viewModel.isUserRegistered()) {
-                navigator.replace(HomeNavigator(startScreen = HomeScreen))
+            val user = viewModel.getUser()
+            if (user != null) {
+                navigator.replace(HomeNavigator(startScreen = HomeScreen, user = user))
             } else {
                 navigator.replace(RegistrationScreen)
             }

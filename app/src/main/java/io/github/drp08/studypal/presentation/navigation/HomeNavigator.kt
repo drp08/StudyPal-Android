@@ -5,13 +5,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
+import io.github.drp08.studypal.db.session.UserSession.Companion.ActiveUser
+import io.github.drp08.studypal.domain.models.User
 
 data class HomeNavigator(
-    private val startScreen: Screen
+    private val startScreen: Screen,
+    private val user: User
 ) : Screen {
 
     @Composable
@@ -22,7 +26,9 @@ data class HomeNavigator(
                 bottomBar = { BottomNavBar() }
             ) { paddingValues ->
                 Box(modifier = Modifier.padding(paddingValues)) {
-                    CurrentScreen()
+                    CompositionLocalProvider(ActiveUser provides user) {
+                        CurrentScreen()
+                    }
                 }
             }
         }

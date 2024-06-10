@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.MainActivity
+import io.github.drp08.studypal.db.session.UserSession.Companion.ActiveUser
 import io.github.drp08.studypal.presentation.viewmodels.ProfileViewModel
 
 data object ProfileScreen : Screen {
@@ -12,6 +13,8 @@ data object ProfileScreen : Screen {
     override fun Content() {
         val viewModel = hiltViewModel<ProfileViewModel>()
 
-        Text(text = "Profile Screen")
+        val user = ActiveUser.current
+
+        Text(text = "Profile Screen for ${user.name}")
     }
 }

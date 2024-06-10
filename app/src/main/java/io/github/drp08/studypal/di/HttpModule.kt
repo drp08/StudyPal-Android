@@ -37,7 +37,7 @@ object HttpModule {
                 level = LogLevel.ALL
             }
             defaultRequest {
-                url("$PROTOCOL://$HOSTNAME:$PORT")
+                url("http://cloud-vm-43-232.doc.ic.ac.uk")
                 headers {
                     append(HttpHeaders.ContentType,"application/json")
                 }

@@ -12,44 +12,43 @@ import io.github.drp08.studypal.domain.models.User
 import io.github.drp08.studypal.presentation.screens.HomeScreen
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.max
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val session: Session
 ) : ViewModel() {
-    var name by mutableStateOf("")
-    var workingHoursStart by mutableStateOf(7 * 60 * 60 * 1000L)
-    var workingHoursEnd by mutableStateOf(16 * 60 * 60 * 1000L)
-    var hoursPerDay by mutableStateOf(6)
+    var user by mutableStateOf(
+        User(
+            name = "",
+            startWorkingHours = 7 * 60 * 60 * 1000L,
+            endWorkingHours = 16 * 60 * 60 * 1000L,
+            maxStudyingHours = 6
+        )
+    )
+        private set
 
-    fun onNameChange(newValue: String) {
-        name = newValue
+    fun onNameChange(newName: String) {
+        user = user.copy(name = newName)
     }
 
     fun onWorkingHoursStartChange(newValue: Long) {
-        workingHoursStart = newValue - 1 * 60 * 60 * 1000
+        user = user.copy(startWorkingHours = newValue - 1 * 60 * 60 * 1000)
     }
 
     fun onWorkingHoursEndChange(newValue: Long) {
-        workingHoursEnd = newValue - 1 * 60 * 60 * 1000
+        user = user.copy(endWorkingHours = newValue - 1 * 60 * 60 * 1000)
     }
 
     fun onHoursPerDayChange(newValue: Int) {
-        hoursPerDay = newValue
+        user = user.copy(maxStudyingHours = newValue)
     }
 
     fun onRegister(navigator: Navigator) {
-        if (name.isBlank())
+        if (user.name.isBlank())
             return
 
         viewModelScope.launch {
-            session.setUser(User(
-                name,
-                workingHoursStart,
-                workingHoursEnd,
-                hoursPerDay
-            ))
+            session.setUser(user)
 
             navigator.push(HomeScreen)
         }

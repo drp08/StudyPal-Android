@@ -11,13 +11,14 @@ import cafe.adriel.voyager.navigator.Navigator
 import io.github.drp08.studypal.presentation.navigation.BottomNavBar
 import io.github.drp08.studypal.presentation.navigation.BottomNavItem
 import io.github.drp08.studypal.presentation.screens.HomeScreen
+import io.github.drp08.studypal.presentation.screens.LoadingScreen
 import io.github.drp08.studypal.presentation.screens.RegistrationScreen
 import io.github.drp08.studypal.presentation.theme.StudyPalAndroidTheme
 
 @Composable
 fun App() {
     StudyPalAndroidTheme(darkTheme = false) {
-        Navigator(screen = RegistrationScreen) { navigator ->
+        Navigator(screen = LoadingScreen) { navigator ->
             if (navigator.lastItem is HomeScreen) {
                 Navigator(BottomNavItem.Home.screen) { _ ->
                     Scaffold(

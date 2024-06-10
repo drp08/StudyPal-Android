@@ -55,10 +55,4 @@ class RegistrationViewModel @Inject constructor(
             navigator.push(HomeScreen)
         }
     }
-
-    fun isUserRegistered(): Boolean {
-        return runBlocking {
-            session.getCurrentUser().first() != null
-        }
-    }
 }

@@ -51,9 +51,6 @@ object RegistrationScreen : Screen {
         val viewModel = hiltViewModel<RegistrationViewModel>()
         val navigator = LocalNavigator.currentOrThrow
 
-        if (viewModel.isUserRegistered())
-            navigator.replace(HomeScreen)
-
         val user = viewModel.user
 
         Column(

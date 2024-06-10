@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import io.github.drp08.studypal.presentation.navigation.HomeNavigator
 import io.github.drp08.studypal.presentation.viewmodels.LoadingViewModel
 
 object LoadingScreen : Screen {
@@ -26,7 +27,7 @@ object LoadingScreen : Screen {
 
         LaunchedEffect(key1 = Unit) {
             if (viewModel.isUserRegistered()) {
-                navigator.replace(HomeScreen)
+                navigator.replace(HomeNavigator(startScreen = HomeScreen))
             } else {
                 navigator.replace(RegistrationScreen)
             }

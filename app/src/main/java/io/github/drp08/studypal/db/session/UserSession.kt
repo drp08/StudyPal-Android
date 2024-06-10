@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class Session @Inject constructor(
+class UserSession @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) {
     companion object {

@@ -4,14 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.drp08.studypal.db.session.Session
+import io.github.drp08.studypal.db.session.UserSession
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val session: Session
+    private val userSession: UserSession
 ): ViewModel() {
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -20,7 +20,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            session.getCurrentUser().collectLatest {
+            userSession.getCurrentUser().collectLatest {
                 Log.d(TAG, "userEntity: $it")
             }
         }

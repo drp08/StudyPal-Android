@@ -7,17 +7,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.drp08.studypal.db.session.Session
+import io.github.drp08.studypal.db.session.UserSession
 import io.github.drp08.studypal.domain.models.User
+import io.github.drp08.studypal.presentation.navigation.HomeNavigator
 import io.github.drp08.studypal.presentation.screens.HomeScreen
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val session: Session
+    private val userSession: UserSession
 ) : ViewModel() {
     var user by mutableStateOf(
         User(
@@ -50,9 +49,9 @@ class RegistrationViewModel @Inject constructor(
             return
 
         viewModelScope.launch {
-            session.setUser(user)
+            userSession.setUser(user)
 
-            navigator.push(HomeScreen)
+            navigator.replace(HomeNavigator(startScreen = HomeScreen))
         }
     }
 }

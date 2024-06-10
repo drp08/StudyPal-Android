@@ -10,7 +10,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.session.Session
 import io.github.drp08.studypal.domain.models.User
 import io.github.drp08.studypal.presentation.screens.HomeScreen
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,6 +53,12 @@ class RegistrationViewModel @Inject constructor(
             session.setUser(user)
 
             navigator.push(HomeScreen)
+        }
+    }
+
+    fun isUserRegistered(): Boolean {
+        return runBlocking {
+            session.getCurrentUser().first() != null
         }
     }
 }

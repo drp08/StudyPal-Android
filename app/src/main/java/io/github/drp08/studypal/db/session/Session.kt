@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
-import kotlin.math.max
 
 class Session @Inject constructor(
     private val dataStore: DataStore<Preferences>

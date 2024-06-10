@@ -11,7 +11,6 @@ import io.github.drp08.studypal.db.ClientDatabase
 import io.github.drp08.studypal.db.daos.SessionDao
 import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.db.daos.TopicDao
-import io.github.drp08.studypal.db.daos.UserDao
 import javax.inject.Singleton
 
 @Module
@@ -47,11 +46,5 @@ object DatabaseModule {
     @Singleton
     fun provideTopicDao(db: ClientDatabase): TopicDao {
         return db.topicDao
-    }
-
-    @Provides
-    @Singleton
-    fun provideUserDao(db: ClientDatabase): UserDao {
-        return db.userDao
     }
 }

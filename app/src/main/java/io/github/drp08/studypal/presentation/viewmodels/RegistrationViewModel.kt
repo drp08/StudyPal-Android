@@ -7,17 +7,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.drp08.studypal.MainActivity
-import io.github.drp08.studypal.db.daos.UserDao
-import io.github.drp08.studypal.domain.entities.UserEntity
+import io.github.drp08.studypal.db.session.Session
+import io.github.drp08.studypal.domain.models.User
 import io.github.drp08.studypal.presentation.screens.HomeScreen
-import io.ktor.utils.io.concurrent.shared
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.max
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val userDao: UserDao
+    private val session: Session
 ) : ViewModel() {
     var name by mutableStateOf("")
     var workingHoursStart by mutableStateOf(7 * 60 * 60 * 1000L)
@@ -45,11 +44,11 @@ class RegistrationViewModel @Inject constructor(
             return
 
         viewModelScope.launch {
-            userDao.upsertUser(UserEntity(
-                name = this@RegistrationViewModel.name,
-                startWorkingHours = workingHoursStart,
-                endWorkingHours = workingHoursEnd,
-                maxStudyingHours = hoursPerDay
+            session.setUser(User(
+                name,
+                workingHoursStart,
+                workingHoursEnd,
+                hoursPerDay
             ))
 
             navigator.push(HomeScreen)

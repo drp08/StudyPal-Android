@@ -6,12 +6,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.navigator.Navigator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.UserDao
 import io.github.drp08.studypal.domain.entities.UserEntity
 import io.github.drp08.studypal.presentation.screens.HomeScreen
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RegistrationViewModel(
+@HiltViewModel
+class RegistrationViewModel @Inject constructor(
     private val userDao: UserDao
 ) : ViewModel() {
     var name by mutableStateOf("")

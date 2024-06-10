@@ -2,6 +2,7 @@ package io.github.drp08.studypal.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.domain.entities.SessionEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,10 +14,13 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
+import javax.inject.Inject
 
 
-class MonthlyCalendarViewModel : ViewModel() {
-    private val _currentDate = MutableStateFlow(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
+@HiltViewModel
+class MonthlyCalendarViewModel @Inject constructor() : ViewModel() {
+    private val _currentDate =
+        MutableStateFlow(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
     val currentDate: StateFlow<LocalDate> = _currentDate.asStateFlow()
 
     private val _events = MutableStateFlow<List<SessionEntity>>(emptyList())

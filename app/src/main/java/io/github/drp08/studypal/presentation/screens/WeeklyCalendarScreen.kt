@@ -36,13 +36,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
+import io.github.drp08.studypal.presentation.models.CalendarView
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 object WeeklyCalendarScreen : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         var currentView by remember { mutableStateOf(CalendarView.WEEKLY) }

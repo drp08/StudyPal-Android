@@ -34,12 +34,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.github.drp08.studypal.presentation.viewmodels.RegistrationViewModel
-import io.github.drp08.studypal.utils.LocalDatabase
 import io.github.drp08.studypal.utils.formatTime
 import network.chaintech.ui.timepicker.WheelTimePickerView
 import network.chaintech.utils.DateTimePickerView
@@ -49,10 +48,7 @@ import network.chaintech.utils.WheelPickerDefaults
 object RegistrationScreen : Screen {
     @Composable
     override fun Content() {
-        val userDao = LocalDatabase.current.userDao
-        val viewModel = viewModel {
-            RegistrationViewModel(userDao)
-        }
+        val viewModel = hiltViewModel<RegistrationViewModel>()
         val navigator = LocalNavigator.currentOrThrow
 
         Column(

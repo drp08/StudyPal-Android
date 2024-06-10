@@ -41,7 +41,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-object WeeklyCalendarScreen : Screen {
+data object WeeklyCalendarScreen : Screen {
 
     @Composable
     override fun Content() {

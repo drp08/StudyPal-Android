@@ -63,4 +63,6 @@ dependencies {
     implementation(libs.exposed.dao)
     implementation(libs.exposed.jdbc)
     implementation(libs.sqlite.jdbc)
+
+    testImplementation(kotlin("test"))
 }

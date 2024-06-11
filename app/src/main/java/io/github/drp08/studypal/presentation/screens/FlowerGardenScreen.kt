@@ -1,20 +1,25 @@
 package io.github.drp08.studypal.presentation.screens
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import coil.compose.AsyncImage
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -23,48 +28,79 @@ object FlowerViewScreen : Screen {
 
     @Composable
     override fun Content() {
-        FlowerGardenScreen(flowerCount = 10) // Example flower count
+        FlowerGardenScreen(
+            boxCount = 6,
+            flowerCounts = listOf(5, 10, 15, 8, 12, 6)
+        ) // Example values
     }
 
     @Composable
-    fun FlowerGardenScreen(flowerCount: Int) {
-        var flowers by remember { mutableStateOf<List<Offset>>(emptyList()) }
-
-        for (i in 0..flowerCount)
-            flowers = generateFlowerCenters(flowerCount)
-
-
-
+    fun FlowerGardenScreen(boxCount: Int, flowerCounts: List<Int>) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    //.background(Color(0xFF87CEFA)) // Sky blue background
-                    .background(Color(0xFF308B0D))
-            ) {
-                Canvas(modifier = Modifier.fillMaxSize()) {
-                    drawFlowerGarden(flowers)
+            Text(
+                text = "LEADERBOARD",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            for (index in 0 until boxCount step 2) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    BoxWithFlowers(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .padding(8.dp),
+                        flowers = generateFlowerCenters(flowerCounts[index], 200.dp - 16.dp, 200.dp - 16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    if (index + 1 < boxCount) {
+                        BoxWithFlowers(
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .padding(8.dp),
+                            flowers = generateFlowerCenters(flowerCounts[index + 1], 200.dp - 16.dp, 200.dp - 16.dp)
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.weight(1f))
+                    }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
 
     @Composable
-    private fun generateFlowerCenters(flowerCount: Int): List<Offset> {
-        val blueBoxHeight = 750.dp.toPx()
-        val blueBoxWidth = 375.dp.toPx()
-        val flowerRadius = 60.dp.toPx()
+    fun BoxWithFlowers(modifier: Modifier, flowers: List<Offset>) {
+        Box(modifier = modifier.background(Color.Green)) {
+            InternetImageBackground(
+                url = "https://media.istockphoto.com/id/1287348587/vector/green-lawn-view-from-top-grass-and-bushes-summer-field.jpg?s=612x612&w=0&k=20&c=beeLyqiIditNPu-zQSZEznVz40bNEphK9Y6pcYHQWLk="
+            )
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                drawFlowerGarden(flowers)
+            }
+        }
+    }
+
+    @Composable
+    private fun generateFlowerCenters(flowerCount: Int, boxWidth: Dp, boxHeight: Dp): List<Offset> {
+        val boxWidthPx = boxWidth.toPx()
+        val boxHeightPx = boxHeight.toPx()
+        val maxPetalRadius = 10.dp.toPx() // Smaller petal radius
+        val flowerRadius = 5.dp.toPx() // Smaller flower radius
 
         return List(flowerCount) {
-            val x = Random.nextFloat() * (blueBoxWidth - 2 * flowerRadius) + flowerRadius
-            val y = Random.nextFloat() * (blueBoxHeight - 2 * flowerRadius) + flowerRadius
+            val x = Random.nextFloat() * (boxWidthPx - 2 * maxPetalRadius) + maxPetalRadius
+            val y = Random.nextFloat() * (boxHeightPx - 2 * maxPetalRadius) + maxPetalRadius
             Offset(x, y)
         }
     }
@@ -76,8 +112,8 @@ object FlowerViewScreen : Screen {
     }
 
     private fun DrawScope.drawFlower(position: Offset) {
-        val petalRadius = 20.dp.toPx()
-        val flowerRadius = 10.dp.toPx()
+        val petalRadius = 10.dp.toPx() // Smaller petal radius
+        val flowerRadius = 5.dp.toPx() // Smaller flower radius
         val petalColor = randomColor()
         val centerColor = randomColor()
 
@@ -104,17 +140,17 @@ object FlowerViewScreen : Screen {
         val green = color.green
         val blue = color.blue
 
+        // Exclude all shades of grey
         if (red == green && green == blue) return true
 
+        // Exclude all shades of green
         if (green > red && green > blue) return true
 
+        // Exclude all shades of brown
         if (red > green && green > blue) return true
 
         return false
     }
-
-
-
 
     private fun randomColor(): Color {
         while (true) {
@@ -135,10 +171,22 @@ object FlowerViewScreen : Screen {
         val density = LocalDensity.current
         return with(density) { this@toPx.toPx() }
     }
+
+    @Composable
+    fun InternetImageBackground(url: String) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = url,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
 }
 
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewCanvasScreen() {
-    FlowerViewScreen.FlowerGardenScreen(flowerCount = 10)
+    FlowerViewScreen.FlowerGardenScreen(boxCount = 6, flowerCounts = listOf(5, 10, 15, 8, 12, 6))
 }

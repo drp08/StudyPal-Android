@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -38,13 +39,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import co.yml.charts.axis.AxisData
+import co.yml.charts.axis.DataCategoryOptions
+import co.yml.charts.common.model.Point
+import co.yml.charts.ui.barchart.BarChart
+import co.yml.charts.ui.barchart.models.BarChartData
+import co.yml.charts.ui.barchart.models.BarChartType
+import co.yml.charts.ui.barchart.models.BarData
+import co.yml.charts.ui.barchart.models.BarStyle
+import kotlin.random.Random
 
 data object ProfileScreen : Screen {
     @Composable
@@ -272,12 +280,140 @@ data object ProfileScreen : Screen {
                     }
                 }
             }
-//            Box(
-//
-//            ) {
-//
-//            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Box(
+                modifier = Modifier
+                    .height((144 + numberSubjects * 44).dp)
+                    .width(320.dp)
+                    .border(
+                        width = 1.dp,
+                        color = Color.LightGray,
+                        shape = RoundedCornerShape(3.dp)
+                    )
+                    .padding(start = 12.dp, top = 10.dp, end = 12.dp, bottom = 10.dp),
+            ) {
+                Column {
+                    Text(
+                        "Statistics",
+                        fontSize = 20.sp,
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.Bold )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height((72 + 44 * numberSubjects).dp)
+                            .border(
+                                width = 1.dp,
+                                color = Color.LightGray,
+                                shape = RoundedCornerShape(3.dp)
+                            )
+                            .padding(start = 12.dp, end = 12.dp),
+                        contentAlignment = Alignment.BottomEnd
+                    ) {
+                        SubjectBarChart(subjectList)
+                        Spacer(modifier = Modifier.height(40.dp))
+                        Text(
+                            text = "hours",
+                            fontSize = 10.sp,
+                            color = Color.Black,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        "Total study hours: 106",
+                        fontSize = 16.sp,
+                        color = Color.DarkGray)
+                }
+            }
         }
+    }
+
+    @Composable
+    fun SubjectBarChart(list: Array<String>) {
+        val stepSize = 6
+        val maxHours = 30
+        val barsData = getBarChartData(
+            maxRange = maxHours,
+            array = list,
+            dataCategoryOptions = DataCategoryOptions(isDataCategoryInYAxis = true)
+        )
+
+        val yAxisData = AxisData.Builder()
+            .axisStepSize(20.dp)
+            .steps(barsData.size - 1)
+            .labelAndAxisLinePadding(1.dp)
+            .axisOffset(20.dp)
+            .setDataCategoryOptions(
+                DataCategoryOptions(
+                    isDataCategoryInYAxis = true,
+                    isDataCategoryStartFromBottom = false
+                )
+            )
+            .startDrawPadding(180.dp)
+            .labelData { index -> barsData[index].label }
+            .axisLineColor(MaterialTheme.colorScheme.tertiary)
+            .axisLabelColor(MaterialTheme.colorScheme.tertiary)
+            .build()
+
+        val xAxisData = AxisData.Builder()
+            .steps(stepSize)
+            .endPadding(10.dp)
+            .bottomPadding(16.dp)
+            .labelData { index -> (index * ( maxHours/stepSize)).toString() }
+            .axisLineColor(MaterialTheme.colorScheme.tertiary)
+            .axisLabelColor(MaterialTheme.colorScheme.tertiary)
+            .axisLabelDescription { "hours" }
+            .build()
+
+        val barChartData = BarChartData(
+            chartData = barsData,
+            xAxisData = xAxisData,
+            yAxisData = yAxisData,
+            barStyle = BarStyle(
+                isGradientEnabled = false,
+                paddingBetweenBars = 10.dp,
+                barWidth = 35.dp,
+            ),
+            showYAxis = true,
+            showXAxis = true,
+            barChartType = BarChartType.HORIZONTAL,
+            backgroundColor = MaterialTheme.colorScheme.surface
+        )
+
+        BarChart(
+            modifier = Modifier.height((67 + list.size * 45).dp),
+            barChartData = barChartData
+        )
+    }
+
+    private fun getBarChartData(
+        maxRange: Int,
+        array: Array<String>,
+        dataCategoryOptions: DataCategoryOptions
+    ): List<BarData> {
+        val list = arrayListOf<BarData>()
+        var index = 0
+        for (subject in array) {
+            val point =
+                Point(
+                "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
+                index.toFloat()
+            )
+            list.add(
+                BarData(
+                    point = point,
+                    color = Color(
+                        Random.nextInt(256), Random.nextInt(256), Random.nextInt(256)
+                    ),
+                    dataCategoryOptions = dataCategoryOptions,
+                    label = subject.take(5),
+                )
+            )
+            index++
+        }
+        return list
     }
 }
 

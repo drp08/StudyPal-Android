@@ -110,7 +110,7 @@ data object ProfileScreen : Screen {
             }
             var numTopicsExpanded by remember { mutableIntStateOf(0) }
             var numberSubjects by remember { mutableIntStateOf(0) }
-            val subjectList = arrayOf("Statistics")
+            val subjectList = arrayOf("Statistics") //Todo: Change this to the actual list of subjects
             numberSubjects = subjectList.size
             Box(
                 modifier = Modifier
@@ -169,19 +169,20 @@ data object ProfileScreen : Screen {
                                         )
                                     }
                                     Text(
-                                        "Total Hours studied so far: 12",
+                                        "Total Hours studied so far: 12", // Todo: Change this to the actual hours studied of the subject b¬so far
                                         fontSize = 16.sp,
                                         color = Color.DarkGray,
                                         modifier = Modifier.padding(bottom = 4.dp)
                                     )
                                     Text(
-                                        "Exam Date: 10-12-2024",
+                                        "Exam Date: 10-12-2024", //Todo: Change this to actual exam date of subject
                                         fontSize = 16.sp,
                                         color = Color.DarkGray,
                                         modifier = Modifier.padding(bottom = 4.dp)
                                     )
                                 }
                             }
+                            // Todo: change topics to be actual list of topics for the specific subject
                             val topics = arrayOf("Markov Chains", "Binomial Theorem", "Central Limit Theorem", "Chi-squared")
                             val numTopics : Int = topics.size
                             Box(
@@ -322,7 +323,7 @@ data object ProfileScreen : Screen {
                     }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        "Total study hours: 106",
+                        "Total study hours: 106", //Todo: Add actual total number of hours studied
                         fontSize = 16.sp,
                         color = Color.DarkGray)
                 }
@@ -333,7 +334,7 @@ data object ProfileScreen : Screen {
     @Composable
     fun SubjectBarChart(list: Array<String>) {
         val stepSize = 6
-        val maxHours = 30
+        val maxHours = 30 //Todo: Change to max of the total hours studied per subject
         val barsData = getBarChartData(
             maxRange = maxHours,
             array = list,
@@ -398,9 +399,9 @@ data object ProfileScreen : Screen {
         for (subject in array) {
             val point =
                 Point(
-                "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(),
+                "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(), //Todo: Change to number of hours spent on that subject
                 index.toFloat()
-            )
+                )
             list.add(
                 BarData(
                     point = point,

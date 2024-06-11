@@ -21,6 +21,7 @@ ksp = "1.9.0-1.0.13"
 dateTimePicker = "1.0.2"
 media3Common = "1.3.1"
 datastore = "1.1.1"
+ycharts = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -60,6 +61,7 @@ date-time-picker = { module = "network.chaintech:kmp-date-time-picker", version.
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+yml-ycharts = { module = "co.yml:ycharts", version.ref = "ycharts" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

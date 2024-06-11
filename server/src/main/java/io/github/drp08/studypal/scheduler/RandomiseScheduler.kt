@@ -4,29 +4,38 @@ import io.github.drp08.studypal.domain.models.Session
 import io.github.drp08.studypal.domain.models.Subject
 import io.github.drp08.studypal.domain.models.Topic
 import io.github.drp08.studypal.domain.models.User
+import io.github.drp08.studypal.scheduler.Scheduler.Companion.HOUR_IN_MILLIS
+import io.github.drp08.studypal.utils.toEpochMilliSecond
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlin.random.Random
 
 class RandomiseScheduler : Scheduler {
+    companion object {
+        private const val SESSION_DURATION = 1 * HOUR_IN_MILLIS
+    }
+
     override fun schedule(
         subjects: List<Subject>,
         topics: List<Topic>,
         fixedSessions: List<Session>,
         user: User
     ): List<Session> {
-        val millisecondsInHour = 60 * 60 * 10 * 10 * 10 // 3600 seconds * 10^3
+        if (subjects.isEmpty())
+            return emptyList()
+
         val sessions: MutableList<Session> = mutableListOf<Session>().apply {
             addAll(fixedSessions)
         }
 
         val startOfDay =
-            LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toEpochSecond()
+            LocalDate.now().atStartOfDay().atZone(ZoneId.of("UTC")).toEpochMilliSecond()
 
         // to ensure that a time isn't 'double-booked'
-        val scheduledHours: MutableList<Long> = mutableListOf(startOfDay)
+        val scheduledHours = mutableListOf<LongRange>()
 
-        for (studyHours in 0..user.maxStudyingHours) {
+        var trials = 0
+        outer@for (studyHours in 0..user.maxStudyingHours) {
             // chooses a random subject
             val subject: Subject = subjects.random()
 
@@ -42,13 +51,14 @@ class RandomiseScheduler : Scheduler {
                 startOfDay + user.startWorkingHours // epoch time from the start of the day to the start of the working hour
             val endTime: Long = startOfDay + user.endWorkingHours
 
-            var time: Long = startOfDay // epoch time
+            var time: Long
+            do {
+                time = Random.nextLong(startTime, endTime - SESSION_DURATION)
+                if (++trials > 100)
+                    continue@outer
+            } while (scheduledHours.any { time in it || (time + SESSION_DURATION) in it })
 
-            while (time in scheduledHours) {
-                // generate a random epoch time between
-                time = Random.nextLong(startTime, endTime)
-            }
-            scheduledHours.add(time)
+            scheduledHours.add(time..(time + SESSION_DURATION))
 
             // create a new session
             val session =
@@ -56,11 +66,13 @@ class RandomiseScheduler : Scheduler {
                     sessionId = Random.nextInt(1, Int.MAX_VALUE),
                     topic = topic.name,
                     startTime = time,
-                    endTime = time + millisecondsInHour,
+                    endTime = time + SESSION_DURATION,
                 )
 
             sessions.add(session)
         }
-        return sessions.sortedBy { it.startTime }
+        return sessions
+            .apply { removeAll(fixedSessions) }
+            .sortedBy { it.startTime }
     }
 }

@@ -12,4 +12,6 @@ java {
 dependencies {
     implementation(libs.ktor.serialization)
     implementation(libs.ktor.resources)
+
+    testImplementation(kotlin("test"))
 }

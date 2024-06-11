@@ -32,11 +32,12 @@ object FlowerViewScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel: FlowerViewModel = viewModel()
+        val viewModel2 : LeaderboardViewModel = viewModel()
         val boxCount by viewModel.boxCount.collectAsState()
         val flowerCounts by viewModel.flowerCounts.collectAsState()
         val names by viewModel.names.collectAsState()
 
-        var showFlowerGarden by remember { mutableStateOf(true) }
+        val showFlowerGarden by viewModel2.isLeaderboard.collectAsState()
 
         Column(
             modifier = Modifier
@@ -49,11 +50,11 @@ object FlowerViewScreen : Screen {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                TextButton(onClick = { showFlowerGarden = true }) {
+                TextButton(onClick = {}) {
                     Text("Flower Garden")
                 }
                 Spacer(modifier = Modifier.width(16.dp))
-                TextButton(onClick = { showFlowerGarden = false }) {
+                TextButton(onClick = { viewModel2.toggleLeaderboardAndFlowers() }) {
                     Text("Leaderboard")
                 }
             }
@@ -63,9 +64,8 @@ object FlowerViewScreen : Screen {
                 FlowerGardenScreen(boxCount, flowerCounts, names)
             }
             else {
-                val viewModel2: LeaderboardViewModel = viewModel()
                 val leaderboardItems by viewModel2.leaderboardItems.collectAsState()
-                io.github.drp08.studypal.presentation.screens.LeaderboardScreen.LeaderboardScreen(leaderboardItems)
+                LeaderboardScreen.LeaderboardScreen(leaderboardItems)
             }
         }
     }
@@ -148,7 +148,7 @@ object FlowerViewScreen : Screen {
     }
 
     @Composable
-    private fun generateFlowerCenters(flowerCount: Int, boxWidth: Dp, boxHeight: Dp): List<Offset> {
+    fun generateFlowerCenters(flowerCount: Int, boxWidth: Dp, boxHeight: Dp): List<Offset> {
         val boxWidthPx = boxWidth.toPx()
         val boxHeightPx = boxHeight.toPx()
         val maxPetalRadius = 10.dp.toPx()
@@ -200,13 +200,10 @@ object FlowerViewScreen : Screen {
         val green = color.green
         val blue = color.blue
 
-        // Exclude all shades of grey
         if (red == green && green == blue) return true
 
-        // Exclude all shades of green
         if (green > red && green > blue) return true
 
-        // Exclude all shades of brown
         if (red > green && green > blue) return true
 
         return false

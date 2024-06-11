@@ -12,6 +12,7 @@ import io.github.drp08.studypal.presentation.screens.FlowerViewScreen
 import io.github.drp08.studypal.presentation.screens.HomeScreen
 import io.github.drp08.studypal.presentation.screens.LeaderboardScreen
 import io.github.drp08.studypal.presentation.screens.MonthlyCalendarScreen
+import io.github.drp08.studypal.presentation.screens.NoLeaderboardFlowerGarden
 import io.github.drp08.studypal.presentation.screens.ProfileScreen
 import io.github.drp08.studypal.presentation.screens.WeeklyCalendarScreen
 
@@ -21,7 +22,7 @@ sealed class BottomNavItem(
     val screen: Screen,
 ) {
     companion object {
-        fun values() = listOf(Home, Calendar, Profile, LeaderBoard)
+        fun values() = listOf(Home, Calendar, LeaderBoard, Profile)
     }
 
     data object Home : BottomNavItem("Home", Icons.Default.Home, HomeScreen)

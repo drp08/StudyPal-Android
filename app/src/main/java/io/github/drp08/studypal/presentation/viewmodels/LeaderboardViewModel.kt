@@ -19,6 +19,18 @@ class LeaderboardViewModel : ViewModel() {
         LeaderboardItem("Bruce Wayne", 900)
     )
 
+    private val _isLeaderboardEnabled = MutableStateFlow(true)
+    var isLeaderboardEnabled: StateFlow<Boolean> = _isLeaderboardEnabled
+
+    private val _isLeaderboard = MutableStateFlow(true)
+    var isLeaderboard: StateFlow<Boolean> = _isLeaderboard
+
+    private val _currentlyInLeaderBoardView = MutableStateFlow(true)
+    var currentlyInLeaderBoardView: StateFlow<Boolean> = _currentlyInLeaderBoardView
+
+    private val _currentlyInFlowerView = MutableStateFlow(false)
+    var currentlyInFlowerView: StateFlow<Boolean> = _currentlyInFlowerView
+
     private val _leaderboardItems = MutableStateFlow(emptyList<LeaderboardItem>())
     val leaderboardItems: StateFlow<List<LeaderboardItem>> = _leaderboardItems.asStateFlow()
 
@@ -26,6 +38,16 @@ class LeaderboardViewModel : ViewModel() {
         viewModelScope.launch {
             _leaderboardItems.value = defaultLeaderboardItems
         }
+    }
+
+    fun toggleLeaderboard() {
+        _isLeaderboardEnabled.value = !_isLeaderboardEnabled.value
+    }
+
+    fun toggleLeaderboardAndFlowers() {
+        _isLeaderboard.value = !_isLeaderboard.value
+        _currentlyInLeaderBoardView.value = !_currentlyInLeaderBoardView.value
+        _currentlyInFlowerView.value = !_currentlyInFlowerView.value
     }
 
     fun addLeaderboardItem(item: LeaderboardItem) {

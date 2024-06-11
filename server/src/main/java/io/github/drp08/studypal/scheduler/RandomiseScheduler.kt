@@ -21,9 +21,7 @@ class RandomiseScheduler : Scheduler {
         fixedSessions: List<Session>,
         user: User
     ): List<Session> {
-        val sessions: MutableList<Session> = mutableListOf<Session>().apply {
-            addAll(fixedSessions)
-        }
+        val sessions = mutableListOf<Session>()
 
         val startOfDay =
             LocalDate.now().atStartOfDay().atZone(ZoneId.of("UTC")).toEpochMilliSecond()
@@ -33,25 +31,27 @@ class RandomiseScheduler : Scheduler {
         val subjectTotalTime = mutableMapOf<String, Long>()
 
         var trials = 0
-        outer@ for (studyHours in 0..user.maxStudyingHours) {
+        var studyHoursOfDay = 0L
+        outer@ while (studyHoursOfDay < user.maxStudyingHours * HOUR_IN_MILLIS) {
             // chooses a random subject
-            val subject: Subject = subjects
-                .filter { subjectTotalTime.getOrDefault(it.name, 0) < it.hoursPerWeek * HOUR_IN_MILLIS }
+            val subject = subjects
+                .filter { (subjectTotalTime[it.name] ?: 0) < it.hoursPerWeek * HOUR_IN_MILLIS }
+                .filter { subject -> topics.any { it.subject == subject.name } }
                 .also { if (it.isEmpty()) return emptyList() }
                 .random()
 
-            val subjectTopics: List<Topic> = topics.filter { it.subject == subject.name }
+            val subjectTopics = topics.filter { it.subject == subject.name }
             if (subjectTopics.isEmpty()) // Make sure the subject have topics.
                 continue
 
             // choose a random topic
-            val topic: Topic = subjectTopics.random()
+            val topic = subjectTopics.random()
+
+            // epoch time from the start of the day to the start of the working hour
+            val startTime = startOfDay + user.startWorkingHours
+            val endTime = startOfDay + user.endWorkingHours
 
             // chooses a random start time that hasn't already been scheduled for
-            val startTime: Long =
-                startOfDay + user.startWorkingHours // epoch time from the start of the day to the start of the working hour
-            val endTime: Long = startOfDay + user.endWorkingHours
-
             var time: Long
             do {
                 time = Random.nextLong(startTime, endTime - SESSION_DURATION)
@@ -64,7 +64,6 @@ class RandomiseScheduler : Scheduler {
             // create a new session
             val session =
                 Session(
-                    sessionId = Random.nextInt(1, Int.MAX_VALUE),
                     topic = topic.name,
                     startTime = time,
                     endTime = time + SESSION_DURATION,
@@ -72,7 +71,8 @@ class RandomiseScheduler : Scheduler {
 
             sessions.add(session)
             subjectTotalTime[subject.name] =
-                subjectTotalTime.getOrDefault(subject.name, 0) + SESSION_DURATION
+                (subjectTotalTime[subject.name] ?: 0) + SESSION_DURATION
+            studyHoursOfDay += SESSION_DURATION
         }
         return sessions
             .apply { removeAll(fixedSessions) }

@@ -20,7 +20,7 @@ class RandomiseSchedulerTest {
                 name = "Nishant",
                 startWorkingHours = 8 * HOUR_IN_MILLIS,
                 endWorkingHours = 20 * HOUR_IN_MILLIS,
-                maxStudyingHours = 12
+                maxStudyingHours = 5
             )
         }
 
@@ -53,7 +53,7 @@ class RandomiseSchedulerTest {
                 totalSessions = 0,
                 completedSessions = 0,
                 scheduledSessions = 0,
-                hoursPerWeek = 2,
+                hoursPerWeek = 8,
                 examEpoch = null
             )
         }
@@ -65,7 +65,7 @@ class RandomiseSchedulerTest {
                 totalSessions = 0,
                 completedSessions = 0,
                 scheduledSessions = 0,
-                hoursPerWeek = 5,
+                hoursPerWeek = 12,
                 examEpoch = null
             )
         }

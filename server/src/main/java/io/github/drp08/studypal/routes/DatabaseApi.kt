@@ -2,7 +2,7 @@ package io.github.drp08.studypal.routes
 
 import io.github.drp08.studypal.database.addFriend
 import io.github.drp08.studypal.database.addUser
-import io.github.drp08.studypal.database.deleteFriend
+import io.github.drp08.studypal.database.removeFriend
 import io.github.drp08.studypal.database.getFriends
 import io.github.drp08.studypal.database.getUser
 import io.github.drp08.studypal.database.updateXp
@@ -82,7 +82,7 @@ fun Route.friendsDbRoutes() {
             getUser(friend) ?:
                 return@delete call.respond(HttpStatusCode.NotFound, "$friend user not found.")
 
-            val success = deleteFriend(name, friend)
+            val success = removeFriend(name, friend)
 
             call.respond(
                 if (success) HttpStatusCode.OK else HttpStatusCode.InternalServerError

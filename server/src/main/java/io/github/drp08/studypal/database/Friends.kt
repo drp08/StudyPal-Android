@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 object Friends : Table() {
     val name = varchar("name", 50).uniqueIndex()
-    val friendName = varchar("friend_name", 50)
+    val friendName = varchar("friend_name", 50).uniqueIndex()
 }
 
 fun getFriends(name: String): List<String> {
@@ -32,13 +32,13 @@ fun addFriend(name: String, friendName: String): Boolean {
         }
     }
 
-    return transaction.insertedCount == 2
+    return transaction.insertedCount == 1
 }
 
-fun deleteFriend(name: String, friendName: String): Boolean {
+fun removeFriend(name: String, friendName: String): Boolean {
     val transaction = transaction {
         Friends.deleteWhere { (Friends.name eq name) and (Friends.friendName eq friendName) }
         Friends.deleteWhere { (Friends.name eq friendName) and (Friends.friendName eq name) }
     }
-    return transaction == 2
+    return transaction == 1
 }

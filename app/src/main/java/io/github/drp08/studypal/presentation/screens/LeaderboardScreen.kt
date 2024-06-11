@@ -1,9 +1,6 @@
 package io.github.drp08.studypal.presentation.screens
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,21 +22,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import coil.compose.AsyncImage
-import io.github.drp08.studypal.R
 import io.github.drp08.studypal.presentation.viewmodels.FlowerViewModel
 import io.github.drp08.studypal.presentation.viewmodels.LeaderboardItem
 import io.github.drp08.studypal.presentation.viewmodels.LeaderboardViewModel
-
-//https://static-00.iconduck.com/assets.00/trophy-emoji-512x512-x32hyhlp.png
 
 object LeaderboardScreen : Screen {
     @Composable
@@ -71,7 +62,7 @@ object LeaderboardScreen : Screen {
             Spacer(modifier = Modifier.height(16.dp))
 
             if (showLeaderboard) {
-                LeaderboardScreen.LeaderboardScreen(leaderboardItems = leaderboardItems)
+                LeaderboardScreen(leaderboardItems = leaderboardItems)
             } else {
                 val viewModel2: FlowerViewModel = viewModel()
                 val boxCount by viewModel2.boxCount.collectAsState()
@@ -102,17 +93,14 @@ object LeaderboardScreen : Screen {
                 .width(100.dp)
                 .padding(16.dp)
         ) {
-            AsyncImage(
-                model = "https://static-00.iconduck.com/assets.00/trophy-emoji-512x512-x32hyhlp.png",
-                contentDescription = "Trophy",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
+            InternetImageBackground(
+                url = "https://static-00.iconduck.com/assets.00/trophy-emoji-512x512-x32hyhlp.png",
             )
         }
     }
 
     @Composable
-    fun LeaderboardList(items: List<io.github.drp08.studypal.presentation.viewmodels.LeaderboardItem>) {
+    fun LeaderboardList(items: List<LeaderboardItem>) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -125,7 +113,7 @@ object LeaderboardScreen : Screen {
     }
 
     @Composable
-    fun LeaderboardItemView(item: io.github.drp08.studypal.presentation.viewmodels.LeaderboardItem) {
+    fun LeaderboardItemView(item: LeaderboardItem) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

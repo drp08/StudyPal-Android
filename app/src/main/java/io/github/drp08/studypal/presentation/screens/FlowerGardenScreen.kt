@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import coil.compose.AsyncImage
 import io.github.drp08.studypal.presentation.viewmodels.FlowerViewModel
+import io.github.drp08.studypal.presentation.viewmodels.LeaderboardViewModel
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -35,15 +37,8 @@ object FlowerViewScreen : Screen {
         val flowerCounts by viewModel.flowerCounts.collectAsState()
         val names by viewModel.names.collectAsState()
 
-        FlowerGardenScreen(
-            boxCount = boxCount,
-            flowerCounts = flowerCounts,
-            names = names
-        )
-    }
+        var showFlowerGarden by remember { mutableStateOf(true) }
 
-    @Composable
-    fun FlowerGardenScreen(boxCount: Int, flowerCounts: List<Int>, names: List<String>) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -51,57 +46,94 @@ object FlowerViewScreen : Screen {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "LEADERBOARD",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                TextButton(onClick = { showFlowerGarden = true }) {
+                    Text("Flower Garden")
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                TextButton(onClick = { showFlowerGarden = false }) {
+                    Text("Leaderboard")
+                }
+            }
             Spacer(modifier = Modifier.height(16.dp))
-            for (index in 0 until boxCount step 2) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+
+            if (showFlowerGarden) {
+                FlowerGardenScreen(boxCount, flowerCounts, names)
+            }
+            else {
+                val viewModel2: LeaderboardViewModel = viewModel()
+                val leaderboardItems by viewModel2.leaderboardItems.collectAsState()
+                io.github.drp08.studypal.presentation.screens.LeaderboardScreen.LeaderboardScreen(leaderboardItems)
+            }
+        }
+    }
+
+    @Composable
+    fun FlowerGardenScreen(boxCount: Int, flowerCounts: List<Int>, names: List<String>) {
+                Text(
+                    text = "LEADERBOARD",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                for (index in 0 until boxCount step 2) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         BoxWithFlowers(
                             modifier = Modifier
                                 .weight(1f)
                                 .aspectRatio(1f),
-                            flowers = generateFlowerCenters(flowerCounts[index], 200.dp - 45.dp, 200.dp - 45.dp),
+                            flowers = generateFlowerCenters(
+                                flowerCounts[index],
+                                200.dp - 45.dp,
+                                200.dp - 45.dp
+                            ),
                         )
 
-                    Spacer(modifier = Modifier.width(16.dp))
-                    if (index + 1 < boxCount) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                        if (index + 1 < boxCount) {
                             BoxWithFlowers(
                                 modifier = Modifier
                                     .weight(1f)
                                     .aspectRatio(1f),
-                                flowers = generateFlowerCenters(flowerCounts[index + 1], 200.dp - 45.dp, 200.dp - 45.dp),
+                                flowers = generateFlowerCenters(
+                                    flowerCounts[index + 1],
+                                    200.dp - 45.dp,
+                                    200.dp - 45.dp
+                                ),
                             )
 
-                    } else {
-                        Spacer(modifier = Modifier.weight(1f))
+                        } else {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
                     }
-                }
-                Row (modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(
-                        text = names[index],
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = names[index],
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
 
-                    Text(
-                        text = names[index + 1],
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+                        Text(
+                            text = names[index + 1],
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
-        }
-    }
+
 
     @Composable
     fun BoxWithFlowers(modifier: Modifier, flowers: List<Offset>) {
@@ -214,8 +246,3 @@ object FlowerViewScreen : Screen {
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewCanvasScreen() {
-    FlowerViewScreen.FlowerGardenScreen(boxCount = 6, flowerCounts = listOf(5, 10, 15, 8, 12, 6), names = listOf("Garden 1", "Garden 2", "Garden 3", "Garden 4", "Garden 5", "Garden 6"))
-}

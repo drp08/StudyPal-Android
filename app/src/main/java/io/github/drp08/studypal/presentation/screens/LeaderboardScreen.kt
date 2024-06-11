@@ -1,9 +1,11 @@
 package io.github.drp08.studypal.presentation.screens
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,27 +16,38 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
+import coil.compose.AsyncImage
 import io.github.drp08.studypal.R
+import io.github.drp08.studypal.presentation.viewmodels.FlowerViewModel
+import io.github.drp08.studypal.presentation.viewmodels.LeaderboardItem
 import io.github.drp08.studypal.presentation.viewmodels.LeaderboardViewModel
+
+//https://static-00.iconduck.com/assets.00/trophy-emoji-512x512-x32hyhlp.png
 
 object LeaderboardScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel: LeaderboardViewModel = viewModel()
         val leaderboardItems by viewModel.leaderboardItems.collectAsState()
+        var showLeaderboard by remember { mutableStateOf(true) }
 
         Column(
             modifier = Modifier
@@ -43,24 +56,65 @@ object LeaderboardScreen : Screen {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TrophyIcon()
-            Spacer(modifier = Modifier.height(24.dp))
-            LeaderboardList(items = leaderboardItems)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                TextButton(onClick = { showLeaderboard = true }) {
+                    Text("Leaderboard")
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                TextButton(onClick = { showLeaderboard = false }) {
+                    Text("FlowerGarden")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (showLeaderboard) {
+                LeaderboardScreen.LeaderboardScreen(leaderboardItems = leaderboardItems)
+            } else {
+                val viewModel2: FlowerViewModel = viewModel()
+                val boxCount by viewModel2.boxCount.collectAsState()
+                val flowerCounts by viewModel2.flowerCounts.collectAsState()
+                val names by viewModel2.names.collectAsState()
+
+                FlowerViewScreen.FlowerGardenScreen(
+                    boxCount = boxCount,
+                    flowerCounts = flowerCounts,
+                    names = names
+                )
+            }
         }
     }
 
     @Composable
+    fun LeaderboardScreen(leaderboardItems: List<LeaderboardItem>) {
+        TrophyIcon()
+        Spacer(modifier = Modifier.height(24.dp))
+        LeaderboardList(items = leaderboardItems)
+    }
+
+    @Composable
     fun TrophyIcon() {
-        Image(
-            painter = painterResource(id = R.drawable.ic_trophy),
-            contentDescription = "Trophy",
-            modifier = Modifier
+        Box(
+            Modifier
                 .height(100.dp)
                 .width(100.dp)
-                .clip(CircleShape)
-                .background(Color(0xFFFFD700))
-                .padding(16.dp)
-        )
+                .padding(16.dp)) {
+            InternetImageBackground(url = "https://static-00.iconduck.com/assets.00/trophy-emoji-512x512-x32hyhlp.png"
+            )
+        }
+
+//        Image(
+//            painter = painterResource(id = R.drawable.ic_trophy),
+//            contentDescription = "Trophy",
+//            modifier = Modifier
+//                .height(100.dp)
+//                .width(100.dp)
+//                .clip(CircleShape)
+//                .background(Color(0xFFFFD700))
+//                .padding(16.dp)
+//        )
     }
 
     @Composable
@@ -103,6 +157,18 @@ object LeaderboardScreen : Screen {
     fun calculateXp(min: Float, decimalCompletedSessions: Float): Float {
         val bonusPoints = min%100 * decimalCompletedSessions
         return (min * decimalCompletedSessions) + bonusPoints
+    }
+
+    @Composable
+    fun InternetImageBackground(url: String) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = url,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 
 }

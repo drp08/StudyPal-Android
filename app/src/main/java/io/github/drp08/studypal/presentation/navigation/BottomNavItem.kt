@@ -27,5 +27,5 @@ sealed class BottomNavItem(
     data object Home : BottomNavItem("Home", Icons.Default.Home, HomeScreen)
     data object Calendar : BottomNavItem("Calendar", Icons.Default.DateRange, MonthlyCalendarScreen)
     data object Profile : BottomNavItem("Profile", Icons.Default.Person, ProfileScreen)
-    data object LeaderBoard : BottomNavItem("Leaderboard", Icons.Default.Star, FlowerViewScreen)
+    data object LeaderBoard : BottomNavItem("Leaderboard", Icons.Default.Star, LeaderboardScreen)
 }

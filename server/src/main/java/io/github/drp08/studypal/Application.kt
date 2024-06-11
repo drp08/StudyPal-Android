@@ -12,9 +12,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.respond
-import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
-import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.jetbrains.exposed.sql.Database
 
@@ -48,9 +46,7 @@ private fun Application.configureResources() {
 fun Application.configureRouting() {
     routing {
         scheduleRouting()
-        route("/db") {
-            databaseApiRoutes()
-        }
+        databaseApiRoutes()
 
         this.get("/") {
             call.respond("Hello World!")

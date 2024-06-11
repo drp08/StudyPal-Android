@@ -14,6 +14,12 @@ import io.ktor.server.routing.put
 import io.ktor.server.routing.route
 
 fun Route.databaseApiRoutes() {
+    route("/database") {
+        userDbRoutes()
+    }
+}
+
+fun Route.userDbRoutes() {
     route("/users") {
         get("/{name}") {
             val name = call.parameters["name"]!!

@@ -65,7 +65,7 @@ object FlowerViewScreen : Screen {
             else {
                 val viewModel2: LeaderboardViewModel = viewModel()
                 val leaderboardItems by viewModel2.leaderboardItems.collectAsState()
-                io.github.drp08.studypal.presentation.screens.LeaderboardScreen.LeaderboardScreen(leaderboardItems)
+                LeaderboardScreen.LeaderboardScreen(leaderboardItems)
             }
         }
     }

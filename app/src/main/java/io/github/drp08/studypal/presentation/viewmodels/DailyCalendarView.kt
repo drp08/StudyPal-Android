@@ -2,15 +2,19 @@ package io.github.drp08.studypal.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
+import javax.inject.Inject
 import kotlin.collections.MutableList
 
 data class Event(val startTime: LocalTime, val endTime: LocalTime, val title: String)
-class DailyCalendarView : ViewModel(){
+
+@HiltViewModel
+class DailyCalendarView @Inject constructor() : ViewModel() {
     private val _currentDate = MutableStateFlow(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date)
     val currentDate = _currentDate.asStateFlow()
 

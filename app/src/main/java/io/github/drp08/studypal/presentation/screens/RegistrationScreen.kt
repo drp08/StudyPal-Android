@@ -34,26 +34,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.github.drp08.studypal.presentation.viewmodels.RegistrationViewModel
-import io.github.drp08.studypal.utils.LocalDatabase
 import io.github.drp08.studypal.utils.formatTime
 import network.chaintech.ui.timepicker.WheelTimePickerView
 import network.chaintech.utils.DateTimePickerView
 import network.chaintech.utils.TimeFormat
 import network.chaintech.utils.WheelPickerDefaults
 
-object RegistrationScreen : Screen {
+data object RegistrationScreen : Screen {
     @Composable
     override fun Content() {
-        val userDao = LocalDatabase.current.userDao
-        val viewModel = viewModel {
-            RegistrationViewModel(userDao)
-        }
+        val viewModel = hiltViewModel<RegistrationViewModel>()
         val navigator = LocalNavigator.currentOrThrow
+
+        val user = viewModel.user
 
         Column(
             modifier = Modifier
@@ -71,7 +69,7 @@ object RegistrationScreen : Screen {
             )
 
             TextField(
-                value = viewModel.name,
+                value = user.name,
                 onValueChange = viewModel::onNameChange,
                 label = { Text("Your name") },
                 modifier = Modifier
@@ -148,7 +146,7 @@ object RegistrationScreen : Screen {
                     colors = ButtonDefaults.buttonColors(),
                     onClick = { showStartTimeDialog = true }
                 ) {
-                    val timeFormat = formatTime(viewModel.workingHoursStart, "HH:mm a")
+                    val timeFormat = formatTime(user.startWorkingHours, "HH:mm a")
                     Text(text = "Start: $timeFormat")
                 }
 
@@ -211,13 +209,13 @@ object RegistrationScreen : Screen {
                     colors = ButtonDefaults.buttonColors(),
                     onClick = { showEndTimeDialog = true }
                 ) {
-                    val timeFormat = formatTime(viewModel.workingHoursEnd, "HH:mm a")
+                    val timeFormat = formatTime(user.endWorkingHours, "HH:mm a")
                     Text(text = "End: $timeFormat")
                 }
             }
 
             TextField(
-                value = viewModel.hoursPerDay.toString(),
+                value = user.maxStudyingHours.toString(),
                 onValueChange = {
                     viewModel.onHoursPerDayChange(it.toInt())
                 },

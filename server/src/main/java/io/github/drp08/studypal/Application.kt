@@ -1,6 +1,7 @@
 package io.github.drp08.studypal
 
 import io.github.drp08.studypal.routes.scheduleRouting
+import io.github.drp08.studypal.utils.HttpConstants
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
@@ -16,8 +17,8 @@ import io.ktor.server.routing.routing
 fun main() {
     embeddedServer(
         Netty,
-        port = 8080,
-        host = "146.169.169.174",
+        port = HttpConstants.PORT,
+        host = HttpConstants.HOSTNAME,
         module = Application::module
     ).start(wait = true)
 }

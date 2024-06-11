@@ -13,10 +13,9 @@ interface TopicDao {
     @Upsert
     suspend fun upsertTopic(topic: TopicEntity)
 
-    @Query("SELECT * FROM topic JOIN session ON topic.name = session.topic")
-    fun getAllTopicsWithSessions(): Flow<Map<TopicEntity, List<SessionEntity>>>
-
     @Query("SELECT * FROM topic")
-    fun getAllTopics(): Flow<List<TopicEntity>>
+    suspend fun getAllTopics(): List<TopicEntity>
 
+    @Query("SELECT * FROM topic JOIN session ON topic.name = session.topic")
+    suspend fun getAllTopicsWithSessions(): Map<TopicEntity, List<SessionEntity>>
 }

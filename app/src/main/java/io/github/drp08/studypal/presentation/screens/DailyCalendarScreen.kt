@@ -20,12 +20,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
+import io.github.drp08.studypal.presentation.models.CalendarView
 import io.github.drp08.studypal.presentation.viewmodels.DailyCalendarView
 import io.github.drp08.studypal.presentation.viewmodels.Event
 import kotlinx.datetime.*
 
 
-object DailyCalendarScreen : Screen {
+data object DailyCalendarScreen : Screen {
 
     @Composable
     override fun Content() {

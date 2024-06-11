@@ -7,7 +7,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import io.github.drp08.studypal.presentation.screens.CalendarView
+import io.github.drp08.studypal.presentation.models.CalendarView
 
 @Composable
 fun CalendarViewSwitcher(currentView: CalendarView,

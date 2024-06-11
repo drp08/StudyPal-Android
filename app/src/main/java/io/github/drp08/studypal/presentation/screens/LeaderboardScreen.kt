@@ -100,21 +100,15 @@ object LeaderboardScreen : Screen {
             Modifier
                 .height(100.dp)
                 .width(100.dp)
-                .padding(16.dp)) {
-            InternetImageBackground(url = "https://static-00.iconduck.com/assets.00/trophy-emoji-512x512-x32hyhlp.png"
+                .padding(16.dp)
+        ) {
+            AsyncImage(
+                model = "https://static-00.iconduck.com/assets.00/trophy-emoji-512x512-x32hyhlp.png",
+                contentDescription = "Trophy",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
         }
-
-//        Image(
-//            painter = painterResource(id = R.drawable.ic_trophy),
-//            contentDescription = "Trophy",
-//            modifier = Modifier
-//                .height(100.dp)
-//                .width(100.dp)
-//                .clip(CircleShape)
-//                .background(Color(0xFFFFD700))
-//                .padding(16.dp)
-//        )
     }
 
     @Composable

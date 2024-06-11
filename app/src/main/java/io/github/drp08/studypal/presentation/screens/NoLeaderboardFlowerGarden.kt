@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -14,7 +16,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
+import io.github.drp08.studypal.presentation.viewmodels.SingleGardenViewModel
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -28,6 +32,9 @@ object NoLeaderboardFlowerGarden : Screen {
 
     @Composable
     fun SingleGardenScreen() {
+        val viewModel: SingleGardenViewModel = viewModel()
+        val flowerCount by viewModel.flowerCount.collectAsState()
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -47,7 +54,7 @@ object NoLeaderboardFlowerGarden : Screen {
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .padding(8.dp),
-                flowers = generateFlowerCenters(10, 600.dp - 300.dp, 600.dp - 300.dp)
+                flowers = generateFlowerCenters(flowerCount, 600.dp - 300.dp, 600.dp - 300.dp)
             )
         }
     }

@@ -1,11 +1,11 @@
 package io.github.drp08.studypal.routes
 
-import io.github.drp08.studypal.data.addFriend
-import io.github.drp08.studypal.data.addUser
-import io.github.drp08.studypal.data.deleteFriend
-import io.github.drp08.studypal.data.getFriends
-import io.github.drp08.studypal.data.getUser
-import io.github.drp08.studypal.data.updateXp
+import io.github.drp08.studypal.database.addFriend
+import io.github.drp08.studypal.database.addUser
+import io.github.drp08.studypal.database.deleteFriend
+import io.github.drp08.studypal.database.getFriends
+import io.github.drp08.studypal.database.getUser
+import io.github.drp08.studypal.database.updateXp
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.call
 import io.ktor.server.request.receive

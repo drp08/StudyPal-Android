@@ -1,7 +1,6 @@
 package io.github.drp08.studypal.presentation.screens
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
@@ -19,8 +18,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import coil.compose.AsyncImage
+import io.github.drp08.studypal.presentation.viewmodels.FlowerViewModel
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -29,9 +30,15 @@ object FlowerViewScreen : Screen {
 
     @Composable
     override fun Content() {
+        val viewModel: FlowerViewModel = viewModel()
+        val boxCount by viewModel.boxCount.collectAsState()
+        val flowerCounts by viewModel.flowerCounts.collectAsState()
+        val names by viewModel.names.collectAsState()
+
         FlowerGardenScreen(
-            boxCount = 6,
-            flowerCounts = listOf(3, 6, 2, 7, 9, 4), names = listOf("Garden 1", "Garden 2", "Garden 3", "Garden 4", "Garden 5", "Garden 6")
+            boxCount = boxCount,
+            flowerCounts = flowerCounts,
+            names = names
         )
     }
 
@@ -114,7 +121,6 @@ object FlowerViewScreen : Screen {
         val boxWidthPx = boxWidth.toPx()
         val boxHeightPx = boxHeight.toPx()
         val maxPetalRadius = 10.dp.toPx()
-        val flowerRadius = 5.dp.toPx()
 
         val imagePadding = 16.dp.toPx()
 

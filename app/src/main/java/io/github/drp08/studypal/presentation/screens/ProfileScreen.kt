@@ -25,7 +25,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -101,7 +106,7 @@ data object ProfileScreen : Screen {
                 contentAlignment = Alignment.TopStart,
             ) {
                 Column {
-                    Text("Existing Subjects", fontSize = 16.sp, color = Color.DarkGray)
+                    Text("Existing Subjects", fontSize = 20.sp, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(4.dp))
                     Box(
                         modifier = Modifier
@@ -116,7 +121,35 @@ data object ProfileScreen : Screen {
                             .padding(start = 16.dp, top = 10.dp, end = 16.dp, bottom = 10.dp),
                         contentAlignment = Alignment.TopStart,
                     ) {
+                        Column {
+                            Row(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 6.dp),
+                                horizontalArrangement = Arrangement.SpaceAround,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text("Statistics", fontSize = 18.sp, color = Color.DarkGray)
+                                Spacer(modifier = Modifier.width(60.dp))
+                                LinearProgressIndicator(
+                                    progress = { 0.65F },
+                                    modifier = Modifier.width(120.dp).height(18.dp),
+                                    color = Color.Blue,
+                                    trackColor = Color.LightGray
+                                )
+                            }
+                            Text(
+                                "Total Hours studied so far: 12",
+                                fontSize = 16.sp,
+                                color = Color.DarkGray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                            Text(
+                                "Exam Date: 10-12-2024",
+                                fontSize = 16.sp,
+                                color = Color.DarkGray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
 
+                        }
                     }
                 }
             }

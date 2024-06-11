@@ -26,7 +26,7 @@ import io.github.drp08.studypal.presentation.viewmodels.Event
 import kotlinx.datetime.*
 
 
-object DailyCalendarScreen : Screen {
+data object DailyCalendarScreen : Screen {
 
     @Composable
     override fun Content() {

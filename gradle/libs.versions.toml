@@ -21,7 +21,7 @@ ksp = "1.9.0-1.0.13"
 dateTimePicker = "1.0.2"
 media3Common = "1.3.1"
 exposed = "0.51.1"
-
+datastore = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,6 +64,7 @@ exposed = { module = "org.jetbrains.exposed:exposed-core", version.ref = "expose
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version = "3.44.1.0" }
+androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

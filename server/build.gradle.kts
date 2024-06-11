@@ -59,5 +59,8 @@ dependencies {
     implementation(libs.ktor.server.logging)
     implementation(libs.ktor.serialization)
 
-
+    implementation(libs.exposed)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.sqlite.jdbc)
 }

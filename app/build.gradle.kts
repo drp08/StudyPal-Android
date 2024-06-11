@@ -96,15 +96,4 @@ dependencies {
 
     implementation(libs.date.time.picker)
     implementation(libs.lifecycle.viewmodel.compose)
-
-    implementation(libs.exposed)
-    implementation(libs.exposed.dao)
-    implementation(libs.exposed.jdbc)
-    implementation(libs.sqlite.jdbc)
-
-//    implementation("org.jetbrains.exposed", "exposed-core", exposed_version)
-//    implementation("org.jetbrains.exposed", "exposed-dao", exposed_version)
-//    implementation("org.jetbrains.exposed", "exposed-jdbc", exposed_version)
-//
-//    implementation("org.xerial:sqlite-jdbc:3.44.1.0")
 }

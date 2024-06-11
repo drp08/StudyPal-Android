@@ -13,8 +13,8 @@ interface SessionDao {
     suspend fun upsertSession(sessionEntity: SessionEntity)
 
     @Query("SELECT * from session")
-    fun getAllSessions(): Flow<List<SessionEntity>>
+    suspend fun getAllSessions(): List<SessionEntity>
 
     @Query("SELECT * from session WHERE session.topic = :topic")
-    fun getSessionsOfTopic(topic: String): Flow<List<SessionEntity>>
+    suspend fun getSessionsOfTopic(topic: String): List<SessionEntity>
 }

@@ -4,31 +4,30 @@ import android.util.Log
 import io.github.drp08.studypal.db.daos.SessionDao
 import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.db.daos.TopicDao
-import io.github.drp08.studypal.db.daos.UserDao
+import io.github.drp08.studypal.db.session.UserSession
 import io.github.drp08.studypal.domain.SchedulingRepository
 import io.github.drp08.studypal.domain.entities.SessionEntity
 import io.github.drp08.studypal.domain.entities.SubjectEntity
 import io.github.drp08.studypal.domain.entities.TopicEntity
 import io.github.drp08.studypal.domain.models.PostBody
 import io.github.drp08.studypal.domain.models.Session
-import io.github.drp08.studypal.routes.Schedule
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import javax.inject.Inject
 
-class SchedulingRepositoryImpl(
+class SchedulingRepositoryImpl @Inject constructor(
     private val client: HttpClient,
     private val subjectDao: SubjectDao,
     private val topicDao: TopicDao,
     private val sessionDao: SessionDao,
-    private val userDao: UserDao
+    private val userSession: UserSession
 ) : SchedulingRepository {
 
     companion object {
@@ -39,50 +38,37 @@ class SchedulingRepositoryImpl(
         val subjects = subjectDao.getAllSubjects()
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
-        val users = userDao.getUser()
-        val res = client.get("http://146.169.169.174/")
-        Log.d(TAG, "rescheduleAllSessions: get/ ${res.bodyAsText()}")
         try {
-            subjects.collectLatest { subs ->
-                topics.collectLatest { tops ->
-                    sessions.collectLatest { sess ->
-                        users.collectLatest { user ->
-                            val response = client.post("http://146.169.169.174/schedule") {
-                                val body1 = Json.encodeToString(
-                                    PostBody(
-                                        subs.map(SubjectEntity::toSerializable).toTypedArray(),
-                                        sess.map(SessionEntity::toSerializable).toTypedArray(),
-                                        tops.map(TopicEntity::toSerializable).toTypedArray(),
-                                        user.toSerializable()
-                                    )
-                                )
-                                Log.d(TAG, "rescheduleAllSessions: $body1")
-                                setBody(body1)
-                            }
-                            Log.d(TAG, "rescheduleAllSessions: RequestObject: ${response.call.request}")
-                            Log.d(TAG, "rescheduleAllSessions: ResponseObject: ${response.call.response}")
-                            Log.d(TAG, "rescheduleAllSessions: Attributes: ${response.call.attributes}")
-                            if (response.status.isSuccess()) {
-                                send(true)
-                                val body = response.bodyAsText()
-                                Log.d(TAG, "rescheduleAllSessions: $body")
-                                Json.decodeFromString<List<Session>>(body)
-                                    .also {
-                                        Log.d(TAG, "rescheduleAllSessions: $it")
-                                    }
-                                    .forEach { sessionResponse ->
-                                        sessionDao.upsertSession(
-                                            SessionEntity.fromSerializable(
-                                                sessionResponse
-                                            )
-                                        )
-                                    }
-                            } else {
-                                Log.e(TAG, "rescheduleAllSessions: ${response.bodyAsText()}", null)
-                            }
-                        }
+            val user = userSession.getCurrentUser().first()
+                ?: throw IllegalStateException("User object is null!")
+            val response = client.post("/schedule") {
+                val body1 = Json.encodeToString(
+                    PostBody(
+                        subjects.map(SubjectEntity::toSerializable).toTypedArray(),
+                        sessions.map(SessionEntity::toSerializable).toTypedArray(),
+                        topics.map(TopicEntity::toSerializable).toTypedArray(),
+                        user
+                    )
+                )
+                setBody(body1)
+            }
+            if (response.status.isSuccess()) {
+                send(true)
+                val body = response.bodyAsText()
+                Json.decodeFromString<List<Session>>(body)
+                    .forEach { sessionResponse ->
+                        sessionDao.upsertSession(
+                            SessionEntity.fromSerializable(
+                                sessionResponse
+                            )
+                        )
                     }
-                }
+            } else {
+                Log.e(
+                    TAG,
+                    "rescheduleAllSessions: Response status is not successful. Body: ${response.bodyAsText()}",
+                    null
+                )
             }
         } catch (e: Exception) {
             Log.e(TAG, "rescheduleAllSessions: ${e.message}", e)

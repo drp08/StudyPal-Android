@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.R
 import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
+import io.github.drp08.studypal.presentation.models.CalendarView
 import io.github.drp08.studypal.presentation.viewmodels.MonthlyCalendarViewModel
 import io.ktor.util.date.WeekDay
 import kotlinx.datetime.DateTimeUnit
@@ -43,7 +44,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import network.chaintech.utils.now
 
-object MonthlyCalendarScreen : Screen {
+data object MonthlyCalendarScreen : Screen {
 
     @Composable
     override fun Content() {

@@ -1,5 +1,6 @@
 package io.github.drp08.studypal
 
+import io.github.drp08.studypal.routes.databaseApiRoutes
 import io.github.drp08.studypal.routes.scheduleRouting
 import io.github.drp08.studypal.utils.HttpConstants
 import io.ktor.serialization.kotlinx.json.json
@@ -11,8 +12,11 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
+import org.jetbrains.exposed.sql.Database
 
 fun main() {
     embeddedServer(
@@ -27,6 +31,14 @@ fun Application.module() {
     configureSerialization()
     configureResources()
     configureRouting()
+    configureDatabase()
+}
+
+fun Application.configureDatabase() {
+    Database.connect(
+        url = "jdbc:sqlite::resource:data.db",
+        driver = "org.sqlite.JDBC"
+    )
 }
 
 private fun Application.configureResources() {
@@ -36,12 +48,16 @@ private fun Application.configureResources() {
 fun Application.configureRouting() {
     routing {
         scheduleRouting()
+        route("/db") {
+            databaseApiRoutes()
+        }
 
         this.get("/") {
             call.respond("Hello World!")
         }
     }
 }
+
 
 fun Application.configureSerialization() {
     install(ContentNegotiation) {

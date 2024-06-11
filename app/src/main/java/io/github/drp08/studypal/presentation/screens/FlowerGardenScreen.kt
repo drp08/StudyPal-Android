@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import coil.compose.AsyncImage
 import kotlin.math.cos
@@ -30,12 +31,12 @@ object FlowerViewScreen : Screen {
     override fun Content() {
         FlowerGardenScreen(
             boxCount = 6,
-            flowerCounts = listOf(5, 10, 15, 8, 12, 6)
-        ) // Example values
+            flowerCounts = listOf(3, 6, 2, 7, 9, 4), names = listOf("Garden 1", "Garden 2", "Garden 3", "Garden 4", "Garden 5", "Garden 6")
+        )
     }
 
     @Composable
-    fun FlowerGardenScreen(boxCount: Int, flowerCounts: List<Int>) {
+    fun FlowerGardenScreen(boxCount: Int, flowerCounts: List<Int>, names: List<String>) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -54,27 +55,43 @@ object FlowerViewScreen : Screen {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    BoxWithFlowers(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .padding(8.dp),
-                        flowers = generateFlowerCenters(flowerCounts[index], 200.dp - 16.dp, 200.dp - 16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    if (index + 1 < boxCount) {
                         BoxWithFlowers(
                             modifier = Modifier
                                 .weight(1f)
-                                .aspectRatio(1f)
-                                .padding(8.dp),
-                            flowers = generateFlowerCenters(flowerCounts[index + 1], 200.dp - 16.dp, 200.dp - 16.dp)
+                                .aspectRatio(1f),
+                            flowers = generateFlowerCenters(flowerCounts[index], 200.dp - 45.dp, 200.dp - 45.dp),
                         )
+
+                    Spacer(modifier = Modifier.width(16.dp))
+                    if (index + 1 < boxCount) {
+                            BoxWithFlowers(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .aspectRatio(1f),
+                                flowers = generateFlowerCenters(flowerCounts[index + 1], 200.dp - 45.dp, 200.dp - 45.dp),
+                            )
+
                     } else {
                         Spacer(modifier = Modifier.weight(1f))
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Row (modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = names[index],
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+
+                    Text(
+                        text = names[index + 1],
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -89,18 +106,24 @@ object FlowerViewScreen : Screen {
                 drawFlowerGarden(flowers)
             }
         }
+
     }
 
     @Composable
     private fun generateFlowerCenters(flowerCount: Int, boxWidth: Dp, boxHeight: Dp): List<Offset> {
         val boxWidthPx = boxWidth.toPx()
         val boxHeightPx = boxHeight.toPx()
-        val maxPetalRadius = 10.dp.toPx() // Smaller petal radius
-        val flowerRadius = 5.dp.toPx() // Smaller flower radius
+        val maxPetalRadius = 10.dp.toPx()
+        val flowerRadius = 5.dp.toPx()
+
+        val imagePadding = 16.dp.toPx()
+
+        val maxX = boxWidthPx - imagePadding
+        val maxY = boxHeightPx - imagePadding
 
         return List(flowerCount) {
-            val x = Random.nextFloat() * (boxWidthPx - 2 * maxPetalRadius) + maxPetalRadius
-            val y = Random.nextFloat() * (boxHeightPx - 2 * maxPetalRadius) + maxPetalRadius
+            val x = Random.nextFloat() * (maxX - 2 * maxPetalRadius) + maxPetalRadius
+            val y = Random.nextFloat() * (maxY - 2 * maxPetalRadius) + maxPetalRadius
             Offset(x, y)
         }
     }
@@ -188,5 +211,5 @@ object FlowerViewScreen : Screen {
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewCanvasScreen() {
-    FlowerViewScreen.FlowerGardenScreen(boxCount = 6, flowerCounts = listOf(5, 10, 15, 8, 12, 6))
+    FlowerViewScreen.FlowerGardenScreen(boxCount = 6, flowerCounts = listOf(5, 10, 15, 8, 12, 6), names = listOf("Garden 1", "Garden 2", "Garden 3", "Garden 4", "Garden 5", "Garden 6"))
 }

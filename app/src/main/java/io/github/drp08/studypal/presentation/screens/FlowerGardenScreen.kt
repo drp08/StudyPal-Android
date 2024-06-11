@@ -148,7 +148,7 @@ object FlowerViewScreen : Screen {
     }
 
     @Composable
-    private fun generateFlowerCenters(flowerCount: Int, boxWidth: Dp, boxHeight: Dp): List<Offset> {
+    fun generateFlowerCenters(flowerCount: Int, boxWidth: Dp, boxHeight: Dp): List<Offset> {
         val boxWidthPx = boxWidth.toPx()
         val boxHeightPx = boxHeight.toPx()
         val maxPetalRadius = 10.dp.toPx()
@@ -200,13 +200,10 @@ object FlowerViewScreen : Screen {
         val green = color.green
         val blue = color.blue
 
-        // Exclude all shades of grey
         if (red == green && green == blue) return true
 
-        // Exclude all shades of green
         if (green > red && green > blue) return true
 
-        // Exclude all shades of brown
         if (red > green && green > blue) return true
 
         return false

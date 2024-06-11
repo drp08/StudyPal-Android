@@ -2,18 +2,12 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "cc68fe10cc2b6a8cdd1f89008ff4e0a7",
+    "identityHash": "3f03fba732bb0a2754917ec4766614be",
     "entities": [
       {
         "tableName": "session",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER NOT NULL, `topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, PRIMARY KEY(`sessionId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`topic` TEXT NOT NULL, `startTime` INTEGER NOT NULL, `endTime` INTEGER NOT NULL, `sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
         "fields": [
-          {
-            "fieldPath": "sessionId",
-            "columnName": "sessionId",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "topic",
             "columnName": "topic",
@@ -31,10 +25,16 @@
             "columnName": "endTime",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
             "sessionId"
           ]
@@ -128,7 +128,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cc68fe10cc2b6a8cdd1f89008ff4e0a7')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3f03fba732bb0a2754917ec4766614be')"
     ]
   }
 }

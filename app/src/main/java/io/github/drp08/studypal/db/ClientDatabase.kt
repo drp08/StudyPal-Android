@@ -11,7 +11,7 @@ import io.github.drp08.studypal.domain.entities.TopicEntity
 
 @Database(
     entities = [SessionEntity::class, TopicEntity::class, SubjectEntity:: class],
-    version = 4
+    version = 5
 )
 abstract class ClientDatabase : RoomDatabase() {
     abstract val sessionDao: SessionDao

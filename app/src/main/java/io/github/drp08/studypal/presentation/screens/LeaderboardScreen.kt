@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -52,7 +54,14 @@ object LeaderboardScreen : Screen {
         ) {
             Switch(
                 checked = showSingleGarden,
-                onCheckedChange = { showSingleGarden = it }
+                onCheckedChange = { showSingleGarden = it },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color(0xFF258a40),
+                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                    uncheckedThumbColor = Color.Red,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer
+                )
+
             )
             if (!showSingleGarden) {
                 SingleGardenScreen()

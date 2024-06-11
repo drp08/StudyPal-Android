@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -66,7 +67,7 @@ data object AddEventScreen : Screen {
             Box(
                 modifier = Modifier
                     .animateContentSize()
-                    .height(if (checked) (320 + 50 * numberDatesAdded).dp else 200.dp)
+                    .height(if (checked) (320 + 50 * (numberDatesAdded + 1)).dp else 250.dp)
                     .width(320.dp)
                     .border(
                         width = 1.dp,
@@ -135,6 +136,14 @@ data object AddEventScreen : Screen {
                         }
                     } else {
                         numberDatesAdded = 1
+                    }
+                    Button(
+                        onClick = {/* Handle adding event */},
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(vertical = 12.dp)
+                    ) {
+                        Text(text = "Add Event")
                     }
                 }
             }

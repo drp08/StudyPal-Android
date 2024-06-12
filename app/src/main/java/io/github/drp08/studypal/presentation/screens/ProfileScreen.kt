@@ -32,6 +32,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,8 +58,8 @@ import kotlin.random.Random
 data object ProfileScreen : Screen {
     @Composable
     override fun Content() {
-        val viewModel = hiltViewModel<ProfileViewModel>()
-
+        //val viewModel = hiltViewModel<ProfileViewModel>()
+        val viewModel: ProfileViewModel = hiltViewModel()
         val user = ActiveUser.current
         Column(
             modifier = Modifier
@@ -110,8 +111,8 @@ data object ProfileScreen : Screen {
             }
             var numTopicsExpanded by remember { mutableIntStateOf(0) }
             var numberSubjects by remember { mutableIntStateOf(0) }
-            val subjectList = arrayOf("Statistics") //Todo: Change this to the actual list of subjects
-            numberSubjects = subjectList.size
+            val subjectList = viewModel.subjects.collectAsState().value
+            numberSubjects = subjectList.count()
             Box(
                 modifier = Modifier
                     .animateContentSize()
@@ -157,7 +158,7 @@ data object ProfileScreen : Screen {
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text(subject, fontSize = 18.sp, color = Color.DarkGray, fontWeight = FontWeight.Bold)
+                                        Text(subject.name, fontSize = 18.sp, color = Color.DarkGray, fontWeight = FontWeight.Bold)
                                         Spacer(modifier = Modifier.width(60.dp))
                                         LinearProgressIndicator(
                                             progress = { 0.65F },
@@ -312,7 +313,8 @@ data object ProfileScreen : Screen {
                             .padding(start = 12.dp, end = 12.dp),
                         contentAlignment = Alignment.BottomEnd
                     ) {
-                        SubjectBarChart(subjectList)
+                        val arrayStrings = subjectList.map { t -> t.name }.toTypedArray()
+                        SubjectBarChart(arrayStrings)
                         Spacer(modifier = Modifier.height(40.dp))
                         Text(
                             text = "hours",

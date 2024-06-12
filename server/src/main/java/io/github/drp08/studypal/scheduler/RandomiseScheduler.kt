@@ -54,7 +54,7 @@ class RandomiseScheduler : Scheduler {
             val session =
                 Session(
                     sessionId = Random.nextInt(1, Int.MAX_VALUE),
-                    topic = topic.name,
+                    parent = topic.name,
                     startTime = time,
                     endTime = time + millisecondsInHour,
                 )

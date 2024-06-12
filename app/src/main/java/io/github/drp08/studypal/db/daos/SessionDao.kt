@@ -15,6 +15,9 @@ interface SessionDao {
     @Query("SELECT * from session")
     suspend fun getAllSessions(): List<SessionEntity>
 
-    @Query("SELECT * from session WHERE session.topic = :topic")
+    @Query("SELECT * from session WHERE session.parent = :topic")
     suspend fun getSessionsOfTopic(topic: String): List<SessionEntity>
+
+    @Query("SELECT * from session WHERE session.parent like :name")
+    suspend fun getAllEvents(name: String) : List<SessionEntity>
 }

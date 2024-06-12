@@ -74,6 +74,7 @@ class AddSubjectViewModel @Inject constructor(
     sealed class UiAction {
         data class ChangeSubject(val subjectName: String) : UiAction()
         data class ChangeExamDate(val examEpoch: Long) : UiAction()
+        // TODO: should this not be to = 30?
         data class ChangeStudyHours(@IntRange(from = 1, to = 9) val studyHours: Int) : UiAction()
         data class ChangeConfidence(@FloatRange(from = 0.0, to = 1.0) val confidence: Float) : UiAction()
         data class AddSubject(val navigator: Navigator) : UiAction()

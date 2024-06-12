@@ -9,14 +9,14 @@ import io.github.drp08.studypal.domain.models.Session
 data class SessionEntity(
     @PrimaryKey
     val sessionId: Int,
-    val topic: String, // The foreign to the topic name
+    val parent: String, // The foreign to the topic name
     val startTime: Long, // Epoch millis
     val endTime: Long, // Epoch millis
 ) {
     fun toSerializable(): Session {
         return Session(
             sessionId,
-            topic,
+            parent,
             startTime,
             endTime
         )
@@ -26,7 +26,7 @@ data class SessionEntity(
         fun fromSerializable(session: Session): SessionEntity {
             return SessionEntity(
                 session.sessionId,
-                session.topic,
+                session.parent,
                 session.startTime,
                 session.endTime
             )

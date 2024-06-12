@@ -16,6 +16,6 @@ interface TopicDao {
     @Query("SELECT * FROM topic")
     suspend fun getAllTopics(): List<TopicEntity>
 
-    @Query("SELECT * FROM topic JOIN session ON topic.name = session.topic")
+    @Query("SELECT * FROM topic JOIN session ON topic.name = session.parent")
     suspend fun getAllTopicsWithSessions(): Map<TopicEntity, List<SessionEntity>>
 }

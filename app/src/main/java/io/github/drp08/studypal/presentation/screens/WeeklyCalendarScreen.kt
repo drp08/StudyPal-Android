@@ -32,7 +32,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import io.github.drp08.studypal.presentation.viewmodels.WeeklyViewModel
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.style.TextAlign
 import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
@@ -174,7 +173,7 @@ data object WeeklyCalendarScreen : Screen {
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        text = activity.topic,
+                                        text = activity.parent,
                                         fontSize = 16.sp,
                                         textAlign = TextAlign.Center,
                                         modifier = Modifier.padding(vertical = 4.dp)

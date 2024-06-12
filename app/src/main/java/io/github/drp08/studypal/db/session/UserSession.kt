@@ -34,21 +34,27 @@ class UserSession @Inject constructor(
     private val startWorkingHours = longPreferencesKey("USER_START_WORKING_HOURS")
     private val endWorkingHours = longPreferencesKey("USER_END_WORKING_HOURS")
 
-    override fun getCurrentUser(): Flow<User?> =
+    override fun verifyAndGetUser(): Flow<Result<User>> =
         dataStore.data.catch {
             emit(emptyPreferences())
         }.map {
-            val name = it[name] ?: return@map null
-            val maxStudyingHours = it[maxStudyingHours] ?: return@map null
-            val startWorkingHours = it[startWorkingHours] ?: return@map null
-            val endWorkingHours = it[endWorkingHours] ?: return@map null
+            val name = it[name] ?: return@map Result.failure("User's name was not found")
+            val maxStudyingHours = it[maxStudyingHours] ?: return@map Result.failure("User's maxStudyingHours was not found")
+            val startWorkingHours = it[startWorkingHours] ?: return@map Result.failure("User's startWorkingHours was not found")
+            val endWorkingHours = it[endWorkingHours] ?: return@map Result.failure("User's endWorkingHours was not found")
 
-            User(
+            val user = User(
                 name = name,
                 startWorkingHours = startWorkingHours,
                 endWorkingHours = endWorkingHours,
                 maxStudyingHours = maxStudyingHours
             )
+
+            val response = client.get("/database/users/${user.name}")
+            if (!response.status.isSuccess())
+                return@map Result.failure("Received ${response.status} from server. Possibly the user does not exist.")
+
+            Result.success(user)
         }
 
     override suspend fun createUser(user: User) {
@@ -60,12 +66,5 @@ class UserSession @Inject constructor(
         }
     }
 
-    override suspend fun verifyUser() {
-        val user = getCurrentUser().first()!!
-
-        val remoteUser = client.get("/database/users/${user.name}")
-        if (!remoteUser.status.isSuccess()) {
-
-        }
-    }
+    private fun <T> Result.Companion.failure(message: String) = failure<T>(Exception(message))
 }

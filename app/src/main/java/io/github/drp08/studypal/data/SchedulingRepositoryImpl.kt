@@ -39,7 +39,7 @@ class SchedulingRepositoryImpl @Inject constructor(
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
         try {
-            val user = userSession.getCurrentUser().first()
+            val user = userSession.verifyAndGetUser().first()
                 ?: throw IllegalStateException("User object is null!")
             val response = client.post("/schedule") {
                 val body1 = Json.encodeToString(

@@ -12,9 +12,9 @@ import javax.inject.Inject
 class LoadingViewModel @Inject constructor(
     private val userSession: UserSession
 ): ViewModel() {
-    fun getUser(): User? {
+    fun getUser(): Result<User> {
         return runBlocking {
-            userSession.getCurrentUser().first()
+            userSession.verifyAndGetUser().first()
         }
     }
 }

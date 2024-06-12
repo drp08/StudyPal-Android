@@ -4,7 +4,6 @@ import io.github.drp08.studypal.domain.models.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    fun getCurrentUser(): Flow<User?>
+    fun verifyAndGetUser(): Flow<Result<User>>
     suspend fun createUser(user: User)
-    suspend fun verifyUser()
 }

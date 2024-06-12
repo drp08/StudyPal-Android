@@ -12,16 +12,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,16 +29,21 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import coil.compose.AsyncImage
+import io.github.drp08.studypal.presentation.screens.NoLeaderboardFlowerGarden.SingleGardenScreen
 import io.github.drp08.studypal.presentation.viewmodels.FlowerViewModel
 import io.github.drp08.studypal.presentation.viewmodels.LeaderboardItem
 import io.github.drp08.studypal.presentation.viewmodels.LeaderboardViewModel
+
 
 object LeaderboardScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel: LeaderboardViewModel = viewModel()
         val leaderboardItems by viewModel.leaderboardItems.collectAsState()
-        var showLeaderboard by remember { mutableStateOf(true) }
+        val showLeaderboard by viewModel.isLeaderboard.collectAsState()
+        val showSingleGarden by viewModel.isLeaderboardEnabled.collectAsState()
+        val isLeaderboard by viewModel.currentlyInLeaderBoardView.collectAsState()
+        val isFlowerView by viewModel.currentlyInFlowerView.collectAsState()
 
         Column(
             modifier = Modifier
@@ -47,33 +52,48 @@ object LeaderboardScreen : Screen {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                TextButton(onClick = { showLeaderboard = true }) {
-                    Text("Leaderboard")
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                TextButton(onClick = { showLeaderboard = false }) {
-                    Text("FlowerGarden")
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (showLeaderboard) {
-                LeaderboardScreen(leaderboardItems = leaderboardItems)
-            } else {
-                val viewModel2: FlowerViewModel = viewModel()
-                val boxCount by viewModel2.boxCount.collectAsState()
-                val flowerCounts by viewModel2.flowerCounts.collectAsState()
-                val names by viewModel2.names.collectAsState()
-
-                FlowerViewScreen.FlowerGardenScreen(
-                    boxCount = boxCount,
-                    flowerCounts = flowerCounts,
-                    names = names
+            Switch(
+                checked = showSingleGarden,
+                onCheckedChange = { viewModel.toggleLeaderboard() },
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = Color(0xFF258a40),
+                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                    uncheckedThumbColor = Color.Red,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer
                 )
+
+            )
+            if (!showSingleGarden) {
+                
+                SingleGardenScreen()
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    TextButton(onClick = { if(!isLeaderboard) {viewModel.toggleLeaderboardAndFlowers()} }) {
+                        Text("Leaderboard")
+                    }
+                    Spacer(modifier = Modifier.width(16.dp))
+                    TextButton(onClick = { if(!isFlowerView) {viewModel.toggleLeaderboardAndFlowers()} }) {
+                        Text("FlowerGarden")
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                if (showLeaderboard) {
+                    LeaderboardScreen(leaderboardItems = leaderboardItems)
+                } else {
+                    val viewModel2: FlowerViewModel = viewModel()
+                    val boxCount by viewModel2.boxCount.collectAsState()
+                    val flowerCounts by viewModel2.flowerCounts.collectAsState()
+                    val names by viewModel2.names.collectAsState()
+
+                    FlowerViewScreen.FlowerGardenScreen(
+                        boxCount = boxCount,
+                        flowerCounts = flowerCounts,
+                        names = names
+                    )
+                }
             }
         }
     }

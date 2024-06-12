@@ -53,16 +53,27 @@ import co.yml.charts.ui.barchart.models.BarChartData
 import co.yml.charts.ui.barchart.models.BarChartType
 import co.yml.charts.ui.barchart.models.BarData
 import co.yml.charts.ui.barchart.models.BarStyle
+import io.github.drp08.studypal.domain.entities.SubjectEntity
 import kotlin.random.Random
 
 data object ProfileScreen : Screen {
     @Composable
     override fun Content() {
-        //val viewModel = hiltViewModel<ProfileViewModel>()
-        val viewModel: ProfileViewModel = hiltViewModel()
+        val viewModel = hiltViewModel<ProfileViewModel>()
         val user = ActiveUser.current
+        val subjects by viewModel.subjects.collectAsState()
+
+        Whatever(userName = user.name, subjectList = subjects)
+    }
+
+    @Composable
+    fun Whatever(
+        userName: String,
+        subjectList: List<SubjectEntity>,
+        modifier: Modifier = Modifier
+    ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .verticalScroll(state = rememberScrollState())
                 .fillMaxWidth()
                 .padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 20.dp),
@@ -85,7 +96,7 @@ data object ProfileScreen : Screen {
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text("Name: ${user.name}", fontSize = 24.sp, color = Color.DarkGray)
+                    Text("Name: $userName", fontSize = 24.sp, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(12.dp))
                     Text("Total XP: ")
                 }
@@ -98,7 +109,7 @@ data object ProfileScreen : Screen {
                 horizontalArrangement = Arrangement.Center,
             ) {
                 OutlinedButton(
-                    onClick = { ProfileScreen}
+                    onClick = { ProfileScreen }
                 ) {
                     Text("Add Friends")
                 }
@@ -111,7 +122,6 @@ data object ProfileScreen : Screen {
             }
             var numTopicsExpanded by remember { mutableIntStateOf(0) }
             var numberSubjects by remember { mutableIntStateOf(0) }
-            val subjectList = viewModel.subjects.collectAsState().value
             numberSubjects = subjectList.count()
             Box(
                 modifier = Modifier
@@ -423,6 +433,9 @@ data object ProfileScreen : Screen {
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewProfileScreen() {
-    ProfileScreen.Content()
+    ProfileScreen.Whatever(
+        userName = "Nishant",
+        subjectList = ProfileViewModel.dummySubjects
+    )
 }
 

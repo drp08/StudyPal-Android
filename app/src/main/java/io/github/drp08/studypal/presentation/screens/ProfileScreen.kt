@@ -63,11 +63,11 @@ data object ProfileScreen : Screen {
         val user = ActiveUser.current
         val subjects by viewModel.subjects.collectAsState()
 
-        Whatever(userName = user.name, subjectList = subjects)
+        InnerContent(userName = user.name, subjectList = subjects)
     }
 
     @Composable
-    fun Whatever(
+    fun InnerContent(
         userName: String,
         subjectList: List<SubjectEntity>,
         modifier: Modifier = Modifier
@@ -452,7 +452,7 @@ data object ProfileScreen : Screen {
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewProfileScreen() {
-    ProfileScreen.Whatever(
+    ProfileScreen.InnerContent(
         userName = "Nishant",
         subjectList = ProfileViewModel.dummySubjects
     )

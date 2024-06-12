@@ -15,8 +15,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -68,6 +70,7 @@ data object AddEventScreen : Screen {
                     .animateContentSize()
                     .height(if (checked) (320 + 50 * numberDatesAdded).dp else 200.dp)
                     .width(320.dp)
+                    .verticalScroll(rememberScrollState())
                     .border(
                         width = 1.dp,
                         color = Color.LightGray,
@@ -155,6 +158,7 @@ data object AddEventScreen : Screen {
         ) {
             OutlinedTextField(
                 value = eventName,
+                singleLine = true,
                 onValueChange = { eventName = it },
                 label = { Text(text = "Event Name", color = Color.DarkGray) },
             )

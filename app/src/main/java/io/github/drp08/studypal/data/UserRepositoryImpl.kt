@@ -12,6 +12,8 @@ import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.models.User
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -67,6 +69,12 @@ class UserRepositoryImpl @Inject constructor(
         }
 
     override suspend fun createUser(user: User) {
+        val response = client.post("/database/users") {
+            setBody(user.name)
+        }
+        if (!response.status.isSuccess())
+            return
+
         dataStore.edit {
             it[name] = user.name
             it[maxStudyingHours] = user.maxStudyingHours

@@ -1,4 +1,4 @@
-package io.github.drp08.studypal.db.session
+package io.github.drp08.studypal.data
 
 import androidx.compose.runtime.compositionLocalOf
 import androidx.datastore.core.DataStore
@@ -11,12 +11,14 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.models.User
 import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class UserSession @Inject constructor(
+class UserRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val client: HttpClient
 ) : UserRepository {
@@ -34,7 +36,13 @@ class UserSession @Inject constructor(
     override fun verifyAndGetUser(): Flow<Result<User>> {
         return getUser()
             .catch { Result.failure<User>(it) }
-            .map { Result.success(it) }
+            .map {
+                val response = client.get("/database/users/${it.name}")
+                if (!response.status.isSuccess())
+                    return@map Result.failure("The server returned ${response.status}. Possibly server is down or User was not found in the server.")
+
+                Result.success(it)
+            }
     }
 
     override fun getUser(): Flow<User> =

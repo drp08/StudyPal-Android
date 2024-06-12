@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.db.daos.TopicDao
-import io.github.drp08.studypal.db.session.UserSession
+import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.entities.SubjectEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userSession: UserSession,
+    private val userRepository: UserRepository,
     private val topicDao: TopicDao,
     private val subjectDao: SubjectDao
 ): ViewModel() {
@@ -40,7 +40,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            userSession.getUser().collectLatest {
+            userRepository.getUser().collectLatest {
                 Log.d(TAG, "userEntity: $it")
             }
         }

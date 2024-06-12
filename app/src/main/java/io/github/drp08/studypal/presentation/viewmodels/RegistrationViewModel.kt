@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.navigator.Navigator
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.drp08.studypal.db.session.UserSession
+import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.models.User
 import io.github.drp08.studypal.presentation.navigation.HomeNavigator
 import io.github.drp08.studypal.presentation.screens.HomeScreen
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val userSession: UserSession
+    private val userRepository: UserRepository
 ) : ViewModel() {
     var user by mutableStateOf(
         User(
@@ -49,7 +49,7 @@ class RegistrationViewModel @Inject constructor(
             return
 
         viewModelScope.launch {
-            userSession.createUser(user)
+            userRepository.createUser(user)
 
             navigator.replace(HomeNavigator(startScreen = HomeScreen, user = user))
         }

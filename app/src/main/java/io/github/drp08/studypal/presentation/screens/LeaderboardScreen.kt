@@ -98,7 +98,7 @@ object LeaderboardScreen : Screen {
                     val names by viewModel2.names.collectAsState()
 
                     FlowerViewScreen.FlowerGardenScreen(
-                        boxCount = boxCount,
+                        boxCount = 3,
                         flowerCounts = flowerCounts,
                         names = names
                     )

@@ -8,15 +8,21 @@ import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.models.User
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UserSession @Inject constructor(
-    private val dataStore: DataStore<Preferences>
-) {
+    private val dataStore: DataStore<Preferences>,
+    private val client: HttpClient
+) : UserRepository {
     companion object {
         const val USER = "user"
 
@@ -28,7 +34,7 @@ class UserSession @Inject constructor(
     private val startWorkingHours = longPreferencesKey("USER_START_WORKING_HOURS")
     private val endWorkingHours = longPreferencesKey("USER_END_WORKING_HOURS")
 
-    fun getCurrentUser(): Flow<User?> =
+    override fun getCurrentUser(): Flow<User?> =
         dataStore.data.catch {
             emit(emptyPreferences())
         }.map {
@@ -45,12 +51,21 @@ class UserSession @Inject constructor(
             )
         }
 
-    suspend fun setUser(user: User) {
+    override suspend fun createUser(user: User) {
         dataStore.edit {
             it[name] = user.name
             it[maxStudyingHours] = user.maxStudyingHours
             it[startWorkingHours] = user.startWorkingHours
             it[endWorkingHours] = user.endWorkingHours
+        }
+    }
+
+    override suspend fun verifyUser() {
+        val user = getCurrentUser().first()!!
+
+        val remoteUser = client.get("/database/users/${user.name}")
+        if (!remoteUser.status.isSuccess()) {
+
         }
     }
 }

@@ -1,19 +1,13 @@
 package io.github.drp08.studypal.presentation.viewmodels
 
 import android.util.Log
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.Provides
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.db.daos.TopicDao
 import io.github.drp08.studypal.db.session.UserSession
-import io.github.drp08.studypal.db.session.UserSession.Companion.ActiveUser
 import io.github.drp08.studypal.domain.entities.SubjectEntity
-import io.github.drp08.studypal.domain.models.Subject
-import io.github.drp08.studypal.domain.models.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

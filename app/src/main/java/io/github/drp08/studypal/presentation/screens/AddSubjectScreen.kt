@@ -156,6 +156,7 @@ data object AddSubjectScreen : Screen {
         ) {
             OutlinedTextField(
                 value = topicName,
+                singleLine = true,
                 onValueChange = { topicName = it },
                 label = { Text(text = "Topic Name", color = Color.DarkGray) },
             )
@@ -179,6 +180,7 @@ data object AddSubjectScreen : Screen {
         ) {
             OutlinedTextField(
                 value = name,
+                singleLine = true,
                 onValueChange = onNameChange,
                 label = { Text(text = "Subject Name", color = Color.DarkGray) },
             )

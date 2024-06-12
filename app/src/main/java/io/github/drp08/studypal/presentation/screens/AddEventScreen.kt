@@ -158,6 +158,7 @@ data object AddEventScreen : Screen {
         ) {
             OutlinedTextField(
                 value = eventName,
+                singleLine = true,
                 onValueChange = { eventName = it },
                 label = { Text(text = "Event Name", color = Color.DarkGray) },
             )

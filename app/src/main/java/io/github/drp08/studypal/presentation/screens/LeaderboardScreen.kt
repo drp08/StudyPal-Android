@@ -52,19 +52,25 @@ object LeaderboardScreen : Screen {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Switch(
-                checked = showSingleGarden,
-                onCheckedChange = { viewModel.toggleLeaderboard() },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color(0xFF258a40),
-                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                    uncheckedThumbColor = Color.Red,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Switch(
+                    checked = showSingleGarden,
+                    onCheckedChange = { viewModel.toggleLeaderboard() },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color(0xFF258a40),
+                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                        uncheckedThumbColor = Color.Red,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
 
-            )
+                )
+            }
             if (!showSingleGarden) {
-                
                 SingleGardenScreen()
             } else {
                 Row(

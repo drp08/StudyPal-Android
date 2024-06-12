@@ -67,6 +67,7 @@ import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel
 import kotlin.random.Random
 
 data object ProfileScreen : Screen {
+
     @Composable
     override fun Content() {
         val viewModel = hiltViewModel<ProfileViewModel>()
@@ -98,7 +99,7 @@ data object ProfileScreen : Screen {
                 ) {
                     Text("Name: ${user.name}", fontSize = 24.sp, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("Total XP: ")
+                    Text("Total XP: ") //Todo: Add XP from Leaderboard
                 }
             }
             Row (
@@ -346,6 +347,225 @@ data object ProfileScreen : Screen {
                     .width(320.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
+                var showDialog by remember { mutableStateOf(false) }
+                val timeToChoose = (5..60 step 5).toList().toIntArray()
+                val expandedWork = remember { mutableStateOf(false) }
+                val expandedShort = remember { mutableStateOf(false) }
+                val expandedLong = remember { mutableStateOf(false) }
+                var shortBreakTime = 5
+                var longBreakTime = 5
+                var workTime = 5
+                if (showDialog) {
+                    Dialog(onDismissRequest = { showDialog = false } ) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                                .padding(16.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.SpaceEvenly,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                Row (
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Work for: ",
+                                        modifier = Modifier.padding(1.dp),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                        modifier = Modifier
+                                            .size(45.dp, 32.dp)
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.LightGray,
+                                                shape = RoundedCornerShape(5.dp)
+                                            )
+                                            .clickable { expandedWork.value = !expandedWork.value }
+                                    ) {
+                                        Text(
+                                            text = workTime.toString(),
+                                            modifier = Modifier.padding(start = 4.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(2.dp))
+                                        Icon(
+                                            Icons.Default.ArrowDropDown,
+                                            contentDescription = null,
+                                            Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .fillMaxHeight()
+                                        )
+                                        DropdownMenu(
+                                            expanded = expandedWork.value,
+                                            onDismissRequest = { expandedWork.value = false }
+                                        ) {
+                                            timeToChoose.forEach { item ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = item.toString()) },
+                                                    onClick = {
+                                                        workTime =
+                                                            item //Todo: Connect to pomodoro timer
+                                                        expandedWork.value = false
+                                                    },
+                                                    modifier = Modifier.fillMaxSize()
+                                                )
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = " minutes",
+                                        modifier = Modifier.padding(1.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(15.dp))
+                                Row (
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Short break for: ",
+                                        modifier = Modifier.padding(1.dp),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                        modifier = Modifier
+                                            .size(45.dp, 32.dp)
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.LightGray,
+                                                shape = RoundedCornerShape(5.dp)
+                                            )
+                                            .clickable { expandedShort.value = !expandedShort.value }
+                                    ) {
+                                        Text(
+                                            text = shortBreakTime.toString(),
+                                            modifier = Modifier.padding(start = 4.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(2.dp))
+                                        Icon(
+                                            Icons.Default.ArrowDropDown,
+                                            contentDescription = null,
+                                            Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .fillMaxHeight()
+                                        )
+                                        DropdownMenu(
+                                            expanded = expandedShort.value,
+                                            onDismissRequest = { expandedShort.value = false }
+                                        ) {
+                                            timeToChoose.forEach { item ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = item.toString()) },
+                                                    onClick = {
+                                                        shortBreakTime =
+                                                            item //Todo: Connect to pomodoro timer
+                                                        expandedShort.value = false
+                                                    },
+                                                    modifier = Modifier.fillMaxSize()
+                                                )
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = " minutes",
+                                        modifier = Modifier.padding(1.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(15.dp))
+                                Row (
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Long break for: ",
+                                        modifier = Modifier.padding(1.dp),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                        modifier = Modifier
+                                            .size(45.dp, 32.dp)
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.LightGray,
+                                                shape = RoundedCornerShape(5.dp)
+                                            )
+                                            .clickable { expandedLong.value = !expandedLong.value }
+                                    ) {
+                                        Text(
+                                            text = longBreakTime.toString(),
+                                            modifier = Modifier.padding(start = 4.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(2.dp))
+                                        Icon(
+                                            Icons.Default.ArrowDropDown,
+                                            contentDescription = null,
+                                            Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .fillMaxHeight()
+                                        )
+                                        DropdownMenu(
+                                            expanded = expandedLong.value,
+                                            onDismissRequest = { expandedLong.value = false }
+                                        ) {
+                                            timeToChoose.forEach { item ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = item.toString()) },
+                                                    onClick = {
+                                                        longBreakTime =
+                                                            item //Todo: Connect to pomodoro timer
+                                                        expandedLong.value = false
+                                                    },
+                                                    modifier = Modifier.fillMaxSize()
+                                                )
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = " minutes",
+                                        modifier = Modifier.padding(1.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    TextButton(
+                                        onClick = {
+                                            // Todo: Store value in database / change
+                                            showDialog = false },
+                                        modifier = Modifier.padding(8.dp)
+                                    ) {
+                                        Text("Confirm")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 Box(
                     modifier = Modifier
                         .width(196.dp)
@@ -358,9 +578,8 @@ data object ProfileScreen : Screen {
                         .padding(start = 0.dp, end = 0.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    var showDialog = false
                     TextButton(
-                        onClick = { showDialog = true },
+                        onClick = { showDialog = true},
                     ) {
                         Text(
                             text = "Change Pomodoro Timings",
@@ -369,100 +588,8 @@ data object ProfileScreen : Screen {
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-                    if (showDialog) {
-                        DialogChangePomodoroTimings()
-                    }
                 }
                 Spacer(modifier = Modifier.width(124.dp))
-            }
-        }
-    }
-
-    @Composable
-    fun DialogChangePomodoroTimings() {
-        var showDialog = true
-        while (showDialog) {
-            Dialog(onDismissRequest = { showDialog = false}) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(375.dp)
-                        .padding(16.dp),
-                    shape = RoundedCornerShape(16.dp),
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Row (
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                        ) {
-                            Text(
-                                text = "Work for: ",
-                                modifier = Modifier.padding(16.dp),
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            //
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = " minutes",
-                                modifier = Modifier.padding(16.dp),
-                            )
-                        }
-                        Row (
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                        ) {
-                            Text(
-                                text = "Short break for: ",
-                                modifier = Modifier.padding(16.dp),
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            //
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = " minutes",
-                                modifier = Modifier.padding(16.dp),
-                            )
-                        }
-                        Row (
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                        ) {
-                            Text(
-                                text = "Long break for: ",
-                                modifier = Modifier.padding(16.dp),
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            //
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = " minutes",
-                                modifier = Modifier.padding(16.dp),
-                            )
-                        }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End,
-                        ) {
-                            TextButton(
-                                onClick = {
-                                    // Todo: Store value in database / change
-                                    showDialog = false },
-                                modifier = Modifier.padding(8.dp),
-                            ) {
-                                Text("Confirm")
-                            }
-                        }
-                    }
-                }
             }
         }
     }

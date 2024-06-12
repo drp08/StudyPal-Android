@@ -63,13 +63,18 @@ data object ProfileScreen : Screen {
         val user = ActiveUser.current
         val subjects by viewModel.subjects.collectAsState()
 
-        InnerContent(userName = user.name, subjectList = subjects)
+        InnerContent(
+            userName = user.name,
+            subjectList = subjects,
+            onAddNewFriend = viewModel::addNewFriend
+        )
     }
 
     @Composable
     fun InnerContent(
         userName: String,
         subjectList: List<SubjectEntity>,
+        onAddNewFriend: (String) -> Unit,
         modifier: Modifier = Modifier
     ) {
         Column(
@@ -111,7 +116,7 @@ data object ProfileScreen : Screen {
                 horizontalArrangement = Arrangement.Center,
             ) {
                 OutlinedButton(
-                    onClick = { ProfileScreen }
+                    onClick = { onAddNewFriend(TODO("Friend name not implemented")) }
                 ) {
                     Text("Add Friends")
                 }
@@ -198,7 +203,7 @@ data object ProfileScreen : Screen {
                                         modifier = Modifier.padding(bottom = 4.dp)
                                     )
                                     Text(
-                                        "Exam Date: 10-12-2024", //Todo: Change this to actual exam date of subject
+                                        "Exam Date: 10-12-2024", // Todo: Change this to actual exam date of subject
                                         fontSize = 16.sp,
                                         color = Color.DarkGray,
                                         modifier = Modifier.padding(bottom = 4.dp)
@@ -454,7 +459,8 @@ data object ProfileScreen : Screen {
 fun PreviewProfileScreen() {
     ProfileScreen.InnerContent(
         userName = "Nishant",
-        subjectList = ProfileViewModel.dummySubjects
+        subjectList = ProfileViewModel.dummySubjects,
+        onAddNewFriend = {}
     )
 }
 

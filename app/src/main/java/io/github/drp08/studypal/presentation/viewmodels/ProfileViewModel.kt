@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SubjectDao
+import io.github.drp08.studypal.domain.FriendRepository
 import io.github.drp08.studypal.domain.entities.SubjectEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val subjectDao: SubjectDao
+    private val subjectDao: SubjectDao,
+    private val friendRepository: FriendRepository
 ): ViewModel() {
 
     companion object {
@@ -34,6 +36,12 @@ class ProfileViewModel @Inject constructor(
 
     private val _totalStudyHours = MutableStateFlow(0)
     val totalStudyHours: StateFlow<Int> = _totalStudyHours
+
+    fun addNewFriend(friendName: String) {
+        viewModelScope.launch {
+            friendRepository.addNewFriend(friendName)
+        }
+    }
 
     private fun loadUserSubjects() {
         viewModelScope.launch {

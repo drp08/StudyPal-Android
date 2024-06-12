@@ -615,7 +615,7 @@ data object ProfileScreen : Screen {
                     isDataCategoryStartFromBottom = false
                 )
             )
-            .startDrawPadding(180.dp)
+            .startDrawPadding(20.dp)
             .labelData { index -> barsData[index].label }
             .axisLineColor(MaterialTheme.colorScheme.tertiary)
             .axisLabelColor(MaterialTheme.colorScheme.tertiary)

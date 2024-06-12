@@ -123,7 +123,7 @@ data object ProfileScreen : Screen {
             }
             var numTopicsExpanded by remember { mutableIntStateOf(0) }
             var numberSubjects by remember { mutableIntStateOf(0) }
-            val subjectList = arrayOf("Statistics") //Todo: Change this to the actual list of subjects
+            val subjectList : Array<String> = arrayOf() //Todo: Change this to the actual list of subjects
             numberSubjects = subjectList.size
             Box(
                 modifier = Modifier
@@ -313,32 +313,47 @@ data object ProfileScreen : Screen {
                         color = Color.DarkGray,
                         fontWeight = FontWeight.Bold )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height((72 + 44 * numberSubjects).dp)
-                            .border(
-                                width = 1.dp,
-                                color = Color.LightGray,
-                                shape = RoundedCornerShape(3.dp)
+                    if (subjectList.isNotEmpty()) { //Todo: Probs will be fucked up in the merge
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height((72 + 44 * numberSubjects).dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.LightGray,
+                                    shape = RoundedCornerShape(3.dp)
+                                )
+                                .padding(start = 12.dp, end = 12.dp),
+                            contentAlignment = Alignment.BottomEnd
+                        ) {
+                            SubjectBarChart(subjectList)
+                            Spacer(modifier = Modifier.height(40.dp))
+                            Text(
+                                text = "hours",
+                                fontSize = 10.sp,
+                                color = Color.Black,
+                                fontWeight = FontWeight.SemiBold
                             )
-                            .padding(start = 12.dp, end = 12.dp),
-                        contentAlignment = Alignment.BottomEnd
-                    ) {
-                        SubjectBarChart(subjectList)
-                        Spacer(modifier = Modifier.height(40.dp))
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "hours",
-                            fontSize = 10.sp,
-                            color = Color.Black,
-                            fontWeight = FontWeight.SemiBold
+                            "Total study hours: 106", //Todo: Add actual total number of hours studied
+                            fontSize = 16.sp,
+                            color = Color.DarkGray
+                        )
+                    } else {
+                        Text(
+                            "Total study hours: 0", //Todo: Add actual total number of hours studied
+                            fontSize = 16.sp,
+                            color = Color.DarkGray
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            "More statistics will appear here after you add a subject",
+                            fontSize = 16.sp,
+                            color = Color.DarkGray
                         )
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        "Total study hours: 106", //Todo: Add actual total number of hours studied
-                        fontSize = 16.sp,
-                        color = Color.DarkGray)
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))

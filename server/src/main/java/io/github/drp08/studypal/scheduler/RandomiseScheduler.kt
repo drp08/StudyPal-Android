@@ -18,7 +18,7 @@ class RandomiseScheduler : Scheduler {
     override fun schedule(
         subjects: List<Subject>,
         topics: List<Topic>,
-        fixedSessions: List<Session>,
+        events: List<Session>,
         user: User
     ): List<Session> {
         val sessions = mutableListOf<Session>()
@@ -27,7 +27,11 @@ class RandomiseScheduler : Scheduler {
             LocalDate.now().atStartOfDay().atZone(ZoneId.of("UTC")).toEpochMilliSecond()
 
         // to ensure that a time isn't 'double-booked'
-        val scheduledHours = mutableListOf<LongRange>()
+        val scheduledHours = mutableListOf<LongRange>().apply {
+            // Adds the fixed events time ranges
+            // So scheduling algorithm will avoid these time ranges.
+            addAll(events.map { it.startTime..it.endTime })
+        }
         val subjectTotalTime = mutableMapOf<String, Long>()
 
         var trials = 0
@@ -75,7 +79,7 @@ class RandomiseScheduler : Scheduler {
             studyHoursOfDay += SESSION_DURATION
         }
         return sessions
-            .apply { removeAll(fixedSessions) }
+            .apply { removeAll(events) }
             .sortedBy { it.startTime }
     }
 }

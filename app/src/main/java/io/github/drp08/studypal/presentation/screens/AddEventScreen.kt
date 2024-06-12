@@ -32,6 +32,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +46,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeEvent
 import network.chaintech.ui.datepicker.WheelDatePickerView
 import network.chaintech.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.utils.DateTimePickerView
@@ -58,6 +62,8 @@ data object AddEventScreen : Screen {
     override fun Content() {
         var checked by remember { mutableStateOf(false) }
         var numberDatesAdded by remember { mutableStateOf(1) }
+        val viewModel = hiltViewModel<AddEventViewModel>()
+        val state by viewModel.state.collectAsState()
         Column (
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -76,7 +82,10 @@ data object AddEventScreen : Screen {
                 contentAlignment = Alignment.Center,
             ) {
                 Column {
-                    EventNameTextField()
+                    EventNameTextField(
+                        name = state.parent,
+                        onNameChange = { viewModel.on(ChangeEvent(it)) }
+                    )
                     EventDateTimeDialogueBox()
                     Row(
                         modifier = Modifier
@@ -142,7 +151,10 @@ data object AddEventScreen : Screen {
     }
 
     @Composable
-    fun EventNameTextField() {
+    fun EventNameTextField(
+        name: String,
+        onNameChange: (String) -> Unit
+    ) {
         var eventName by rememberSaveable { mutableStateOf("") }
 
         Box (
@@ -154,8 +166,8 @@ data object AddEventScreen : Screen {
             contentAlignment = Alignment.Center,
         ) {
             OutlinedTextField(
-                value = eventName,
-                onValueChange = { eventName = it },
+                value = name,
+                onValueChange = onNameChange,
                 label = { Text(text = "Event Name", color = Color.DarkGray) },
             )
         }

@@ -12,4 +12,8 @@ interface Scheduler {
         fixedSessions: List<Session>,
         user: User
     ): List<Session>
+
+    companion object {
+        const val HOUR_IN_MILLIS = 60 * 60 * 1000L
+    }
 }

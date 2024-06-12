@@ -123,7 +123,7 @@ data object ProfileScreen : Screen {
             }
             var numTopicsExpanded by remember { mutableIntStateOf(0) }
             var numberSubjects by remember { mutableIntStateOf(0) }
-            val subjectList : Array<String> = arrayOf() //Todo: Change this to the actual list of subjects
+            val subjectList = arrayOf("Statistics") //Todo: Change this to the actual list of subjects
             numberSubjects = subjectList.size
             Box(
                 modifier = Modifier

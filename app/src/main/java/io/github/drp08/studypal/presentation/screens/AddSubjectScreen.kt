@@ -61,6 +61,7 @@ import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAc
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeStudyHours
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeSubject
 import io.github.drp08.studypal.utils.formatTime
+import io.github.drp08.studypal.utils.toEpochMilliSecond
 import kotlinx.datetime.toJavaLocalDate
 import network.chaintech.ui.datepicker.WheelDatePickerView
 import network.chaintech.utils.DateTimePickerView
@@ -237,8 +238,8 @@ data object AddSubjectScreen : Screen {
                     onDateChange(
                         it.toJavaLocalDate()
                             .atStartOfDay()
-                            .atZone(ZoneId.systemDefault())
-                            .toEpochSecond() * 1000
+                            .atZone(ZoneId.of("UTC"))
+                            .toEpochMilliSecond()
                     )
                     showDatePicker = false
                 },

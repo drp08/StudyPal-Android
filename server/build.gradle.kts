@@ -58,4 +58,6 @@ dependencies {
     implementation(libs.ktor.server.resources)
     implementation(libs.ktor.server.logging)
     implementation(libs.ktor.serialization)
+
+    testImplementation(kotlin("test"))
 }

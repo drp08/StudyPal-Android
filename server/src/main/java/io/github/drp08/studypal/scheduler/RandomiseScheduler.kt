@@ -4,63 +4,78 @@ import io.github.drp08.studypal.domain.models.Session
 import io.github.drp08.studypal.domain.models.Subject
 import io.github.drp08.studypal.domain.models.Topic
 import io.github.drp08.studypal.domain.models.User
+import io.github.drp08.studypal.scheduler.Scheduler.Companion.HOUR_IN_MILLIS
+import io.github.drp08.studypal.utils.toEpochMilliSecond
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlin.random.Random
 
 class RandomiseScheduler : Scheduler {
+    companion object {
+        private const val SESSION_DURATION = 1 * HOUR_IN_MILLIS
+    }
+
     override fun schedule(
         subjects: List<Subject>,
         topics: List<Topic>,
         fixedSessions: List<Session>,
         user: User
     ): List<Session> {
-        val millisecondsInHour = 60 * 60 * 10 * 10 * 10 // 3600 seconds * 10^3
-        val sessions: MutableList<Session> = mutableListOf<Session>().apply {
-            addAll(fixedSessions)
-        }
+        val sessions = mutableListOf<Session>()
 
         val startOfDay =
-            LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toEpochSecond()
+            LocalDate.now().atStartOfDay().atZone(ZoneId.of("UTC")).toEpochMilliSecond()
 
         // to ensure that a time isn't 'double-booked'
-        val scheduledHours: MutableList<Long> = mutableListOf(startOfDay)
+        val scheduledHours = mutableListOf<LongRange>()
+        val subjectTotalTime = mutableMapOf<String, Long>()
 
-        for (studyHours in 0..user.maxStudyingHours) {
+        var trials = 0
+        var studyHoursOfDay = 0L
+        outer@ while (studyHoursOfDay < user.maxStudyingHours * HOUR_IN_MILLIS) {
             // chooses a random subject
-            val subject: Subject = subjects.random()
+            val subject = subjects
+                .filter { (subjectTotalTime[it.name] ?: 0) < it.hoursPerWeek * HOUR_IN_MILLIS }
+                .filter { subject -> topics.any { it.subject == subject.name } }
+                .also { if (it.isEmpty()) return emptyList() }
+                .random()
 
-            val subjectTopics: List<Topic> = topics.filter { it.subject == subject.name }
+            val subjectTopics = topics.filter { it.subject == subject.name }
             if (subjectTopics.isEmpty()) // Make sure the subject have topics.
                 continue
 
             // choose a random topic
-            val topic: Topic = subjectTopics.random()
+            val topic = subjectTopics.random()
+
+            // epoch time from the start of the day to the start of the working hour
+            val startTime = startOfDay + user.startWorkingHours
+            val endTime = startOfDay + user.endWorkingHours
 
             // chooses a random start time that hasn't already been scheduled for
-            val startTime: Long =
-                startOfDay + user.startWorkingHours // epoch time from the start of the day to the start of the working hour
-            val endTime: Long = startOfDay + user.endWorkingHours
+            var time: Long
+            do {
+                time = Random.nextLong(startTime, endTime - SESSION_DURATION)
+                if (++trials > 100)
+                    continue@outer
+            } while (scheduledHours.any { time in it || (time + SESSION_DURATION) in it })
 
-            var time: Long = startOfDay // epoch time
-
-            while (time in scheduledHours) {
-                // generate a random epoch time between
-                time = Random.nextLong(startTime, endTime)
-            }
-            scheduledHours.add(time)
+            scheduledHours.add(time..(time + SESSION_DURATION))
 
             // create a new session
             val session =
                 Session(
-                    sessionId = Random.nextInt(1, Int.MAX_VALUE),
                     topic = topic.name,
                     startTime = time,
-                    endTime = time + millisecondsInHour,
+                    endTime = time + SESSION_DURATION,
                 )
 
             sessions.add(session)
+            subjectTotalTime[subject.name] =
+                (subjectTotalTime[subject.name] ?: 0) + SESSION_DURATION
+            studyHoursOfDay += SESSION_DURATION
         }
-        return sessions.sortedBy { it.startTime }
+        return sessions
+            .apply { removeAll(fixedSessions) }
+            .sortedBy { it.startTime }
     }
 }

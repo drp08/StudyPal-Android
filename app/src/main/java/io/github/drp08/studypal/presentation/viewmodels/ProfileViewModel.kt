@@ -4,8 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SubjectDao
-import io.github.drp08.studypal.db.daos.TopicDao
-import io.github.drp08.studypal.db.session.UserSession
 import io.github.drp08.studypal.domain.entities.SubjectEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
-import io.github.drp08.studypal.db.session.UserSession.Companion.ActiveUser
+import io.github.drp08.studypal.data.UserRepositoryImpl.Companion.ActiveUser
 import io.github.drp08.studypal.domain.models.User
 
 data class HomeNavigator(

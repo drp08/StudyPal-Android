@@ -1,5 +1,6 @@
 package io.github.drp08.studypal.presentation.screens
 
+import android.widget.ArrayAdapter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -14,9 +15,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -27,6 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -34,6 +39,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -68,6 +74,7 @@ data object AddSubjectScreen : Screen {
 
         val viewModel = hiltViewModel<AddSubjectViewModel>()
         val state by viewModel.state.collectAsState()
+        var numberTopicsAdded by remember { mutableStateOf(1) }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -77,6 +84,7 @@ data object AddSubjectScreen : Screen {
             Box(
                 modifier = Modifier
                     .width(320.dp)
+                    .verticalScroll(rememberScrollState())
                     .border(
                         width = 1.dp,
                         color = Color.LightGray,
@@ -101,6 +109,26 @@ data object AddSubjectScreen : Screen {
                         confidence = state.confidenceLevel,
                         onConfidenceChange = { viewModel.on(ChangeConfidence(it)) }
                     )
+                    var i = 0
+                    var topics : MutableList<String> = mutableListOf() //Todo: Add to view model
+                    while (i < numberTopicsAdded) {
+                        Row(
+                            modifier = Modifier
+                                .padding(start = 20.dp, end = 20.dp, bottom = 2.dp)
+                                .background(Color.Transparent)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            SmallFloatingActionButton(
+                                onClick = { numberTopicsAdded++ }
+                            ) {
+                                Icon(Icons.Filled.Add, "Add button")
+                            }
+                            topics = TopicNameTextField(topics)
+                        }
+                        i++
+                    }
                     Button(
                         onClick = { viewModel.on(AddSubject(navigator)) },
                         modifier = Modifier
@@ -112,6 +140,28 @@ data object AddSubjectScreen : Screen {
                 }
             }
         }
+    }
+
+    @Composable
+    fun TopicNameTextField(topics : MutableList<String>) : MutableList<String> {
+        var topicName by rememberSaveable { mutableStateOf("") }
+
+        Box (
+            modifier = Modifier
+                .padding(start = 1.dp, end = 1.dp)
+                .height(80.dp)
+                .background(Color.Transparent)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            OutlinedTextField(
+                value = topicName,
+                onValueChange = { topicName = it },
+                label = { Text(text = "Topic Name", color = Color.DarkGray) },
+            )
+        }
+        topics.add(topicName) //Todo: Add to view model
+        return topics
     }
 
     @Composable

@@ -40,7 +40,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            userSession.verifyAndGetUser().collectLatest {
+            userSession.getUser().collectLatest {
                 Log.d(TAG, "userEntity: $it")
             }
         }

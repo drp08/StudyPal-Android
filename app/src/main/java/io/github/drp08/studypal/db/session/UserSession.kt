@@ -11,11 +11,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.models.User
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -34,27 +31,31 @@ class UserSession @Inject constructor(
     private val startWorkingHours = longPreferencesKey("USER_START_WORKING_HOURS")
     private val endWorkingHours = longPreferencesKey("USER_END_WORKING_HOURS")
 
-    override fun verifyAndGetUser(): Flow<Result<User>> =
+    override fun verifyAndGetUser(): Flow<Result<User>> {
+        return getUser()
+            .catch { Result.failure<User>(it) }
+            .map { Result.success(it) }
+    }
+
+    override fun getUser(): Flow<User> =
         dataStore.data.catch {
             emit(emptyPreferences())
         }.map {
-            val name = it[name] ?: return@map Result.failure("User's name was not found")
-            val maxStudyingHours = it[maxStudyingHours] ?: return@map Result.failure("User's maxStudyingHours was not found")
-            val startWorkingHours = it[startWorkingHours] ?: return@map Result.failure("User's startWorkingHours was not found")
-            val endWorkingHours = it[endWorkingHours] ?: return@map Result.failure("User's endWorkingHours was not found")
+            val name = it[name]
+                ?: throw Exception("User's name was not found")
+            val maxStudyingHours = it[maxStudyingHours]
+                ?: throw Exception("User's maxStudyingHours was not found")
+            val startWorkingHours = it[startWorkingHours]
+                ?: throw Exception("User's startWorkingHours was not found")
+            val endWorkingHours = it[endWorkingHours]
+                ?: throw Exception("User's endWorkingHours was not found")
 
-            val user = User(
+            User(
                 name = name,
                 startWorkingHours = startWorkingHours,
                 endWorkingHours = endWorkingHours,
                 maxStudyingHours = maxStudyingHours
             )
-
-            val response = client.get("/database/users/${user.name}")
-            if (!response.status.isSuccess())
-                return@map Result.failure("Received ${response.status} from server. Possibly the user does not exist.")
-
-            Result.success(user)
         }
 
     override suspend fun createUser(user: User) {

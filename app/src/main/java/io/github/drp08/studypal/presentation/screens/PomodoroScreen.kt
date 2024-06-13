@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -21,8 +22,10 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +52,8 @@ data class PomodoroScreen(
         val totalTimeLeft = endTime - startTime
         var timeLeft by remember { mutableLongStateOf(endTime - current) }
         var showDialog by remember { mutableStateOf(false) }
-        var selectedMinutes by remember { mutableLongStateOf(5L) }
+        var extendMinutes by remember { mutableStateOf("") }
+        val isValidInput by remember { derivedStateOf { extendMinutes.toIntOrNull() != null && extendMinutes.isNotEmpty() } }
 
         LaunchedEffect(key1 = timeLeft) {
             if (timeLeft > 0) {
@@ -59,12 +64,16 @@ data class PomodoroScreen(
 
         if (showDialog) {
             TimeExtendDialog(
-                selectedMinutes = selectedMinutes,
-                onMinutesSelected = { selectedMinutes = it },
+                extendMinutes = extendMinutes,
+                onMinutesChange = { extendMinutes = it },
+                isValidInput = isValidInput,
                 onCancel = { showDialog = false },
                 onExtend = {
-                    endTime += selectedMinutes * 60 * 1000
-                    timeLeft += selectedMinutes * 60 * 1000
+                    val minutes = extendMinutes.toIntOrNull()
+                    if (minutes != null && minutes > 0) {
+                        endTime += minutes * 60 * 1000
+                        timeLeft += minutes * 60 * 1000
+                    }
                     showDialog = false
                 }
             )
@@ -143,15 +152,12 @@ data class PomodoroScreen(
     }
     @Composable
     fun TimeExtendDialog(
-        selectedMinutes: Long,
-        onMinutesSelected: (Long) -> Unit,
+        extendMinutes: String,
+        onMinutesChange: (String) -> Unit,
+        isValidInput: Boolean,
         onCancel: () -> Unit,
         onExtend: () -> Unit
     ) {
-        val options = listOf(5L, 10L, 15L)
-        var expanded by remember { mutableStateOf(false) }
-        var selectedOption by remember { mutableStateOf(selectedMinutes) }
-
         AlertDialog(
             onDismissRequest = onCancel,
             title = { Text(text = "Extend Session") },
@@ -161,25 +167,25 @@ data class PomodoroScreen(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Select additional time:")
-                    Box(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
-                    ) {
-                        TimePickerSpinner(
-                            options = options,
-                            selectedOption = selectedOption,
-                            onOptionSelected = { selectedOption = it }
-                        )
-                    }
+                    Text(text = "Please select how long you wish to extend it by:")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextField(
+                        value = extendMinutes,
+                        onValueChange = onMinutesChange,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        label = { Text("Minutes") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             },
             confirmButton = {
-                Button(onClick = {
-                    onMinutesSelected(selectedOption)
-                    onExtend()
-                }) {
+                Button(
+                    onClick = { if (isValidInput) onExtend() },
+                    enabled = isValidInput
+                ) {
                     Text(text = "Extend")
                 }
             },
@@ -189,34 +195,5 @@ data class PomodoroScreen(
                 }
             }
         )
-    }
-
-    @Composable
-    fun TimePickerSpinner(
-        options: List<Long>,
-        selectedOption: Long,
-        onOptionSelected: (Long) -> Unit
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp)
-        ) {
-            options.forEach { option ->
-                Text(
-                    text = "$option minutes",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                        .selectable(
-                            selected = (option == selectedOption),
-                            onClick = { onOptionSelected(option) }
-                        ),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
     }
 }

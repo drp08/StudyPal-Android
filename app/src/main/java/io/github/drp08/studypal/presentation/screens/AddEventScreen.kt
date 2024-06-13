@@ -64,6 +64,7 @@ import network.chaintech.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.utils.DateTimePickerView
 import network.chaintech.utils.TimeFormat
 import network.chaintech.utils.WheelPickerDefaults
+import network.chaintech.utils.dateTimeToString
 
 data object AddEventScreen : Screen {
     @Composable
@@ -134,29 +135,6 @@ data object AddEventScreen : Screen {
                         )
                     }
                     if (checked) {
-                        var i = 0
-                        Column {
-                            while (i < numberDatesAdded) {
-                                Row(
-                                    modifier = Modifier
-                                        .padding(start = 20.dp, end = 20.dp, bottom = 2.dp)
-                                        .background(Color.Transparent)
-                                        .fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
-                                ) {
-                                    SmallFloatingActionButton(
-                                        onClick = { numberDatesAdded++ }
-                                    ) {
-                                        Icon(Icons.Filled.Add, "Add button")
-                                    }
-                                    Row{
-                                        EventDateTimeDialogueBox("Start Time", viewModel, "From")
-                                        EventDateTimeDialogueBox("End Time", viewModel, "To")
-                                    }
-                                }
-                                i++
-                            }
                             RepeatsWeekDropDown()
                             Row(
                                 modifier = Modifier
@@ -169,7 +147,7 @@ data object AddEventScreen : Screen {
                                 UntilDateDialogueBox()
                             }
                         }
-                    } else {
+                    else {
                         numberDatesAdded = 1
                     }
                 }
@@ -203,14 +181,16 @@ data object AddEventScreen : Screen {
     @Composable
     fun EventDateTimeDialogueBox(title: String, viewModel: AddEventViewModel, pickerTitle: String) {
         var showDateTimePicker by remember { mutableStateOf(false) }
+        var eventDateTime by rememberSaveable { mutableStateOf("Event Date and Time") }
+
         if (showDateTimePicker) {
             WheelDateTimePickerView(
                 modifier = Modifier
                     .padding(top = 10.dp, bottom = 10.dp)
                     .fillMaxWidth(),
                 showDatePicker = showDateTimePicker,
-                title = pickerTitle,
-                doneLabel = "Done",
+                title = "Add Date & Time",
+                doneLabel = "Okay",
                 titleStyle = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -222,30 +202,43 @@ data object AddEventScreen : Screen {
                     color = Color.Black
                 ),
                 timeFormat = TimeFormat.AM_PM,
+                yearsRange = IntRange(2024, 2300),
                 height = 180.dp,
                 rowCount = 5,
+                dateTextStyle = TextStyle(
+                    fontWeight = FontWeight(400)
+                ),
                 dragHandle = {
                     HorizontalDivider(
                         modifier = Modifier
                             .padding(top = 8.dp)
+                            .width(100.dp)
                             .clip(CircleShape),
                         thickness = 4.dp,
                         color = Color.DarkGray
                     )
                 },
+                dateTextColor = Color.DarkGray,
                 hideHeader = false,
                 containerColor = Color.White,
                 shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
                 dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
                 onDoneClick = {
-                    // TODO : this is a quick fix, need to change to a better solution
+                    eventDateTime = ("")
+                        .plus(dateTimeToString(it, "hh:mm a dd-MM-yy"))
+                    // TODO : quick fix for testing, will need to change
                     if (title == "From"){
-                    viewModel.on(ChangeStartTime(it.time.toMillisecondOfDay().toLong()))
-                } else if (title == "To"){
-                    viewModel.on(ChangeEndTime(it.time.toMillisecondOfDay().toLong()))
-                }
-                    showDateTimePicker = false
-                },
+                        viewModel.on(ChangeStartTime(
+                            (it.date.toEpochDays() * 60 * 60 * 24) +
+                                it.time.toMillisecondOfDay().toLong())
+                        )
+                    } else if (title == "To") {
+                        viewModel.on(ChangeEndTime(
+                            (it.date.toEpochDays() * 60 * 60 * 24) +
+                            it.time.toMillisecondOfDay().toLong()
+                        )) // TODO attempting to convert the days to epoch milliseconds and then add the time in epoch milliseconds
+                    }
+                    showDateTimePicker = false },
                 selectorProperties = WheelPickerDefaults.selectorProperties(
                     borderColor = Color.DarkGray
                 ),
@@ -270,10 +263,7 @@ data object AddEventScreen : Screen {
                     )
                     .padding()
             ) {
-                //Todo: Change this to be similar to commented out code below (using view model)
-//                val timeFormat = formatTime(user.endWorkingHours, "HH:mm a")
-//                Text(text = "End: $timeFormat")
-                Text(text = title, color = Color.DarkGray)
+                Text(text = eventDateTime, color = Color.DarkGray)
             }
         }
     }

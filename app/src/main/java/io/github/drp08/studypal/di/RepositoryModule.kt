@@ -4,8 +4,12 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import io.github.drp08.studypal.data.FriendRepositoryImpl
 import io.github.drp08.studypal.data.SchedulingRepositoryImpl
+import io.github.drp08.studypal.data.UserRepositoryImpl
+import io.github.drp08.studypal.domain.FriendRepository
 import io.github.drp08.studypal.domain.SchedulingRepository
+import io.github.drp08.studypal.domain.UserRepository
 import javax.inject.Singleton
 
 @Module
@@ -14,4 +18,12 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindSchedulingRepository(impl: SchedulingRepositoryImpl): SchedulingRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindFriendRepository(impl: FriendRepositoryImpl): FriendRepository
 }

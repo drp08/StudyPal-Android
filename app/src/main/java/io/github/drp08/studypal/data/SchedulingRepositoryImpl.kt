@@ -4,8 +4,8 @@ import android.util.Log
 import io.github.drp08.studypal.db.daos.SessionDao
 import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.db.daos.TopicDao
-import io.github.drp08.studypal.db.session.UserSession
 import io.github.drp08.studypal.domain.SchedulingRepository
+import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.entities.SessionEntity
 import io.github.drp08.studypal.domain.entities.SubjectEntity
 import io.github.drp08.studypal.domain.entities.TopicEntity
@@ -27,7 +27,7 @@ class SchedulingRepositoryImpl @Inject constructor(
     private val subjectDao: SubjectDao,
     private val topicDao: TopicDao,
     private val sessionDao: SessionDao,
-    private val userSession: UserSession
+    private val userRepository: UserRepository
 ) : SchedulingRepository {
 
     companion object {
@@ -39,8 +39,7 @@ class SchedulingRepositoryImpl @Inject constructor(
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
         try {
-            val user = userSession.getCurrentUser().first()
-                ?: throw IllegalStateException("User object is null!")
+            val user = userRepository.getUser().first()
             val response = client.post("/schedule") {
                 val body1 = Json.encodeToString(
                     PostBody(

@@ -1,11 +1,5 @@
 package io.github.drp08.studypal.presentation.screens
 
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
-import cafe.adriel.voyager.core.screen.Screen
-import io.github.drp08.studypal.db.session.UserSession.Companion.ActiveUser
-import io.github.drp08.studypal.presentation.viewmodels.ProfileViewModel
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -17,10 +11,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,7 +31,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -49,9 +45,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import cafe.adriel.voyager.core.screen.Screen
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.Point
@@ -60,18 +59,35 @@ import co.yml.charts.ui.barchart.models.BarChartData
 import co.yml.charts.ui.barchart.models.BarChartType
 import co.yml.charts.ui.barchart.models.BarData
 import co.yml.charts.ui.barchart.models.BarStyle
+import io.github.drp08.studypal.data.UserRepositoryImpl.Companion.ActiveUser
+import io.github.drp08.studypal.domain.entities.SubjectEntity
+import io.github.drp08.studypal.presentation.viewmodels.ProfileViewModel
 import kotlin.random.Random
 
 data object ProfileScreen : Screen {
 
     @Composable
     override fun Content() {
-        //val viewModel = hiltViewModel<ProfileViewModel>()
-        val viewModel: ProfileViewModel = hiltViewModel()
-
+        val viewModel = hiltViewModel<ProfileViewModel>()
         val user = ActiveUser.current
+        val subjects by viewModel.subjects.collectAsState()
+
+        InnerContent(
+            userName = user.name,
+            subjectList = subjects,
+            onAddNewFriend = viewModel::addNewFriend
+        )
+    }
+
+    @Composable
+    fun InnerContent(
+        userName: String,
+        subjectList: List<SubjectEntity>,
+        onAddNewFriend: (String) -> Unit,
+        modifier: Modifier = Modifier
+    ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .verticalScroll(state = rememberScrollState())
                 .fillMaxWidth()
                 .padding(start = 10.dp, top = 10.dp, end = 10.dp, bottom = 20.dp),
@@ -85,21 +101,23 @@ data object ProfileScreen : Screen {
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.Face , contentDescription = "Student icon",
-                    modifier = Modifier.size(128.dp))
+                Icon(
+                    Icons.Default.Face, contentDescription = "Student icon",
+                    modifier = Modifier.size(128.dp)
+                )
                 Spacer(modifier = Modifier.width(30.dp))
-                Column (
+                Column(
                     modifier = Modifier
                         .fillMaxHeight(),
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text("Name: ${user.name}", fontSize = 24.sp, color = Color.DarkGray)
+                    Text("Name: $userName", fontSize = 24.sp, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(12.dp))
                     Text("Total XP: ") //Todo: Add XP from Leaderboard
                 }
             }
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp, bottom = 10.dp),
@@ -107,7 +125,7 @@ data object ProfileScreen : Screen {
                 horizontalArrangement = Arrangement.Center,
             ) {
                 OutlinedButton(
-                    onClick = { ProfileScreen}
+                    onClick = { onAddNewFriend(TODO("Friend name not implemented")) }
                 ) {
                     Text("Add Friends")
                 }
@@ -120,7 +138,6 @@ data object ProfileScreen : Screen {
             }
             var numTopicsExpanded by remember { mutableIntStateOf(0) }
             var numberSubjects by remember { mutableIntStateOf(0) }
-            val subjectList = viewModel.subjects.collectAsState().value
             numberSubjects = subjectList.count()
             Box(
                 modifier = Modifier
@@ -135,14 +152,19 @@ data object ProfileScreen : Screen {
                     .padding(start = 12.dp, top = 10.dp, end = 12.dp, bottom = 10.dp),
                 contentAlignment = Alignment.TopStart,
             ) {
-                Column (
+                Column(
                     modifier = Modifier.animateContentSize()
                 ) {
-                    Text("Existing Subjects", fontSize = 20.sp, color = Color.DarkGray, fontWeight = FontWeight.Bold)
+                    Text(
+                        "Existing Subjects",
+                        fontSize = 20.sp,
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.Bold
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
                     for (subject in subjectList) {
-                        var expanded by remember { mutableStateOf(false)}
-                        Column (
+                        var expanded by remember { mutableStateOf(false) }
+                        Column(
                             modifier = Modifier
                                 .animateContentSize()
                                 .fillMaxWidth()
@@ -167,7 +189,12 @@ data object ProfileScreen : Screen {
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        Text(subject.name, fontSize = 18.sp, color = Color.DarkGray, fontWeight = FontWeight.Bold)
+                                        Text(
+                                            subject.name,
+                                            fontSize = 18.sp,
+                                            color = Color.DarkGray,
+                                            fontWeight = FontWeight.Bold
+                                        )
                                         Spacer(modifier = Modifier.width(60.dp))
                                         LinearProgressIndicator(
                                             progress = { 0.65F },
@@ -185,7 +212,7 @@ data object ProfileScreen : Screen {
                                         modifier = Modifier.padding(bottom = 4.dp)
                                     )
                                     Text(
-                                        "Exam Date: 10-12-2024", //Todo: Change this to actual exam date of subject
+                                        "Exam Date: 10-12-2024", // Todo: Change this to actual exam date of subject
                                         fontSize = 16.sp,
                                         color = Color.DarkGray,
                                         modifier = Modifier.padding(bottom = 4.dp)
@@ -193,8 +220,13 @@ data object ProfileScreen : Screen {
                                 }
                             }
                             // Todo: change topics to be actual list of topics for the specific subject
-                            val topics = arrayOf("Markov Chains", "Binomial Theorem", "Central Limit Theorem", "Chi-squared")
-                            val numTopics : Int = topics.size
+                            val topics = arrayOf(
+                                "Markov Chains",
+                                "Binomial Theorem",
+                                "Central Limit Theorem",
+                                "Chi-squared"
+                            )
+                            val numTopics: Int = topics.size
                             Box(
                                 modifier = Modifier
                                     .animateContentSize()
@@ -215,8 +247,7 @@ data object ProfileScreen : Screen {
                                         } else {
                                             numTopicsExpanded -= numTopics
                                         }
-                                    }
-                                ,
+                                    },
                                 contentAlignment = Alignment.TopStart,
                             ) {
                                 Column {
@@ -308,7 +339,8 @@ data object ProfileScreen : Screen {
                         "Statistics",
                         fontSize = 20.sp,
                         color = Color.DarkGray,
-                        fontWeight = FontWeight.Bold )
+                        fontWeight = FontWeight.Bold
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
                     if (subjectList.isNotEmpty()) { //Todo: Probs will be fucked up in the merge
                         Box(
@@ -355,7 +387,7 @@ data object ProfileScreen : Screen {
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Row (
+            Row(
                 modifier = Modifier
                     .width(320.dp),
                 horizontalArrangement = Arrangement.Center
@@ -369,7 +401,7 @@ data object ProfileScreen : Screen {
                 var longBreakTime = 5
                 var workTime = 5
                 if (showDialog) {
-                    Dialog(onDismissRequest = { showDialog = false } ) {
+                    Dialog(onDismissRequest = { showDialog = false }) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -384,7 +416,7 @@ data object ProfileScreen : Screen {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Spacer(modifier = Modifier.height(30.dp))
-                                Row (
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
@@ -443,7 +475,7 @@ data object ProfileScreen : Screen {
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(15.dp))
-                                Row (
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
@@ -464,7 +496,9 @@ data object ProfileScreen : Screen {
                                                 color = Color.LightGray,
                                                 shape = RoundedCornerShape(5.dp)
                                             )
-                                            .clickable { expandedShort.value = !expandedShort.value }
+                                            .clickable {
+                                                expandedShort.value = !expandedShort.value
+                                            }
                                     ) {
                                         Text(
                                             text = shortBreakTime.toString(),
@@ -502,7 +536,7 @@ data object ProfileScreen : Screen {
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(15.dp))
-                                Row (
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
@@ -569,7 +603,8 @@ data object ProfileScreen : Screen {
                                     TextButton(
                                         onClick = {
                                             // Todo: Store value in database / change
-                                            showDialog = false },
+                                            showDialog = false
+                                        },
                                         modifier = Modifier.padding(8.dp)
                                     ) {
                                         Text("Confirm")
@@ -592,7 +627,7 @@ data object ProfileScreen : Screen {
                     contentAlignment = Alignment.Center
                 ) {
                     TextButton(
-                        onClick = { showDialog = true},
+                        onClick = { showDialog = true },
                     ) {
                         Text(
                             text = "Change Pomodoro Timings",
@@ -638,7 +673,7 @@ data object ProfileScreen : Screen {
             .steps(stepSize)
             .endPadding(10.dp)
             .bottomPadding(16.dp)
-            .labelData { index -> (index * ( maxHours/stepSize)).toString() }
+            .labelData { index -> (index * (maxHours / stepSize)).toString() }
             .axisLineColor(MaterialTheme.colorScheme.tertiary)
             .axisLabelColor(MaterialTheme.colorScheme.tertiary)
             .axisLabelDescription { "hours" }
@@ -671,12 +706,12 @@ data object ProfileScreen : Screen {
         dataCategoryOptions: DataCategoryOptions
     ): List<BarData> {
         val list = arrayListOf<BarData>()
-        var index = 0
-        for (subject in array) {
+        for ((index, subject) in array.withIndex()) {
             val point =
                 Point(
-                "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble())).toFloat(), //Todo: Change to number of hours spent on that subject
-                index.toFloat()
+                    "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble()))
+                        .toFloat(), //Todo: Change to number of hours spent on that subject
+                    index.toFloat()
                 )
             list.add(
                 BarData(
@@ -688,11 +723,17 @@ data object ProfileScreen : Screen {
                     label = subject.take(5),
                 )
             )
-            index++
         }
         return list
     }
 }
 
-
-
+@Preview(showSystemUi = true)
+@Composable
+fun PreviewProfileScreen() {
+    ProfileScreen.InnerContent(
+        userName = "Nishant",
+        subjectList = ProfileViewModel.dummySubjects,
+        onAddNewFriend = {}
+    )
+}

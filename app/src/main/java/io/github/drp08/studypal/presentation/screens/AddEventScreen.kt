@@ -46,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,6 +58,7 @@ import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiActi
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeStartTime
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeEndTime
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.AddEvent
+import io.github.drp08.studypal.utils.formatTime
 import network.chaintech.ui.datepicker.WheelDatePickerView
 import network.chaintech.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.utils.DateTimePickerView
@@ -95,16 +97,19 @@ data object AddEventScreen : Screen {
                         onNameChange = { viewModel.on(ChangeEvent(it)) }
                     )
                     Row(
-                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .padding(start = 20.dp, end = 20.dp),
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     )
                     {
                         Text(text = "From")
                         EventDateTimeDialogueBox("Start Time",viewModel,"From")
-                        Spacer(modifier = Modifier.width(100.dp))
-                        Text(text = "Until")
-//                        EventDateTimeDialogueBox("End Time", viewModel,"To")
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(text = "until")
+                        EventDateTimeDialogueBox("End Time", viewModel,"To")
                     }
                     Row(
                         modifier = Modifier
@@ -146,7 +151,6 @@ data object AddEventScreen : Screen {
                                         Icon(Icons.Filled.Add, "Add button")
                                     }
                                     Row{
-
                                         EventDateTimeDialogueBox("Start Time", viewModel, "From")
                                         EventDateTimeDialogueBox("End Time", viewModel, "To")
                                     }
@@ -224,7 +228,6 @@ data object AddEventScreen : Screen {
                     HorizontalDivider(
                         modifier = Modifier
                             .padding(top = 8.dp)
-                            .width(100.dp)
                             .clip(CircleShape),
                         thickness = 4.dp,
                         color = Color.DarkGray
@@ -239,7 +242,7 @@ data object AddEventScreen : Screen {
                     if (title == "From"){
                     viewModel.on(ChangeStartTime(it.time.toMillisecondOfDay().toLong()))
                 } else if (title == "To"){
-                        viewModel.on(ChangeEndTime(it.time.toMillisecondOfDay().toLong()))
+                    viewModel.on(ChangeEndTime(it.time.toMillisecondOfDay().toLong()))
                 }
                     showDateTimePicker = false
                 },
@@ -252,9 +255,9 @@ data object AddEventScreen : Screen {
 
         Box(
             modifier = Modifier
-                .padding(start = 20.dp, end = 10.dp)
+                .padding(start = 10.dp)
                 .background(Color.Transparent)
-                .fillMaxWidth(),
+                .width(90.dp),
             contentAlignment = Alignment.CenterStart,
         ) {
             TextButton(
@@ -267,6 +270,9 @@ data object AddEventScreen : Screen {
                     )
                     .padding()
             ) {
+                //Todo: Change this to be similar to commented out code below (using view model)
+//                val timeFormat = formatTime(user.endWorkingHours, "HH:mm a")
+//                Text(text = "End: $timeFormat")
                 Text(text = title, color = Color.DarkGray)
             }
         }

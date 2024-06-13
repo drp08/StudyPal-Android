@@ -76,7 +76,7 @@ data class PomodoroScreen(
                         }
                     }
 
-                    val endTimeStr = formatTime(endTime, "mm:ss")
+                    val endTimeStr = formatTime(endTime, "HH:mm")
                     Text(
                         text = "Session finishes at $endTimeStr",
                         modifier = Modifier
@@ -99,7 +99,7 @@ data class PomodoroScreen(
                         )
 
                         Text(
-                            text = formatTime(timeLeft, "HH:mm"),
+                            text = formatTime(timeLeft, "HH:mm:ss"),
                             fontSize = 32.sp
                         )
                     }
@@ -111,15 +111,8 @@ data class PomodoroScreen(
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-//                    Button(onClick = {
-//                        timeLeft += 5 * 60
-//                        extendedEndTime += 5 * 60
-//                    }) {
-//                        Text(text = "Extend by 5 minutes")
-//                    }
                 }
             }
         }
     }
-
 }

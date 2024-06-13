@@ -15,9 +15,7 @@ fun Route.scheduleRouting() {
     post("/schedule") {
         val scheduler: Scheduler = RandomiseScheduler()
         val str = call.receive<String>()
-        println(str)
         val body = Json.decodeFromString<PostBody>(str)
-        println(body)
         val newSessions = scheduler.schedule(body.subjects.toList(), body.topics.toList(), body.sessions.toList(), body.user)
         call.respond(Json.encodeToString(newSessions))
     }

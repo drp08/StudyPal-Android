@@ -68,12 +68,12 @@ class UserRepositoryImpl @Inject constructor(
             )
         }
 
-    override suspend fun createUser(user: User) {
+    override suspend fun createUser(user: User): Boolean {
         val response = client.post("/database/users") {
             setBody(user.name)
         }
         if (!response.status.isSuccess())
-            return
+            return false
 
         dataStore.edit {
             it[name] = user.name
@@ -81,6 +81,7 @@ class UserRepositoryImpl @Inject constructor(
             it[startWorkingHours] = user.startWorkingHours
             it[endWorkingHours] = user.endWorkingHours
         }
+        return true
     }
 
     private fun <T> Result.Companion.failure(message: String) = failure<T>(Exception(message))

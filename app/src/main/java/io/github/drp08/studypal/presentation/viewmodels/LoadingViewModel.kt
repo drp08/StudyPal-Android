@@ -5,6 +5,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.models.User
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
@@ -14,7 +15,8 @@ class LoadingViewModel @Inject constructor(
 ) : ViewModel() {
     fun getUser(): Result<User> {
         return runBlocking {
-            userRepository.verifyAndGetUser().first()
+            userRepository.verifyAndGetUser().firstOrNull()
+                ?: Result.failure(Exception("User not found"))
         }
     }
 }

@@ -217,7 +217,10 @@ data object RegistrationScreen : Screen {
             TextField(
                 value = user.maxStudyingHours.toString(),
                 onValueChange = {
-                    viewModel.onHoursPerDayChange(it.toInt())
+                    if (it.isNotBlank())
+                        viewModel.onHoursPerDayChange(it.toInt())
+                    else
+                        viewModel.onHoursPerDayChange(0)
                 },
                 label = { Text("I want to work ... Hours per day") },
                 modifier = Modifier

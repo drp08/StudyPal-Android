@@ -49,7 +49,9 @@ class RegistrationViewModel @Inject constructor(
             return
 
         viewModelScope.launch {
-            userRepository.createUser(user)
+            val success = userRepository.createUser(user)
+            if (!success)
+                return@launch
 
             navigator.replace(HomeNavigator(startScreen = HomeScreen, user = user))
         }

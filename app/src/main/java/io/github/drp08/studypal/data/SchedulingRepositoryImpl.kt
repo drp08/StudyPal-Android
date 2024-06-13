@@ -18,6 +18,7 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -34,45 +35,40 @@ class SchedulingRepositoryImpl @Inject constructor(
         private const val TAG = "SchedulingRepositoryImp"
     }
 
-    override suspend fun rescheduleAllSessions() = channelFlow {
+    override suspend fun rescheduleAllSessions() = flow {
         val subjects = subjectDao.getAllSubjects()
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
-        try {
-            val user = userRepository.getUserLocal().first()
-            val response = client.post("/schedule") {
-                val body1 = Json.encodeToString(
-                    PostBody(
-                        subjects.map(SubjectEntity::toSerializable).toTypedArray(),
-                        sessions.map(SessionEntity::toSerializable).toTypedArray(),
-                        topics.map(TopicEntity::toSerializable).toTypedArray(),
-                        user
-                    )
+        val user = userRepository.getUserLocal().first()
+        val response = client.post("/schedule") {
+            val body1 = Json.encodeToString(
+                PostBody(
+                    subjects.map(SubjectEntity::toSerializable).toTypedArray(),
+                    sessions.map(SessionEntity::toSerializable).toTypedArray(),
+                    topics.map(TopicEntity::toSerializable).toTypedArray(),
+                    user
                 )
-                setBody(body1)
-            }
-            if (response.status.isSuccess()) {
-                send(true)
-                val body = response.bodyAsText()
-                Json.decodeFromString<List<Session>>(body)
-                    .forEach { sessionResponse ->
-                        sessionDao.upsertSession(
-                            SessionEntity.fromSerializable(
-                                sessionResponse
-                            )
+            )
+            setBody(body1)
+        }
+        if (response.status.isSuccess()) {
+            val body = response.bodyAsText()
+            Json.decodeFromString<List<Session>>(body)
+                .forEach { sessionResponse ->
+                    sessionDao.upsertSession(
+                        SessionEntity.fromSerializable(
+                            sessionResponse
                         )
-                    }
-            } else {
-                Log.e(
-                    TAG,
-                    "rescheduleAllSessions: Response status is not successful. Body: ${response.bodyAsText()}",
-                    null
-                )
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "rescheduleAllSessions: ${e.message}", e)
-        } finally {
-            send(false)
+                    )
+                }
+            emit(true)
+        } else {
+            Log.e(
+                TAG,
+                "rescheduleAllSessions: Response status is not successful. Body: ${response.bodyAsText()}",
+                null
+            )
+            emit(false)
         }
     }
 }

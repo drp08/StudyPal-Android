@@ -12,7 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import io.github.drp08.studypal.db.session.UserSession
+import io.github.drp08.studypal.data.UserRepositoryImpl
 import javax.inject.Singleton
 
 @Module
@@ -23,6 +23,6 @@ object UserModule {
     fun provideDataStore(@ApplicationContext context: Context): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create(
             corruptionHandler = ReplaceFileCorruptionHandler(produceNewData = { emptyPreferences() }),
-            produceFile = { context.preferencesDataStoreFile(UserSession.USER) })
+            produceFile = { context.preferencesDataStoreFile(UserRepositoryImpl.USER) })
     }
 }

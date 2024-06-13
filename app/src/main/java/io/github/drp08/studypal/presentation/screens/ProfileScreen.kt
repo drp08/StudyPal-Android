@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,8 +32,8 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -49,9 +48,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
-import androidx.compose.ui.window.Dialog
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.Point
@@ -388,7 +387,7 @@ data object ProfileScreen : Screen {
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Row (
+            Row(
                 modifier = Modifier
                     .width(320.dp),
                 horizontalArrangement = Arrangement.Center
@@ -402,7 +401,7 @@ data object ProfileScreen : Screen {
                 var longBreakTime = 5
                 var workTime = 5
                 if (showDialog) {
-                    Dialog(onDismissRequest = { showDialog = false } ) {
+                    Dialog(onDismissRequest = { showDialog = false }) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -417,7 +416,7 @@ data object ProfileScreen : Screen {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Spacer(modifier = Modifier.height(30.dp))
-                                Row (
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
@@ -476,7 +475,7 @@ data object ProfileScreen : Screen {
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(15.dp))
-                                Row (
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
@@ -497,7 +496,9 @@ data object ProfileScreen : Screen {
                                                 color = Color.LightGray,
                                                 shape = RoundedCornerShape(5.dp)
                                             )
-                                            .clickable { expandedShort.value = !expandedShort.value }
+                                            .clickable {
+                                                expandedShort.value = !expandedShort.value
+                                            }
                                     ) {
                                         Text(
                                             text = shortBreakTime.toString(),
@@ -535,7 +536,7 @@ data object ProfileScreen : Screen {
                                     )
                                 }
                                 Spacer(modifier = Modifier.height(15.dp))
-                                Row (
+                                Row(
                                     modifier = Modifier
                                         .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
@@ -602,7 +603,8 @@ data object ProfileScreen : Screen {
                                     TextButton(
                                         onClick = {
                                             // Todo: Store value in database / change
-                                            showDialog = false },
+                                            showDialog = false
+                                        },
                                         modifier = Modifier.padding(8.dp)
                                     ) {
                                         Text("Confirm")
@@ -625,7 +627,7 @@ data object ProfileScreen : Screen {
                     contentAlignment = Alignment.Center
                 ) {
                     TextButton(
-                        onClick = { showDialog = true},
+                        onClick = { showDialog = true },
                     ) {
                         Text(
                             text = "Change Pomodoro Timings",

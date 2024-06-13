@@ -45,6 +45,7 @@ class FirebaseUserRepository @Inject constructor() : UserRepository {
             createUserData(user)
         } catch (e: Exception) {
             Log.e(TAG, "createUser: failed creating an auth user", e)
+            throw e
         }
     }
 

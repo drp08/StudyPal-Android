@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -28,7 +27,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -46,7 +44,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,7 +55,6 @@ import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiActi
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeStartTime
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeEndTime
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.AddEvent
-import io.github.drp08.studypal.utils.formatTime
 import network.chaintech.ui.datepicker.WheelDatePickerView
 import network.chaintech.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.utils.DateTimePickerView
@@ -83,7 +79,7 @@ data object AddEventScreen : Screen {
             Box(
                 modifier = Modifier
                     .animateContentSize()
-                    .height(if (checked) (320 + 50 * numberDatesAdded).dp else 200.dp)
+                    .height(if (checked) (320 + 50 + 50 * numberDatesAdded).dp else 250.dp)
                     .width(320.dp)
                     .border(
                         width = 1.dp,
@@ -107,10 +103,10 @@ data object AddEventScreen : Screen {
                     )
                     {
                         Text(text = "From")
-                        EventDateTimeDialogueBox("Start Time",viewModel,"From")
+                        EventDateTimeDialogueBox("Start Time", viewModel, "From")
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(text = "until")
-                        EventDateTimeDialogueBox("End Time", viewModel,"To")
+                        EventDateTimeDialogueBox("End Time", viewModel, "To")
                     }
                     Row(
                         modifier = Modifier
@@ -135,20 +131,27 @@ data object AddEventScreen : Screen {
                         )
                     }
                     if (checked) {
-                            RepeatsWeekDropDown()
-                            Row(
-                                modifier = Modifier
-                                    .padding(start = 20.dp, end = 20.dp)
-                                    .background(Color.Transparent)
-                                    .fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(text = "until")
-                                UntilDateDialogueBox()
-                            }
+                        RepeatsWeekDropDown()
+                        Row(
+                            modifier = Modifier
+                                .padding(start = 20.dp, end = 20.dp)
+                                .background(Color.Transparent)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "until")
+                            UntilDateDialogueBox()
                         }
-                    else {
+                    } else {
                         numberDatesAdded = 1
+                    }
+                    Button(
+                        onClick = { viewModel.on(AddEvent(navigator)) },
+                        modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                            .padding(vertical = 12.dp)
+                    ) {
+                        Text(text = "Add Event")
                     }
                 }
             }
@@ -181,7 +184,7 @@ data object AddEventScreen : Screen {
     @Composable
     fun EventDateTimeDialogueBox(title: String, viewModel: AddEventViewModel, pickerTitle: String) {
         var showDateTimePicker by remember { mutableStateOf(false) }
-        var eventDateTime by rememberSaveable { mutableStateOf("Event Date and Time") }
+        var eventDateTime by rememberSaveable { mutableStateOf("Date and Time") }
 
         if (showDateTimePicker) {
             WheelDateTimePickerView(
@@ -226,7 +229,7 @@ data object AddEventScreen : Screen {
                 onDoneClick = {
                     eventDateTime = ("")
                         .plus(dateTimeToString(it, "hh:mm a dd-MM-yy"))
-                    // TODO : quick fix for testing, will need to change
+                    // TODO : quick fix for testing, will need to see if there is a better way to do this
                     if (title == "From"){
                         viewModel.on(ChangeStartTime(
                             (it.date.toEpochDays() * 60 * 60 * 24) +
@@ -236,7 +239,7 @@ data object AddEventScreen : Screen {
                         viewModel.on(ChangeEndTime(
                             (it.date.toEpochDays() * 60 * 60 * 24) +
                             it.time.toMillisecondOfDay().toLong()
-                        )) // TODO attempting to convert the days to epoch milliseconds and then add the time in epoch milliseconds
+                        ))
                     }
                     showDateTimePicker = false },
                 selectorProperties = WheelPickerDefaults.selectorProperties(

@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 interface UserRepository {
     fun verifyAndGetUser(): Flow<Result<User>>
     fun getUser(): Flow<User>
-    suspend fun createUser(user: User)
+    suspend fun createUser(email: String, password: String, user: User)
 }

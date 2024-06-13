@@ -68,7 +68,7 @@ class UserRepositoryImpl @Inject constructor(
             )
         }
 
-    override suspend fun createUser(user: User) {
+    override suspend fun createUser(email: String, password: String, user: User) {
         val response = client.post("/database/users") {
             setBody(user.name)
         }

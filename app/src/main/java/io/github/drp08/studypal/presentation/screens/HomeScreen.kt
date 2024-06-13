@@ -1,5 +1,6 @@
 package io.github.drp08.studypal.presentation.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import io.github.drp08.studypal.presentation.components.fab.FabItem
 import io.github.drp08.studypal.presentation.viewmodels.HomeViewModel
 import io.github.drp08.studypal.utils.formatTime
 import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 data object HomeScreen : Screen {
 
@@ -160,17 +162,17 @@ data object HomeScreen : Screen {
         var timeLeft by remember { mutableStateOf(from) }
         var hasFinished by remember { mutableStateOf(false) }
 
-        LaunchedEffect(key1 = timeLeft) {
+        LaunchedEffect(Unit) {
             while (timeLeft > 0) {
                 delay(1000L)
-                timeLeft--
+                timeLeft -= 1000L
             }
             hasFinished = true
         }
 
         if (!hasFinished) {
             Text(
-                text = "The time",
+                text = formatTime(timeLeft, "HH:mm:ss"),
                 modifier = modifier,
                 fontSize = 18.sp
             )
@@ -194,4 +196,6 @@ data object HomeScreen : Screen {
             Text(text = "Check-in")
         }
     }
+
+
 }

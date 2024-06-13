@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -49,22 +51,29 @@ object LeaderboardScreen : Screen {
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Switch(
-                checked = showSingleGarden,
-                onCheckedChange = { viewModel.toggleLeaderboard() },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = Color(0xFF258a40),
-                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                    uncheckedThumbColor = Color.Red,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 10.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Switch(
+                    checked = showSingleGarden,
+                    onCheckedChange = { viewModel.toggleLeaderboard() },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color(0xFF258a40),
+                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                        uncheckedThumbColor = Color.Red,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
 
-            )
+                )
+            }
             if (!showSingleGarden) {
-                
                 SingleGardenScreen()
             } else {
                 Row(
@@ -89,7 +98,7 @@ object LeaderboardScreen : Screen {
                     val names by viewModel2.names.collectAsState()
 
                     FlowerViewScreen.FlowerGardenScreen(
-                        boxCount = boxCount,
+                        boxCount = 3,
                         flowerCounts = flowerCounts,
                         names = names
                     )

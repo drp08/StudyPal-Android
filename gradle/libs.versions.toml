@@ -20,6 +20,7 @@ room = "2.6.1"
 ksp = "1.9.0-1.0.13"
 dateTimePicker = "1.0.2"
 media3Common = "1.3.1"
+exposed = "0.51.1"
 datastore = "1.1.1"
 ycharts = "2.1.0"
 
@@ -42,6 +43,9 @@ ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor"
 ktor-server-contentNegotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
 ktor-server-resources = { module = "io.ktor:ktor-server-resources", version.ref = "ktor" }
 ktor-server-logging = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktor" }
+ktor-server-openapi = { module = "io.ktor:ktor-server-openapi", version.ref = "ktor" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktor" }
 ktor-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-resources = { module = "io.ktor:ktor-resources", version.ref = "ktor" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -60,6 +64,10 @@ room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 date-time-picker = { module = "network.chaintech:kmp-date-time-picker", version.ref = "dateTimePicker" }
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3Common" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+exposed = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version = "3.44.1.0" }
 androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 yml-ycharts = { module = "co.yml:ycharts", version.ref = "ycharts" }
 
@@ -72,3 +80,4 @@ google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.re
 androidx-room = { id = "androidx.room", version.ref = "room" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
+

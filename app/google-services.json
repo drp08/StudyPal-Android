@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "325066766381",
+    "project_id": "studypal-da14f",
+    "storage_bucket": "studypal-da14f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:325066766381:android:609ef188c5bf0241a9a0a4",
+        "android_client_info": {
+          "package_name": "io.github.drp08.studypal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnx8hBSS-i2DhIhGxOCeAVmjzcwH93gFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

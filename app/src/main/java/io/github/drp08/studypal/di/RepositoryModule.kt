@@ -7,6 +7,9 @@ import dagger.hilt.components.SingletonComponent
 import io.github.drp08.studypal.data.FriendRepositoryImpl
 import io.github.drp08.studypal.data.SchedulingRepositoryImpl
 import io.github.drp08.studypal.data.UserRepositoryImpl
+import io.github.drp08.studypal.data.v2.FirebaseFriendRepository
+import io.github.drp08.studypal.data.v2.FirebaseUserRepository
+import io.github.drp08.studypal.data.v2.LocalSchedulingRepository
 import io.github.drp08.studypal.domain.FriendRepository
 import io.github.drp08.studypal.domain.SchedulingRepository
 import io.github.drp08.studypal.domain.UserRepository
@@ -19,17 +22,17 @@ import javax.inject.Singleton
 abstract class RepositoryModule {
     @Binds
     @Singleton
-    abstract fun bindSchedulingRepository(impl: SchedulingRepositoryImpl): SchedulingRepository
+    abstract fun bindSchedulingRepository(impl: LocalSchedulingRepository): SchedulingRepository
 
     @Binds
     @Singleton
-    abstract fun bindUserRepository(impl: UserRepositoryImpl): UserRepository
+    abstract fun bindUserRepository(impl: FirebaseUserRepository): UserRepository
 
     @Binds
     @Singleton
-    abstract fun bindFriendRepository(impl: FriendRepositoryImpl): FriendRepository
+    abstract fun bindFriendRepository(impl: FirebaseFriendRepository): FriendRepository
 
     @Binds
     @Singleton
-    abstract fun bindScheduler(impl: Scheduler): RandomiseScheduler
+    abstract fun bindScheduler(impl: RandomiseScheduler): Scheduler
 }

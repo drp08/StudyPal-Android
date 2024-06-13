@@ -10,6 +10,8 @@ import io.github.drp08.studypal.data.UserRepositoryImpl
 import io.github.drp08.studypal.domain.FriendRepository
 import io.github.drp08.studypal.domain.SchedulingRepository
 import io.github.drp08.studypal.domain.UserRepository
+import io.github.drp08.studypal.domain.scheduler.RandomiseScheduler
+import io.github.drp08.studypal.domain.scheduler.Scheduler
 import javax.inject.Singleton
 
 @Module
@@ -26,4 +28,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindFriendRepository(impl: FriendRepositoryImpl): FriendRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindScheduler(impl: Scheduler): RandomiseScheduler
 }

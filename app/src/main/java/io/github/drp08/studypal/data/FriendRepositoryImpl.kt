@@ -19,7 +19,7 @@ class FriendRepositoryImpl @Inject constructor(
     private val userRepository: UserRepository
 ) : FriendRepository {
     override fun getFriends(): Flow<Result<List<String>>> = flow {
-        val user = userRepository.getUser().first()
+        val user = userRepository.getUserLocal().first()
         val response = client.get("/database/friends/${user.name}")
         if (!response.status.isSuccess())
             emit(Result.failure(Exception("Failed to retrieve list of friends")))
@@ -28,7 +28,7 @@ class FriendRepositoryImpl @Inject constructor(
     }
 
     override suspend fun addNewFriend(friendName: String): Result<Unit> {
-        val user = userRepository.getUser().first()
+        val user = userRepository.getUserLocal().first()
         val response = client.post("/database/friends") {
             setBody("${user.name} $friendName")
         }
@@ -38,7 +38,7 @@ class FriendRepositoryImpl @Inject constructor(
     }
 
     override suspend fun removeFriend(friendName: String): Result<Unit> {
-        val user = userRepository.getUser().first()
+        val user = userRepository.getUserLocal().first()
         val response = client.delete("/database/friends") {
             setBody("${user.name} $friendName")
         }

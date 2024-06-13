@@ -1,5 +1,6 @@
 package io.github.drp08.studypal.di
 
+import android.util.Log
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,6 +20,7 @@ import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.request.headers
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -30,14 +32,22 @@ object HttpModule {
        return HttpClient(Android) {
             install(Resources)
             install(ContentNegotiation) {
-                json()
+                json(
+                    json = Json {
+                        ignoreUnknownKeys = true
+                    }
+                )
             }
             install(Logging){
-                logger = Logger.DEFAULT
+                logger = object : Logger {
+                    override fun log(message: String) {
+                        Log.d("HttpClient", "log: $message")
+                    }
+                }
                 level = LogLevel.ALL
             }
             defaultRequest {
-                url("http://cloud-vm-43-232.doc.ic.ac.uk")
+                url("http://146.169.169.145:8080")
                 headers {
                     append(HttpHeaders.ContentType,"application/json")
                 }

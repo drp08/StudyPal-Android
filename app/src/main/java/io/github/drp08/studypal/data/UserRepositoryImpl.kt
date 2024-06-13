@@ -36,7 +36,7 @@ class UserRepositoryImpl @Inject constructor(
     private val endWorkingHours = longPreferencesKey("USER_END_WORKING_HOURS")
 
     override fun verifyAndGetUser(): Flow<Result<User>> {
-        return getUser()
+        return getUserLocal()
             .catch { Result.failure<User>(it) }
             .map {
                 val response = client.get("/database/users/${it.name}")
@@ -47,7 +47,7 @@ class UserRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun getUser(): Flow<User> =
+    override fun getUserLocal(): Flow<User> =
         dataStore.data.catch {
             emit(emptyPreferences())
         }.map {

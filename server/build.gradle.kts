@@ -29,7 +29,7 @@ ktor {
     docker {
         jreVersion.set(JavaVersion.VERSION_17)
         localImageName.set("studypal-server")
-        imageTag.set("0.2.0")
+        imageTag.set("0.2.1")
 
         portMappings.set(listOf(
             DockerPortMapping(

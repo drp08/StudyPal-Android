@@ -11,6 +11,7 @@ import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.models.User
 import io.github.drp08.studypal.presentation.navigation.HomeNavigator
 import io.github.drp08.studypal.presentation.screens.HomeScreen
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,11 +34,11 @@ class RegistrationViewModel @Inject constructor(
     }
 
     fun onWorkingHoursStartChange(newValue: Long) {
-        user = user.copy(startWorkingHours = newValue - 1 * 60 * 60 * 1000)
+        user = user.copy(startWorkingHours = newValue)
     }
 
     fun onWorkingHoursEndChange(newValue: Long) {
-        user = user.copy(endWorkingHours = newValue - 1 * 60 * 60 * 1000)
+        user = user.copy(endWorkingHours = newValue)
     }
 
     fun onHoursPerDayChange(newValue: Int) {

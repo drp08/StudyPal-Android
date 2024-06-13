@@ -1,20 +1,30 @@
 package io.github.drp08.studypal.presentation.screens
 
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -162,7 +172,7 @@ data object RegistrationScreen : Screen {
                         .padding(top = 10.dp, bottom = 10.dp)
                         .fillMaxWidth(),
                     showTimePicker = showEndTimeDialog,
-                    title = "From",
+                    title = "To",
                     doneLabel = "Done",
                     titleStyle = TextStyle(
                         fontSize = 18.sp,
@@ -213,21 +223,68 @@ data object RegistrationScreen : Screen {
                     Text(text = "End: $timeFormat")
                 }
             }
+            Spacer(modifier = Modifier.height(10.dp))
 
-            TextField(
-                value = user.maxStudyingHours.toString(),
-                onValueChange = {
-                    viewModel.onHoursPerDayChange(it.toInt())
-                },
-                label = { Text("I want to work ... Hours per day") },
+            val timeToChoose = (1..8).toList().toIntArray()
+            val expanded = remember { mutableStateOf(false) }
+
+            Row (
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                singleLine = true,
-                shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.colors(),
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
-            )
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "I want to work for ",
+                    modifier = Modifier.padding(1.dp)
+                )
+                Spacer(modifier = Modifier.width(2.dp))
+                Box(
+                    contentAlignment = Alignment.CenterStart,
+                    modifier = Modifier
+                        .size(45.dp, 32.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .border(
+                            width = 1.dp,
+                            color = Color.LightGray,
+                            shape = RoundedCornerShape(5.dp)
+                        )
+                        .clickable { expanded.value = !expanded.value }
+                ) {
+                    Text(
+                        text = user.maxStudyingHours.toString(),
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                    Spacer(modifier = Modifier.width(2.dp))
+                    Icon(
+                        Icons.Default.ArrowDropDown,
+                        contentDescription = null,
+                        Modifier
+                            .align(Alignment.CenterEnd)
+                            .fillMaxHeight()
+                    )
+                    DropdownMenu(
+                        expanded = expanded.value,
+                        onDismissRequest = { expanded.value = false }
+                    ) {
+                        timeToChoose.forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(text = item.toString()) },
+                                onClick = {
+                                    user.maxStudyingHours = item
+                                    viewModel.onHoursPerDayChange(item)
+                                    expanded.value = false
+                                },
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.width(2.dp))
+                Text(
+                    text = " hours per day",
+                    modifier = Modifier.padding(1.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 

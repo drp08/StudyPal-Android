@@ -162,7 +162,7 @@ data object RegistrationScreen : Screen {
                         .padding(top = 10.dp, bottom = 10.dp)
                         .fillMaxWidth(),
                     showTimePicker = showEndTimeDialog,
-                    title = "From",
+                    title = "To",
                     doneLabel = "Done",
                     titleStyle = TextStyle(
                         fontSize = 18.sp,

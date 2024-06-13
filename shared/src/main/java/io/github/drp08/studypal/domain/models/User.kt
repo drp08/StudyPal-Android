@@ -8,4 +8,6 @@ data class User (
     val startWorkingHours: Long, // Epoch millis from the start of the working day
     val endWorkingHours: Long, // Epoch millis from the start of the working day
     var maxStudyingHours: Int
-)
+) {
+    constructor(): this("", 0L, 0L, 0)
+}

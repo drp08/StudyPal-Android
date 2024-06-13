@@ -9,6 +9,7 @@ import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.toObject
 import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.models.User
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class FirebaseUserRepository @Inject constructor() : UserRepository {
@@ -31,12 +33,18 @@ class FirebaseUserRepository @Inject constructor() : UserRepository {
         if (auth.currentUser == null)
             return flowOf(Result.failure(Exception("User not logged in")))
 
-        return fetchUserData()
-            .catch { Result.failure<User>(it) }
-            .map { Result.success(it!!) }
+        return flow {
+            val uid = auth.currentUser!!.uid
+            val user = usersRef.document(uid).get().await().toObject(User::class.java)
+            user?.let { emit(Result.success(it)) }
+        }
     }
 
-    override fun getUser() = fetchUserData().map { it!! }
+    override fun getUser() = flow {
+        val uid = auth.currentUser!!.uid
+        val user = usersRef.document(uid).get().await().toObject(User::class.java)!!
+        emit(user)
+    }
 
     override suspend fun createUser(email: String, password: String, user: User) {
         try {
@@ -53,16 +61,4 @@ class FirebaseUserRepository @Inject constructor() : UserRepository {
         val uid = auth.currentUser!!.uid
         usersRef.document(uid).set(user)
     }
-
-    private fun fetchUserData(): Flow<User?> {
-        val uid = auth.currentUser!!.uid
-        return usersRef.document(uid).getDoc<User>()
-    }
-}
-private inline fun <reified T> DocumentReference.getDoc() = flow {
-    val task = this@getDoc.get()
-    val result = kotlin.runCatching { Tasks.await(task) }
-
-    val data = result.getOrNull()?.toObject(T::class.java)
-    emit(data)
 }

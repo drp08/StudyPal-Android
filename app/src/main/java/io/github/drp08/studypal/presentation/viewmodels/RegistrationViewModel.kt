@@ -11,6 +11,7 @@ import io.github.drp08.studypal.db.session.UserSession
 import io.github.drp08.studypal.domain.models.User
 import io.github.drp08.studypal.presentation.navigation.HomeNavigator
 import io.github.drp08.studypal.presentation.screens.HomeScreen
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

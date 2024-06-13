@@ -7,5 +7,5 @@ data class User (
     val name: String,
     val startWorkingHours: Long, // Epoch millis from the start of the working day
     val endWorkingHours: Long, // Epoch millis from the start of the working day
-    val maxStudyingHours: Int
+    var maxStudyingHours: Int
 )

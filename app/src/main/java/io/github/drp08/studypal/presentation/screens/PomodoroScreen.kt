@@ -11,19 +11,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,19 +41,39 @@ import kotlinx.coroutines.delay
 
 data class PomodoroScreen(
     private val startTime: Long,
-    private val endTime: Long
+    private var endTime: Long
 ) : Screen {
     @Composable
     override fun Content() {
         val current = System.currentTimeMillis()
         val totalTimeLeft = endTime - startTime
         var timeLeft by remember { mutableLongStateOf(endTime - current) }
+        var showDialog by remember { mutableStateOf(false) }
+        var extendMinutes by remember { mutableStateOf("") }
+        val isValidInput by remember { derivedStateOf { extendMinutes.toIntOrNull() != null && extendMinutes.isNotEmpty() } }
 
         LaunchedEffect(key1 = timeLeft) {
             if (timeLeft > 0) {
                 delay(1000L)
                 timeLeft -= 1000L
             }
+        }
+
+        if (showDialog) {
+            TimeExtendDialog(
+                extendMinutes = extendMinutes,
+                onMinutesChange = { extendMinutes = it },
+                isValidInput = isValidInput,
+                onCancel = { showDialog = false },
+                onExtend = {
+                    val minutes = extendMinutes.toIntOrNull()
+                    if (minutes != null && minutes > 0) {
+                        endTime += minutes * 60 * 1000
+                        timeLeft += minutes * 60 * 1000
+                    }
+                    showDialog = false
+                }
+            )
         }
 
         Scaffold(
@@ -76,7 +104,7 @@ data class PomodoroScreen(
                         }
                     }
 
-                    val endTimeStr = formatTime(endTime, "mm:ss")
+                    val endTimeStr = formatTime(endTime, "HH:mm")
                     Text(
                         text = "Session finishes at $endTimeStr",
                         modifier = Modifier
@@ -99,7 +127,7 @@ data class PomodoroScreen(
                         )
 
                         Text(
-                            text = formatTime(timeLeft, "HH:mm"),
+                            text = formatTime(timeLeft, "HH:mm:ss"),
                             fontSize = 32.sp
                         )
                     }
@@ -111,15 +139,58 @@ data class PomodoroScreen(
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-//                    Button(onClick = {
-//                        timeLeft += 5 * 60
-//                        extendedEndTime += 5 * 60
-//                    }) {
-//                        Text(text = "Extend by 5 minutes")
-//                    }
+
+                    Button(onClick = { showDialog = true }, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                        Text(text = "Extend Session")
+                    }
                 }
             }
         }
     }
-
+    @Composable
+    fun TimeExtendDialog(
+        extendMinutes: String,
+        onMinutesChange: (String) -> Unit,
+        isValidInput: Boolean,
+        onCancel: () -> Unit,
+        onExtend: () -> Unit
+    ) {
+        AlertDialog(
+            onDismissRequest = onCancel,
+            title = { Text(text = "Extend Session") },
+            text = {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = "Please select how long you wish to extend it by:")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    TextField(
+                        value = extendMinutes,
+                        onValueChange = onMinutesChange,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        label = { Text("Minutes") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = { if (isValidInput) onExtend() },
+                    enabled = isValidInput
+                ) {
+                    Text(text = "Extend")
+                }
+            },
+            dismissButton = {
+                Button(onClick = onCancel, colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
+                    Text(text = "Cancel")
+                }
+            }
+        )
+    }
 }

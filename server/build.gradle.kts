@@ -29,7 +29,7 @@ ktor {
     docker {
         jreVersion.set(JavaVersion.VERSION_17)
         localImageName.set("studypal-server")
-        imageTag.set("0.1.2")
+        imageTag.set("0.2.0")
 
         portMappings.set(listOf(
             DockerPortMapping(
@@ -58,6 +58,14 @@ dependencies {
     implementation(libs.ktor.server.resources)
     implementation(libs.ktor.server.logging)
     implementation(libs.ktor.serialization)
+    implementation(libs.ktor.server.swagger)
+    implementation(libs.ktor.server.openapi)
+    implementation(libs.ktor.server.cors)
+
+    implementation(libs.exposed)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.sqlite.jdbc)
 
     testImplementation(kotlin("test"))
 }

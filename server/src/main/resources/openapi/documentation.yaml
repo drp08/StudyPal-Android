@@ -1,0 +1,187 @@
+openapi: "3.1.0"
+info:
+  title: "StudyPal_Android API"
+  description: "StudyPal_Android API"
+  version: "1.0.0"
+servers:
+- url: "https://StudyPal_Android"
+paths:
+  /:
+    get:
+      description: ""
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Hello World!"
+  /database/friends:
+    delete:
+      description: ""
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: "string"
+        required: true
+      responses:
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+                Example#2:
+                  value: ""
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+    post:
+      description: ""
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: "string"
+        required: true
+      responses:
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+                Example#2:
+                  value: ""
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+  /database/friends/{name}:
+    get:
+      description: ""
+      parameters:
+      - name: "name"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "array"
+                items:
+                  type: "string"
+  /database/users:
+    post:
+      description: ""
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: "string"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+        "500":
+          description: "Internal Server Error"
+          content:
+            '*/*':
+              schema:
+                type: "object"
+    put:
+      description: ""
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: "string"
+        required: true
+  /database/users/{name}:
+    get:
+      description: ""
+      parameters:
+      - name: "name"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Pair_? extends String"
+        "404":
+          description: "Not Found"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: ""
+  /schedule:
+    post:
+      description: ""
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: "string"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+components:
+  schemas:
+    Pair:
+      type: "object"
+      properties: {}
+    Pair_? extends String:
+      type: "object"
+      properties:
+        first:
+          type: "object"
+        second:
+          type: "object"

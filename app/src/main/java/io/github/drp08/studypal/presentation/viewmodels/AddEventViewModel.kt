@@ -3,6 +3,7 @@ package io.github.drp08.studypal.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.navigator.Navigator
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SessionDao
 import io.github.drp08.studypal.domain.SchedulingRepository
 import io.github.drp08.studypal.domain.entities.SessionEntity
@@ -11,7 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
+@HiltViewModel
 class AddEventViewModel @Inject constructor(
     private val sessionDao: SessionDao,
     private val schedulingRepository: SchedulingRepository

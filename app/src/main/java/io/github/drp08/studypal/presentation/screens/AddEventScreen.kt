@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -48,20 +50,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel
 import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeEvent
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeStartTime
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.ChangeEndTime
+import io.github.drp08.studypal.presentation.viewmodels.AddEventViewModel.UiAction.AddEvent
 import network.chaintech.ui.datepicker.WheelDatePickerView
 import network.chaintech.ui.datetimepicker.WheelDateTimePickerView
 import network.chaintech.utils.DateTimePickerView
 import network.chaintech.utils.TimeFormat
 import network.chaintech.utils.WheelPickerDefaults
-import network.chaintech.utils.dateTimeToString
 
 data object AddEventScreen : Screen {
     @Composable
     override fun Content() {
         var checked by remember { mutableStateOf(false) }
         var numberDatesAdded by remember { mutableStateOf(1) }
+        val navigator = LocalNavigator.currentOrThrow
+
         val viewModel = hiltViewModel<AddEventViewModel>()
         val state by viewModel.state.collectAsState()
         Column (
@@ -86,7 +94,18 @@ data object AddEventScreen : Screen {
                         name = state.parent,
                         onNameChange = { viewModel.on(ChangeEvent(it)) }
                     )
-                    EventDateTimeDialogueBox()
+                    Row(
+                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    )
+                    {
+                        Text(text = "From")
+                        EventDateTimeDialogueBox("Start Time",viewModel,"From")
+                        Spacer(modifier = Modifier.width(100.dp))
+                        Text(text = "Until")
+//                        EventDateTimeDialogueBox("End Time", viewModel,"To")
+                    }
                     Row(
                         modifier = Modifier
                             .padding(start = 20.dp, end = 20.dp)
@@ -126,7 +145,11 @@ data object AddEventScreen : Screen {
                                     ) {
                                         Icon(Icons.Filled.Add, "Add button")
                                     }
-                                    EventDateTimeDialogueBox()
+                                    Row{
+
+                                        EventDateTimeDialogueBox("Start Time", viewModel, "From")
+                                        EventDateTimeDialogueBox("End Time", viewModel, "To")
+                                    }
                                 }
                                 i++
                             }
@@ -174,18 +197,16 @@ data object AddEventScreen : Screen {
     }
 
     @Composable
-    fun EventDateTimeDialogueBox() {
+    fun EventDateTimeDialogueBox(title: String, viewModel: AddEventViewModel, pickerTitle: String) {
         var showDateTimePicker by remember { mutableStateOf(false) }
-        var eventDateTime by rememberSaveable { mutableStateOf("Event Date and Time") }
-
         if (showDateTimePicker) {
             WheelDateTimePickerView(
                 modifier = Modifier
                     .padding(top = 10.dp, bottom = 10.dp)
                     .fillMaxWidth(),
                 showDatePicker = showDateTimePicker,
-                title = "Add Event Date & Time",
-                doneLabel = "Okay",
+                title = pickerTitle,
+                doneLabel = "Done",
                 titleStyle = TextStyle(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -197,12 +218,8 @@ data object AddEventScreen : Screen {
                     color = Color.Black
                 ),
                 timeFormat = TimeFormat.AM_PM,
-                yearsRange = IntRange(2024, 2300),
                 height = 180.dp,
                 rowCount = 5,
-                dateTextStyle = TextStyle(
-                    fontWeight = FontWeight(400)
-                ),
                 dragHandle = {
                     HorizontalDivider(
                         modifier = Modifier
@@ -213,15 +230,19 @@ data object AddEventScreen : Screen {
                         color = Color.DarkGray
                     )
                 },
-                dateTextColor = Color.DarkGray,
                 hideHeader = false,
                 containerColor = Color.White,
                 shape = RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp),
                 dateTimePickerView = DateTimePickerView.DIALOG_VIEW,
                 onDoneClick = {
-                    eventDateTime = ("Event Date Time: ")
-                        .plus(dateTimeToString(it, "hh:mm a dd-MM-yyyy"))
-                    showDateTimePicker = false },
+                    // TODO : this is a quick fix, need to change to a better solution
+                    if (title == "From"){
+                    viewModel.on(ChangeStartTime(it.time.toMillisecondOfDay().toLong()))
+                } else if (title == "To"){
+                        viewModel.on(ChangeEndTime(it.time.toMillisecondOfDay().toLong()))
+                }
+                    showDateTimePicker = false
+                },
                 selectorProperties = WheelPickerDefaults.selectorProperties(
                     borderColor = Color.DarkGray
                 ),
@@ -246,7 +267,7 @@ data object AddEventScreen : Screen {
                     )
                     .padding()
             ) {
-                Text(text = eventDateTime, color = Color.DarkGray)
+                Text(text = title, color = Color.DarkGray)
             }
         }
     }

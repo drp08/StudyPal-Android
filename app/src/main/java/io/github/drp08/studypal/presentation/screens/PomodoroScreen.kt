@@ -48,7 +48,7 @@ data class PomodoroScreen(
         val totalTimeLeft = endTime - startTime
         var timeLeft by remember { mutableLongStateOf(endTime - current) }
         var showDialog by remember { mutableStateOf(false) }
-        var selectedMinutes by remember { mutableStateOf(5L) }
+        var selectedMinutes by remember { mutableLongStateOf(5L) }
 
         LaunchedEffect(key1 = timeLeft) {
             if (timeLeft > 0) {
@@ -150,6 +150,7 @@ data class PomodoroScreen(
     ) {
         val options = listOf(5L, 10L, 15L)
         var expanded by remember { mutableStateOf(false) }
+        var selectedOption by remember { mutableStateOf(selectedMinutes) }
 
         AlertDialog(
             onDismissRequest = onCancel,
@@ -165,28 +166,20 @@ data class PomodoroScreen(
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth()
-                            .selectable(
-                                selected = expanded,
-                                onClick = { expanded = !expanded }
-                            )
                     ) {
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            options.forEach { minutes ->
-                                DropdownMenuItem({ Text(text = "$minutes minutes") }, onClick = {
-                                    onMinutesSelected(minutes)
-                                    expanded = false
-                                })
-                            }
-                        }
-                        Text(text = "$selectedMinutes minutes")
+                        TimePickerSpinner(
+                            options = options,
+                            selectedOption = selectedOption,
+                            onOptionSelected = { selectedOption = it }
+                        )
                     }
                 }
             },
             confirmButton = {
-                Button(onClick = onExtend) {
+                Button(onClick = {
+                    onMinutesSelected(selectedOption)
+                    onExtend()
+                }) {
                     Text(text = "Extend")
                 }
             },
@@ -196,5 +189,34 @@ data class PomodoroScreen(
                 }
             }
         )
+    }
+
+    @Composable
+    fun TimePickerSpinner(
+        options: List<Long>,
+        selectedOption: Long,
+        onOptionSelected: (Long) -> Unit
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(100.dp)
+        ) {
+            options.forEach { option ->
+                Text(
+                    text = "$option minutes",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                        .selectable(
+                            selected = (option == selectedOption),
+                            onClick = { onOptionSelected(option) }
+                        ),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
     }
 }

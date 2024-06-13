@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,15 +21,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,6 +43,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
+import androidx.compose.ui.window.Dialog
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.Point
@@ -57,6 +66,7 @@ import io.github.drp08.studypal.presentation.viewmodels.ProfileViewModel
 import kotlin.random.Random
 
 data object ProfileScreen : Screen {
+
     @Composable
     override fun Content() {
         val viewModel = hiltViewModel<ProfileViewModel>()
@@ -105,7 +115,7 @@ data object ProfileScreen : Screen {
                 ) {
                     Text("Name: $userName", fontSize = 24.sp, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("Total XP: ")
+                    Text("Total XP: ") //Todo: Add XP from Leaderboard
                 }
             }
             Row(
@@ -333,35 +343,299 @@ data object ProfileScreen : Screen {
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height((72 + 44 * numberSubjects).dp)
-                            .border(
-                                width = 1.dp,
-                                color = Color.LightGray,
-                                shape = RoundedCornerShape(3.dp)
+                    if (subjectList.isNotEmpty()) { //Todo: Probs will be fucked up in the merge
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height((72 + 44 * numberSubjects).dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.LightGray,
+                                    shape = RoundedCornerShape(3.dp)
+                                )
+                                .padding(start = 12.dp, end = 12.dp),
+                            contentAlignment = Alignment.BottomEnd
+                        ) {
+                            val arrayStrings = subjectList.map { t -> t.name }.toTypedArray()
+                            SubjectBarChart(arrayStrings)
+                            Spacer(modifier = Modifier.height(40.dp))
+                            Text(
+                                text = "hours",
+                                fontSize = 10.sp,
+                                color = Color.Black,
+                                fontWeight = FontWeight.SemiBold
                             )
-                            .padding(start = 12.dp, end = 12.dp),
-                        contentAlignment = Alignment.BottomEnd
-                    ) {
-                        val arrayStrings = subjectList.map { t -> t.name }.toTypedArray()
-                        SubjectBarChart(arrayStrings)
-                        Spacer(modifier = Modifier.height(40.dp))
+                        }
+                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "hours",
-                            fontSize = 10.sp,
+                            "Total study hours: 106", //Todo: Add actual total number of hours studied
+                            fontSize = 16.sp,
+                            color = Color.DarkGray
+                        )
+                    } else {
+                        Text(
+                            "Total study hours: 0", //Todo: Add actual total number of hours studied
+                            fontSize = 16.sp,
+                            color = Color.DarkGray
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            "More statistics will appear here after you add a subject",
+                            fontSize = 16.sp,
+                            color = Color.DarkGray
+                        )
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row (
+                modifier = Modifier
+                    .width(320.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                var showDialog by remember { mutableStateOf(false) }
+                val timeToChoose = (5..60 step 5).toList().toIntArray()
+                val expandedWork = remember { mutableStateOf(false) }
+                val expandedShort = remember { mutableStateOf(false) }
+                val expandedLong = remember { mutableStateOf(false) }
+                var shortBreakTime = 5
+                var longBreakTime = 5
+                var workTime = 5
+                if (showDialog) {
+                    Dialog(onDismissRequest = { showDialog = false } ) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(250.dp)
+                                .padding(16.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.SpaceEvenly,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Spacer(modifier = Modifier.height(30.dp))
+                                Row (
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Work for: ",
+                                        modifier = Modifier.padding(1.dp),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                        modifier = Modifier
+                                            .size(45.dp, 32.dp)
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.LightGray,
+                                                shape = RoundedCornerShape(5.dp)
+                                            )
+                                            .clickable { expandedWork.value = !expandedWork.value }
+                                    ) {
+                                        Text(
+                                            text = workTime.toString(),
+                                            modifier = Modifier.padding(start = 4.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(2.dp))
+                                        Icon(
+                                            Icons.Default.ArrowDropDown,
+                                            contentDescription = null,
+                                            Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .fillMaxHeight()
+                                        )
+                                        DropdownMenu(
+                                            expanded = expandedWork.value,
+                                            onDismissRequest = { expandedWork.value = false }
+                                        ) {
+                                            timeToChoose.forEach { item ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = item.toString()) },
+                                                    onClick = {
+                                                        workTime =
+                                                            item //Todo: Connect to pomodoro timer
+                                                        expandedWork.value = false
+                                                    },
+                                                    modifier = Modifier.fillMaxSize()
+                                                )
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = " minutes",
+                                        modifier = Modifier.padding(1.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(15.dp))
+                                Row (
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Short break for: ",
+                                        modifier = Modifier.padding(1.dp),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                        modifier = Modifier
+                                            .size(45.dp, 32.dp)
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.LightGray,
+                                                shape = RoundedCornerShape(5.dp)
+                                            )
+                                            .clickable { expandedShort.value = !expandedShort.value }
+                                    ) {
+                                        Text(
+                                            text = shortBreakTime.toString(),
+                                            modifier = Modifier.padding(start = 4.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(2.dp))
+                                        Icon(
+                                            Icons.Default.ArrowDropDown,
+                                            contentDescription = null,
+                                            Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .fillMaxHeight()
+                                        )
+                                        DropdownMenu(
+                                            expanded = expandedShort.value,
+                                            onDismissRequest = { expandedShort.value = false }
+                                        ) {
+                                            timeToChoose.forEach { item ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = item.toString()) },
+                                                    onClick = {
+                                                        shortBreakTime =
+                                                            item //Todo: Connect to pomodoro timer
+                                                        expandedShort.value = false
+                                                    },
+                                                    modifier = Modifier.fillMaxSize()
+                                                )
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = " minutes",
+                                        modifier = Modifier.padding(1.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(15.dp))
+                                Row (
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = "Long break for: ",
+                                        modifier = Modifier.padding(1.dp),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Box(
+                                        contentAlignment = Alignment.CenterStart,
+                                        modifier = Modifier
+                                            .size(45.dp, 32.dp)
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.LightGray,
+                                                shape = RoundedCornerShape(5.dp)
+                                            )
+                                            .clickable { expandedLong.value = !expandedLong.value }
+                                    ) {
+                                        Text(
+                                            text = longBreakTime.toString(),
+                                            modifier = Modifier.padding(start = 4.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(2.dp))
+                                        Icon(
+                                            Icons.Default.ArrowDropDown,
+                                            contentDescription = null,
+                                            Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .fillMaxHeight()
+                                        )
+                                        DropdownMenu(
+                                            expanded = expandedLong.value,
+                                            onDismissRequest = { expandedLong.value = false }
+                                        ) {
+                                            timeToChoose.forEach { item ->
+                                                DropdownMenuItem(
+                                                    text = { Text(text = item.toString()) },
+                                                    onClick = {
+                                                        longBreakTime =
+                                                            item //Todo: Connect to pomodoro timer
+                                                        expandedLong.value = false
+                                                    },
+                                                    modifier = Modifier.fillMaxSize()
+                                                )
+                                            }
+                                        }
+                                    }
+                                    Spacer(modifier = Modifier.width(2.dp))
+                                    Text(
+                                        text = " minutes",
+                                        modifier = Modifier.padding(1.dp)
+                                    )
+                                }
+                                Spacer(modifier = Modifier.height(10.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.End
+                                ) {
+                                    TextButton(
+                                        onClick = {
+                                            // Todo: Store value in database / change
+                                            showDialog = false },
+                                        modifier = Modifier.padding(8.dp)
+                                    ) {
+                                        Text("Confirm")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                Box(
+                    modifier = Modifier
+                        .width(196.dp)
+                        .height(40.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color.LightGray,
+                            shape = RoundedCornerShape(3.dp)
+                        )
+                        .padding(start = 0.dp, end = 0.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    TextButton(
+                        onClick = { showDialog = true},
+                    ) {
+                        Text(
+                            text = "Change Pomodoro Timings",
+                            fontSize = 14.sp,
                             color = Color.Black,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        "Total study hours: 106", //Todo: Add actual total number of hours studied
-                        fontSize = 16.sp,
-                        color = Color.DarkGray
-                    )
                 }
+                Spacer(modifier = Modifier.width(124.dp))
             }
         }
     }
@@ -387,7 +661,7 @@ data object ProfileScreen : Screen {
                     isDataCategoryStartFromBottom = false
                 )
             )
-            .startDrawPadding(180.dp)
+            .startDrawPadding(20.dp)
             .labelData { index -> barsData[index].label }
             .axisLineColor(MaterialTheme.colorScheme.tertiary)
             .axisLabelColor(MaterialTheme.colorScheme.tertiary)
@@ -430,8 +704,7 @@ data object ProfileScreen : Screen {
         dataCategoryOptions: DataCategoryOptions
     ): List<BarData> {
         val list = arrayListOf<BarData>()
-        var index = 0
-        for (subject in array) {
+        for ((index, subject) in array.withIndex()) {
             val point =
                 Point(
                     "%.2f".format(Random.nextDouble(1.0, maxRange.toDouble()))
@@ -448,7 +721,6 @@ data object ProfileScreen : Screen {
                     label = subject.take(5),
                 )
             )
-            index++
         }
         return list
     }
@@ -463,4 +735,3 @@ fun PreviewProfileScreen() {
         onAddNewFriend = {}
     )
 }
-

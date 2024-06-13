@@ -122,12 +122,17 @@ object FlowerViewScreen : Screen {
                             color = MaterialTheme.colorScheme.onBackground
                         )
 
-                        Text(
-                            text = names[index + 1],
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
+                        if (index + 1 < boxCount) {
+                            Text(
+                                text = names[index + 1],
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+
+                        } else {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                 }

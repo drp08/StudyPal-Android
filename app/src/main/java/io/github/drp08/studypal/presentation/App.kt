@@ -9,6 +9,6 @@ import io.github.drp08.studypal.presentation.theme.StudyPalAndroidTheme
 @Composable
 fun App() {
     StudyPalAndroidTheme(darkTheme = false) {
-        Navigator(FriendsScreen)
+        Navigator(LoadingScreen)
     }
 }

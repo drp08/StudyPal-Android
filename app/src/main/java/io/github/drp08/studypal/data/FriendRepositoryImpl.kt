@@ -17,8 +17,8 @@ import javax.inject.Inject
 class FriendRepositoryImpl @Inject constructor(
     private val client: HttpClient,
     private val userRepository: UserRepository
-) : FriendRepository {
-    override fun getFriends(): Flow<Result<List<String>>> = flow {
+) /*: FriendRepository*/ {
+    /*override*/ fun getFriends(): Flow<Result<List<String>>> = flow {
         val user = userRepository.getUser()
         val response = client.get("/database/friends/${user.name}")
         if (!response.status.isSuccess())
@@ -27,7 +27,7 @@ class FriendRepositoryImpl @Inject constructor(
             emit(Result.success(response.body<List<String>>()))
     }
 
-    override suspend fun addNewFriend(friendName: String): Result<Unit> {
+    /*override*/ suspend fun addNewFriend(friendName: String): Result<Unit> {
         val user = userRepository.getUser()
         val response = client.post("/database/friends") {
             setBody("${user.name} $friendName")
@@ -37,7 +37,7 @@ class FriendRepositoryImpl @Inject constructor(
         return Result.success(Unit)
     }
 
-    override suspend fun removeFriend(friendName: String): Result<Unit> {
+    /*override*/ suspend fun removeFriend(friendName: String): Result<Unit> {
         val user = userRepository.getUser()
         val response = client.delete("/database/friends") {
             setBody("${user.name} $friendName")

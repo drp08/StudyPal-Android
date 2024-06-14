@@ -29,6 +29,7 @@ class RegistrationViewModel @Inject constructor(
 
     var user by mutableStateOf(
         User(
+            uid = "",
             name = "",
             startWorkingHours = 7 * 60 * 60 * 1000L,
             endWorkingHours = 16 * 60 * 60 * 1000L,

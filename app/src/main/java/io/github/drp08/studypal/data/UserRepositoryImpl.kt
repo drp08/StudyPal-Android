@@ -61,6 +61,7 @@ class UserRepositoryImpl @Inject constructor(
                 ?: throw Exception("User's endWorkingHours was not found")
 
             User(
+                uid = "",
                 name = name,
                 startWorkingHours = startWorkingHours,
                 endWorkingHours = endWorkingHours,

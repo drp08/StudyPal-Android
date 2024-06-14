@@ -17,6 +17,7 @@ class RandomiseSchedulerTest {
     companion object {
         private val user by lazy {
             User(
+                uid = "",
                 name = "Nishant",
                 startWorkingHours = 8 * HOUR_IN_MILLIS,
                 endWorkingHours = 20 * HOUR_IN_MILLIS,

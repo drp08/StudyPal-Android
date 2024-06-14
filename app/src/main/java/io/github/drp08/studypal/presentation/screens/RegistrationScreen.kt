@@ -341,6 +341,16 @@ data object RegistrationScreen : Screen {
             ) {
                 Text(text = "Register", fontSize = 18.sp)
             }
+
+            Button(
+                onClick = { navigator.push(LoginScreen) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(text = "Login Instead", fontSize = 18.sp)
+            }
         }
     }
 }

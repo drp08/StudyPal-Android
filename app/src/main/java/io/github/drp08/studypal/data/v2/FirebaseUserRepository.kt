@@ -41,12 +41,25 @@ class FirebaseUserRepository @Inject constructor() : UserRepository {
         return user
     }
 
-    override suspend fun createUser(email: String, password: String, user: User) {
+    override suspend fun createUser(email: String, password: String, user: User): Boolean {
         try {
             withContext(Dispatchers.IO) {
                 auth.createUserWithEmailAndPassword(email, password).await()
                 Log.d(TAG, "createUser: successfully created auth user")
                 createUserData(user)
+            }
+            return true
+        } catch (e: Exception) {
+            Log.e(TAG, "createUser: failed creating an auth user", e)
+            return false
+        }
+    }
+
+    override suspend fun loginUser(email: String, password: String) {
+        try {
+            withContext(Dispatchers.IO) {
+                auth.signInWithEmailAndPassword(email, password).await()
+                Log.d(TAG, "createUser: successfully login auth user")
             }
         } catch (e: Exception) {
             Log.e(TAG, "createUser: failed creating an auth user", e)

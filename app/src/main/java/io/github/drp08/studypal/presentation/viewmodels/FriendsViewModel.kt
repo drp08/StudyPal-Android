@@ -1,5 +1,6 @@
 package io.github.drp08.studypal.presentation.viewmodels
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -20,9 +21,6 @@ import javax.inject.Inject
 class FriendsViewModel @Inject constructor(
     private val friendRepository: FriendRepository
 ) : ViewModel() {
-    private val auth by lazy { Firebase.auth }
-    private val db by lazy { Firebase.firestore }
-
     companion object {
         private const val TAG = "FriendsViewModel"
     }
@@ -31,13 +29,14 @@ class FriendsViewModel @Inject constructor(
         private set
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             friends = friendRepository.getFriends()
         }
     }
 
     fun addFriend(name: String) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            Log.d(TAG, "addFriend($name) called ")
             friendRepository.addNewFriend(name)
         }
     }

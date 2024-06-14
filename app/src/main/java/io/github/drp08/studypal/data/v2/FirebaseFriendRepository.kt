@@ -1,5 +1,6 @@
 package io.github.drp08.studypal.data.v2
 
+import android.util.Log
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.ktx.firestore
@@ -13,7 +14,13 @@ class FirebaseFriendRepository @Inject constructor() : FriendRepository {
     private val db by lazy { Firebase.firestore }
     private val auth by lazy { Firebase.auth }
 
+    companion object {
+        private const val TAG = "FirebaseFriendRepositor"
+    }
+
     override suspend fun getFriends(): List<String> {
+        Log.d(TAG, "getFriends() called")
+
         val snapshot = db.collection("friends")
             .where(
                 Filter.or(
@@ -24,9 +31,12 @@ class FirebaseFriendRepository @Inject constructor() : FriendRepository {
             .get()
             .await()
 
+        Log.d(TAG, "getFriends: snapshot = $snapshot")
+
         if (snapshot != null) {
             val friendObjs = snapshot.toObjects(Friend::class.java)
             return friendObjs.map {
+                Log.d(TAG, "getFriends: Friend = $it")
                 if (it.friend1 == auth.currentUser!!.uid) it.friend2 else it.friend1
             }
         }
@@ -34,11 +44,15 @@ class FirebaseFriendRepository @Inject constructor() : FriendRepository {
     }
 
     override suspend fun addNewFriend(friendName: String) {
+        Log.d(TAG, "addNewFriend() called with: friendName = $friendName")
+
         val queryResults = db.collection("users")
             .whereEqualTo("name", friendName)
             .get()
             .await()
             .documents
+
+        Log.d(TAG, "addNewFriend: Found ${queryResults.size}")
 
         if (queryResults.isEmpty())
             return

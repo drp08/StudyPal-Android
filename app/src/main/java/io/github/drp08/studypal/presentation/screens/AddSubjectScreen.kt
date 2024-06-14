@@ -1,6 +1,5 @@
 package io.github.drp08.studypal.presentation.screens
 
-import android.widget.ArrayAdapter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -111,7 +110,7 @@ data object AddSubjectScreen : Screen {
                         onConfidenceChange = { viewModel.on(ChangeConfidence(it)) }
                     )
                     var i = 0
-                    var topics : MutableList<String> = mutableListOf() //Todo: Add to view model
+                    var topics: MutableList<String> = mutableListOf() //Todo: Add to view model
                     while (i < numberTopicsAdded) {
                         Row(
                             modifier = Modifier
@@ -144,10 +143,10 @@ data object AddSubjectScreen : Screen {
     }
 
     @Composable
-    fun TopicNameTextField(topics : MutableList<String>) : MutableList<String> {
+    fun TopicNameTextField(topics: MutableList<String>): MutableList<String> {
         var topicName by rememberSaveable { mutableStateOf("") }
 
-        Box (
+        Box(
             modifier = Modifier
                 .padding(start = 1.dp, end = 1.dp)
                 .height(80.dp)

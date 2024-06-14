@@ -51,6 +51,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.Point
@@ -75,7 +78,7 @@ data object ProfileScreen : Screen {
         InnerContent(
             userName = user.name,
             subjectList = subjects,
-            onAddNewFriend = viewModel::addNewFriend
+            navigator = LocalNavigator.currentOrThrow
         )
     }
 
@@ -83,7 +86,7 @@ data object ProfileScreen : Screen {
     fun InnerContent(
         userName: String,
         subjectList: List<SubjectEntity>,
-        onAddNewFriend: (String) -> Unit,
+        navigator: Navigator,
         modifier: Modifier = Modifier
     ) {
         Column(
@@ -125,15 +128,9 @@ data object ProfileScreen : Screen {
                 horizontalArrangement = Arrangement.Center,
             ) {
                 OutlinedButton(
-                    onClick = { onAddNewFriend(TODO("Friend name not implemented")) }
+                    onClick = { navigator.push(FriendsScreen) }
                 ) {
-                    Text("Add Friends")
-                }
-                Spacer(modifier = Modifier.width(45.dp))
-                OutlinedButton(
-                    onClick = { ProfileScreen }
-                ) {
-                    Text("Your Friends")
+                    Text("Manage your Friends")
                 }
             }
             var numTopicsExpanded by remember { mutableIntStateOf(0) }
@@ -734,6 +731,6 @@ fun PreviewProfileScreen() {
     ProfileScreen.InnerContent(
         userName = "Nishant",
         subjectList = ProfileViewModel.dummySubjects,
-        onAddNewFriend = {}
+        navigator = LocalNavigator.currentOrThrow // doesn't effect preview
     )
 }

@@ -23,7 +23,7 @@ import javax.inject.Inject
 class UserRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>,
     private val client: HttpClient
-) : UserRepository {
+) /*: UserRepository*/ {
     companion object {
         const val USER = "user"
 
@@ -35,7 +35,7 @@ class UserRepositoryImpl @Inject constructor(
     private val startWorkingHours = longPreferencesKey("USER_START_WORKING_HOURS")
     private val endWorkingHours = longPreferencesKey("USER_END_WORKING_HOURS")
 
-    override fun verifyAndGetUser(): Flow<Result<User>> {
+    /*override*/ fun verifyAndGetUser(): Flow<Result<User>> {
         return getUser()
             .catch { Result.failure<User>(it) }
             .map {
@@ -47,7 +47,7 @@ class UserRepositoryImpl @Inject constructor(
             }
     }
 
-    override fun getUser(): Flow<User> =
+    /*override*/ fun getUser(): Flow<User> =
         dataStore.data.catch {
             emit(emptyPreferences())
         }.map {
@@ -68,7 +68,7 @@ class UserRepositoryImpl @Inject constructor(
             )
         }
 
-    override suspend fun createUser(email: String, password: String, user: User) {
+    /*override*/ suspend fun createUser(email: String, password: String, user: User) {
         val response = client.post("/database/users") {
             setBody(user.name)
         }

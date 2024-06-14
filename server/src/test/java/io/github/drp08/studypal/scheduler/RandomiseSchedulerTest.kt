@@ -20,7 +20,8 @@ class RandomiseSchedulerTest {
                 name = "Nishant",
                 startWorkingHours = 8 * HOUR_IN_MILLIS,
                 endWorkingHours = 20 * HOUR_IN_MILLIS,
-                maxStudyingHours = 5
+                maxStudyingHours = 5,
+                xp = 0
             )
         }
 

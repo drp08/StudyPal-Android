@@ -32,7 +32,8 @@ class RegistrationViewModel @Inject constructor(
             name = "",
             startWorkingHours = 7 * 60 * 60 * 1000L,
             endWorkingHours = 16 * 60 * 60 * 1000L,
-            maxStudyingHours = 6
+            maxStudyingHours = 6,
+            xp = 0
         )
     )
         private set

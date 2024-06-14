@@ -64,7 +64,8 @@ class UserRepositoryImpl @Inject constructor(
                 name = name,
                 startWorkingHours = startWorkingHours,
                 endWorkingHours = endWorkingHours,
-                maxStudyingHours = maxStudyingHours
+                maxStudyingHours = maxStudyingHours,
+                xp = 0
             )
         }
 

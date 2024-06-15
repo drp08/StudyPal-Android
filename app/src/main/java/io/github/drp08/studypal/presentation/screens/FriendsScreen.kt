@@ -61,7 +61,7 @@ object FriendsScreen : Screen {
                     FriendItem(
                         name = it,
                         email = "${it.lowercase().replace(" ", "-")}@example.com",
-                        onRemove = {},
+                        onRemove = viewModel::removeFriend,
                         modifier = Modifier.padding(vertical = 4.dp)
                     )
                 }

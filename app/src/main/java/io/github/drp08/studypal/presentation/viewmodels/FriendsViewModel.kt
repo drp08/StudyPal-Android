@@ -82,4 +82,9 @@ class FriendsViewModel @Inject constructor(
             friendRepository.addNewFriend(name)
         }
     }
+    fun removeFriend(name: String) {
+        viewModelScope.launch {
+            friendRepository.removeFriend(name)
+        }
+    }
 }

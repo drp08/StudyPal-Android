@@ -77,6 +77,7 @@ data object ProfileScreen : Screen {
 
         InnerContent(
             userName = user.name,
+            xp = user.xp,
             subjectList = subjects,
             navigator = LocalNavigator.currentOrThrow
         )
@@ -85,6 +86,7 @@ data object ProfileScreen : Screen {
     @Composable
     fun InnerContent(
         userName: String,
+        xp: Int,
         subjectList: List<SubjectEntity>,
         navigator: Navigator,
         modifier: Modifier = Modifier
@@ -117,7 +119,7 @@ data object ProfileScreen : Screen {
                 ) {
                     Text("Name: $userName", fontSize = 24.sp, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("Total XP: ") //Todo: Add XP from Leaderboard
+                    Text("Total XP: $xp")
                 }
             }
             Row(
@@ -730,6 +732,7 @@ data object ProfileScreen : Screen {
 fun PreviewProfileScreen() {
     ProfileScreen.InnerContent(
         userName = "Nishant",
+        xp = 0,
         subjectList = ProfileViewModel.dummySubjects,
         navigator = LocalNavigator.currentOrThrow // doesn't effect preview
     )

@@ -44,7 +44,7 @@ class SchedulingRepositoryImpl @Inject constructor(
                 val body1 = Json.encodeToString(
                     PostBody(
                         subjects.map(SubjectEntity::toSerializable).toTypedArray(),
-                        sessions.map(SessionEntity::toSerializable).toTypedArray(),
+                        sessions.map(SessionEntity::toSerializable).toTypedArray(), // FIXME: required to filter out only the sessions whose parent is an event.
                         topics.map(TopicEntity::toSerializable).toTypedArray(),
                         user
                     )

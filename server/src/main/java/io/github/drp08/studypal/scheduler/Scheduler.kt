@@ -9,7 +9,7 @@ interface Scheduler {
     fun schedule(
         subjects: List<Subject>,
         topics: List<Topic>,
-        fixedSessions: List<Session>,
+        events: List<Session>,
         user: User
     ): List<Session>
 

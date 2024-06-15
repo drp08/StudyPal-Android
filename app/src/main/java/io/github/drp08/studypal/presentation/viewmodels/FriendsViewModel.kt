@@ -6,14 +6,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.findColumnIndexBySuffix
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.domain.FriendRepository
+import io.github.drp08.studypal.domain.models.User
 import io.github.drp08.studypal.domain.models.v2.Friend
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -23,7 +24,8 @@ class FriendsViewModel @Inject constructor(
     private val friendRepository: FriendRepository
 ) : ViewModel() {
     private val db by lazy { Firebase.firestore }
-    private val auth by lazy {Firebase.auth}
+    private val auth by lazy { Firebase.auth }
+
     companion object {
         private const val TAG = "FriendsViewModel"
     }
@@ -48,13 +50,29 @@ class FriendsViewModel @Inject constructor(
 
                     if (snapshot != null) {
                         val friendObjs = snapshot.toObjects(Friend::class.java)
-                        friends = friendObjs.map {
-                            if (it.friend1 == auth.currentUser!!.uid)
-                                it.friend2
-                            else it.friend1
-                        }
+                        getNamesOfFriends(friendObjs)
                     }
+                }
+        }
+    }
+
+    private fun getNamesOfFriends(friends: List<Friend>) {
+        this.friends = emptyList()
+        val friendsUid = friends.map {
+            if (it.friend1 == auth.currentUser!!.uid)
+                it.friend2
+            else
+                it.friend1
+        }
+        for (friendUid in friendsUid) {
+            db.collection("users")
+                .document(friendUid)
+                .get()
+                .addOnSuccessListener { task ->
+                    task.toObject(User::class.java)?.let {
+                        this.friends += it.name
                     }
+                }
         }
     }
 

@@ -111,36 +111,36 @@ data object AddSubjectScreen : Screen {
 
                     var latestTopicName by remember { mutableStateOf("") }
                     for (topic in viewModel.topics) {
-                        Row(
+                        TopicNameTextField(
+                            topicName = topic,
+                            onTopicChange = {},
+                            enabled = false,
                             modifier = Modifier
-                                .padding(start = 20.dp, end = 20.dp, bottom = 2.dp)
-                                .background(Color.Transparent)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            SmallFloatingActionButton(
-                                onClick = { viewModel.on(AddTopic(latestTopicName)) }
-                            ) {
-                                Icon(Icons.Filled.Add, "Add button")
-                            }
-                            TopicNameTextField(
-                                topicName = topic,
-                                onTopicChange = {},
-                                enabled = false,
-                                modifier = Modifier
-                                    .padding(start = 1.dp, end = 1.dp)
-                                    .fillMaxWidth()
-                            )
-                        }
+                                .padding(start = 1.dp, end = 1.dp)
+                                .fillMaxWidth()
+                        )
                     }
-                    TopicNameTextField(
-                        topicName = latestTopicName,
-                        onTopicChange = { latestTopicName = it },
+                    Row(
                         modifier = Modifier
-                            .padding(start = 1.dp, end = 1.dp)
-                            .fillMaxWidth()
-                    )
+                            .padding(start = 20.dp, end = 20.dp, bottom = 2.dp)
+                            .background(Color.Transparent)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        SmallFloatingActionButton(
+                            onClick = { viewModel.on(AddTopic(latestTopicName)) }
+                        ) {
+                            Icon(Icons.Filled.Add, "Add button")
+                        }
+                        TopicNameTextField(
+                            topicName = latestTopicName,
+                            onTopicChange = { latestTopicName = it },
+                            modifier = Modifier
+                                .padding(start = 1.dp, end = 1.dp)
+                                .fillMaxWidth()
+                        )
+                    }
                     Button(
                         onClick = { viewModel.on(AddSubject(navigator)) },
                         modifier = Modifier

@@ -6,8 +6,10 @@ import io.github.drp08.studypal.db.daos.TopicDao
 import io.github.drp08.studypal.domain.SchedulingRepository
 import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.domain.scheduler.Scheduler
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LocalSchedulingRepository @Inject constructor(
@@ -22,9 +24,11 @@ class LocalSchedulingRepository @Inject constructor(
         val topics = topicDao.getAllTopics()
         val user = userRepository.getUser()
 
-        val newSessions = scheduler.schedule(subjects, topics, emptyList(), user)
-        newSessions.forEach {
-            sessionDao.upsertSession(it)
+        withContext(Dispatchers.IO) {
+            val newSessions = scheduler.schedule(subjects, topics, emptyList(), user)
+            newSessions.forEach {
+                sessionDao.upsertSession(it)
+            }
         }
         emit(true)
     }

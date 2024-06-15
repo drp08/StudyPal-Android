@@ -17,4 +17,7 @@ interface SessionDao {
 
     @Query("SELECT * from session WHERE session.topic = :topic")
     suspend fun getSessionsOfTopic(topic: String): List<SessionEntity>
+
+    @Query("SELECT * from session WHERE session.topic = :topic")
+    fun getRealtimeSessionsOfTopic(topic: String): Flow<List<SessionEntity>>
 }

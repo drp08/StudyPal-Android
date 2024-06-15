@@ -20,7 +20,7 @@ class RandomiseScheduler @Inject constructor() : Scheduler {
     override fun schedule(
         subjects: List<SubjectEntity>,
         topics: List<TopicEntity>,
-        fixedSessions: List<SessionEntity>,
+        fixedSessions: List<SessionEntity>, // TODO this is not used yet
         user: User
     ): List<SessionEntity> {
         val sessions = mutableListOf<SessionEntity>()
@@ -37,8 +37,10 @@ class RandomiseScheduler @Inject constructor() : Scheduler {
         outer@ while (studyHoursOfDay < user.maxStudyingHours * HOUR_IN_MILLIS) {
             // chooses a random subject
             val subject = subjects
-                .filter { (subjectTotalTime[it.name] ?: 0) < it.hoursPerWeek * HOUR_IN_MILLIS }
-                .filter { subject -> topics.any { it.subject == subject.name } }
+                .filter {
+                    ((subjectTotalTime[it.name] ?: 0) < it.hoursPerWeek * HOUR_IN_MILLIS)
+                            && (topics.any { subject -> subject.subject == it.name })
+                }
                 .also { if (it.isEmpty()) return emptyList() }
                 .random()
 
@@ -77,7 +79,6 @@ class RandomiseScheduler @Inject constructor() : Scheduler {
             studyHoursOfDay += SESSION_DURATION
         }
         return sessions
-            .apply { removeAll(fixedSessions) }
             .sortedBy { it.startTime }
     }
 }

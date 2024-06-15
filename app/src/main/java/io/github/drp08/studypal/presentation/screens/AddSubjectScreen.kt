@@ -38,7 +38,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +54,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.AddSubject
+import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.AddTopic
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeConfidence
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeExamDate
 import io.github.drp08.studypal.presentation.viewmodels.AddSubjectViewModel.UiAction.ChangeStudyHours
@@ -74,7 +74,6 @@ data object AddSubjectScreen : Screen {
 
         val viewModel = hiltViewModel<AddSubjectViewModel>()
         val state by viewModel.state.collectAsState()
-        var numberTopicsAdded by remember { mutableStateOf(1) }
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -109,9 +108,9 @@ data object AddSubjectScreen : Screen {
                         confidence = state.confidenceLevel,
                         onConfidenceChange = { viewModel.on(ChangeConfidence(it)) }
                     )
-                    var i = 0
-                    var topics: MutableList<String> = mutableListOf() //Todo: Add to view model
-                    while (i < numberTopicsAdded) {
+
+                    var latestTopicName by remember { mutableStateOf("") }
+                    for (topic in viewModel.topics) {
                         Row(
                             modifier = Modifier
                                 .padding(start = 20.dp, end = 20.dp, bottom = 2.dp)
@@ -121,14 +120,27 @@ data object AddSubjectScreen : Screen {
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             SmallFloatingActionButton(
-                                onClick = { numberTopicsAdded++ }
+                                onClick = { viewModel.on(AddTopic(latestTopicName)) }
                             ) {
                                 Icon(Icons.Filled.Add, "Add button")
                             }
-                            topics = TopicNameTextField(topics)
+                            TopicNameTextField(
+                                topicName = topic,
+                                onTopicChange = {},
+                                enabled = false,
+                                modifier = Modifier
+                                    .padding(start = 1.dp, end = 1.dp)
+                                    .fillMaxWidth()
+                            )
                         }
-                        i++
                     }
+                    TopicNameTextField(
+                        topicName = latestTopicName,
+                        onTopicChange = { latestTopicName = it },
+                        modifier = Modifier
+                            .padding(start = 1.dp, end = 1.dp)
+                            .fillMaxWidth()
+                    )
                     Button(
                         onClick = { viewModel.on(AddSubject(navigator)) },
                         modifier = Modifier
@@ -143,26 +155,26 @@ data object AddSubjectScreen : Screen {
     }
 
     @Composable
-    fun TopicNameTextField(topics: MutableList<String>): MutableList<String> {
-        var topicName by rememberSaveable { mutableStateOf("") }
-
+    fun TopicNameTextField(
+        topicName: String,
+        onTopicChange: (String) -> Unit,
+        modifier: Modifier = Modifier,
+        enabled: Boolean = true
+    ) {
         Box(
-            modifier = Modifier
-                .padding(start = 1.dp, end = 1.dp)
+            modifier = modifier
                 .height(80.dp)
-                .background(Color.Transparent)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center,
+                .background(Color.Transparent),
+            contentAlignment = Alignment.Center
         ) {
             OutlinedTextField(
                 value = topicName,
                 singleLine = true,
-                onValueChange = { topicName = it },
+                enabled = enabled,
+                onValueChange = onTopicChange,
                 label = { Text(text = "Topic Name", color = Color.DarkGray) },
             )
         }
-        topics.add(topicName) //Todo: Add to view model
-        return topics
     }
 
     @Composable

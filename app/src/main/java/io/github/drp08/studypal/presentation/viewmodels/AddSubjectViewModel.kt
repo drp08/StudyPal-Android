@@ -39,6 +39,9 @@ class AddSubjectViewModel @Inject constructor(
     ))
     val state = _state.asStateFlow()
 
+    var topics: MutableList<String> = mutableListOf()
+        private set
+
     fun on(action: UiAction) {
         when (action) {
             is UiAction.ChangeSubject -> {
@@ -57,13 +60,19 @@ class AddSubjectViewModel @Inject constructor(
                 viewModelScope.launch {
                     subjectDao.upsertSubject(state.value)
                     for (i in 1..3) {
-                        topicDao.upsertTopic(TopicEntity(name = "Topic $i",subject = "Network") ) // FIXME add actual topics here
+                        topics.forEach { topic ->
+                            val topicEntity = TopicEntity(topic, state.value.name)
+                            topicDao.upsertTopic(topicEntity)
+                        }
                     }
                     schedulingRepository.rescheduleAllSessions().collectLatest {
                         if (it)
                             action.navigator.pop()
                     }
                 }
+            }
+            is UiAction.AddTopic -> {
+                topics += action.topicName
             }
         }
     }
@@ -74,5 +83,6 @@ class AddSubjectViewModel @Inject constructor(
         data class ChangeStudyHours(@IntRange(from = 1, to = 9) val studyHours: Int) : UiAction()
         data class ChangeConfidence(@FloatRange(from = 0.0, to = 1.0) val confidence: Float) : UiAction()
         data class AddSubject(val navigator: Navigator) : UiAction()
+        data class AddTopic(val topicName: String) : UiAction()
     }
 }

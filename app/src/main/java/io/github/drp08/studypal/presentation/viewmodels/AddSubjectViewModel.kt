@@ -2,6 +2,7 @@ package io.github.drp08.studypal.presentation.viewmodels
 
 import androidx.annotation.FloatRange
 import androidx.annotation.IntRange
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cafe.adriel.voyager.navigator.Navigator
@@ -39,7 +40,7 @@ class AddSubjectViewModel @Inject constructor(
     ))
     val state = _state.asStateFlow()
 
-    var topics: MutableList<String> = mutableListOf()
+    var topics = mutableStateOf(emptyList<String>())
         private set
 
     fun on(action: UiAction) {
@@ -60,7 +61,7 @@ class AddSubjectViewModel @Inject constructor(
                 viewModelScope.launch {
                     subjectDao.upsertSubject(state.value)
                     for (i in 1..3) {
-                        topics.forEach { topic ->
+                        topics.value.forEach { topic ->
                             val topicEntity = TopicEntity(topic, state.value.name)
                             topicDao.upsertTopic(topicEntity)
                         }
@@ -72,7 +73,7 @@ class AddSubjectViewModel @Inject constructor(
                 }
             }
             is UiAction.AddTopic -> {
-                topics += action.topicName
+                topics.value += action.topicName
             }
         }
     }

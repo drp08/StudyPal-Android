@@ -110,7 +110,7 @@ data object AddSubjectScreen : Screen {
                     )
 
                     var latestTopicName by remember { mutableStateOf("") }
-                    for (topic in viewModel.topics) {
+                    for (topic in viewModel.topics.value) {
                         TopicNameTextField(
                             topicName = topic,
                             onTopicChange = {},

@@ -57,7 +57,7 @@ class AddSubjectViewModel @Inject constructor(
                 viewModelScope.launch {
                     subjectDao.upsertSubject(state.value)
                     for (i in 1..3) {
-                        topicDao.upsertTopic() // FIXME add actual topics here
+                        topicDao.upsertTopic(TopicEntity(name = "Topic $i",subject = "Network") ) // FIXME add actual topics here
                     }
                     schedulingRepository.rescheduleAllSessions().collectLatest {
                         if (it)

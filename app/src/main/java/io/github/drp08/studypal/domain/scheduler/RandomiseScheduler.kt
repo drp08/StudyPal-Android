@@ -9,9 +9,10 @@ import io.github.drp08.studypal.domain.scheduler.Scheduler.Companion.HOUR_IN_MIL
 import io.github.drp08.studypal.utils.toEpochMilliSecond
 import java.time.LocalDate
 import java.time.ZoneId
+import javax.inject.Inject
 import kotlin.random.Random
 
-class RandomiseScheduler : Scheduler {
+class RandomiseScheduler @Inject constructor() : Scheduler {
     companion object {
         private const val SESSION_DURATION = 1 * HOUR_IN_MILLIS
     }

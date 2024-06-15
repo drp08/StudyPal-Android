@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.domain.FriendRepository
@@ -21,6 +22,8 @@ import javax.inject.Inject
 class FriendsViewModel @Inject constructor(
     private val friendRepository: FriendRepository
 ) : ViewModel() {
+    private val db by lazy { Firebase.firestore }
+    private val auth by lazy {Firebase.auth}
     companion object {
         private const val TAG = "FriendsViewModel"
     }
@@ -30,7 +33,28 @@ class FriendsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            friends = friendRepository.getFriends()
+            db.collection("friends")
+                .where(
+                    Filter.or(
+                        Filter.equalTo("friend1", auth.currentUser!!.uid),
+                        Filter.equalTo("friend2", auth.currentUser!!.uid)
+                    )
+                )
+                .addSnapshotListener { snapshot, error ->
+                    error?.let {
+                        Log.e(TAG, "error listening to friends: ${it.message}", it)
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null) {
+                        val friendObjs = snapshot.toObjects(Friend::class.java)
+                        friends = friendObjs.map {
+                            if (it.friend1 == auth.currentUser!!.uid)
+                                it.friend2
+                            else it.friend1
+                        }
+                    }
+                    }
         }
     }
 

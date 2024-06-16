@@ -8,6 +8,7 @@ import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.presentation.models.HomeSessionItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -26,14 +27,15 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            subjectDao.getRealtimeSubjectsWithTopics().collectLatest { subjectTopics ->
+            subjectDao.getRealtimeSubjectsWithTopics().collect { subjectTopics ->
                 for ((subject, topics) in subjectTopics) {
                     topics.forEach { topic ->
                         sessionDao.getRealtimeSessionsOfTopic(topic.name)
-                            .collectLatest { sessions ->
+                            .collect { sessions ->
                                 sessions.forEach { session ->
                                     val newSession = HomeSessionItem(subject, topic, session)
-                                    val newSessionList = this@HomeViewModel.items.value + newSession
+                                    val newSessionList =
+                                        (this@HomeViewModel.items.value + newSession).distinct()
                                     _sessions.value =
                                         newSessionList.sortedBy { it.session.startTime }
                                 }

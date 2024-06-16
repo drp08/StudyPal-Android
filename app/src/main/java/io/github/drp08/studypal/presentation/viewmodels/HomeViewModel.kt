@@ -1,5 +1,6 @@
 package io.github.drp08.studypal.presentation.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,21 +28,25 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            subjectDao.getRealtimeSubjectsWithTopics().collect { subjectTopics ->
-                for ((subject, topics) in subjectTopics) {
-                    topics.forEach { topic ->
-                        sessionDao.getRealtimeSessionsOfTopic(topic.name)
-                            .collect { sessions ->
-                                sessions.forEach { session ->
-                                    val newSession = HomeSessionItem(subject, topic, session)
-                                    val newSessionList =
-                                        (this@HomeViewModel.items.value + newSession).distinct()
-                                    _sessions.value =
-                                        newSessionList.sortedBy { it.session.startTime }
-                                }
-                            }
-                    }
-                }
+//            subjectDao.getRealtimeSubjectsWithTopics().collect { subjectTopics ->
+//                for ((subject, topics) in subjectTopics) {
+//                    topics.forEach { topic ->
+//                        sessionDao.getRealtimeSessionsOfTopic(topic.name)
+//                            .collect { sessions ->
+//                                sessions.forEach { session ->
+//                                    val newSession = HomeSessionItem(subject, topic, session)
+//                                    val newSessionList =
+//                                        (this@HomeViewModel.items.value + newSession).distinct()
+//                                    _sessions.value =
+//                                        newSessionList.sortedBy { it.session.startTime }
+//                                }
+//                            }
+//                    }
+//                }
+//            }
+
+            sessionDao.getSessionsWithSubjectAndTopic().collectLatest {
+                Log.d(TAG, "getSessionsWithSubjectAndTopic: $it")
             }
         }
     }

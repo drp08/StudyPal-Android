@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val subjectDao: SubjectDao,
     private val sessionDao: SessionDao
 ) : ViewModel() {
     private val _sessions = MutableStateFlow<List<HomeSessionItem>>(emptyList())
@@ -28,33 +27,18 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-//            subjectDao.getRealtimeSubjectsWithTopics().collect { subjectTopics ->
-//                for ((subject, topics) in subjectTopics) {
-//                    topics.forEach { topic ->
-//                        sessionDao.getRealtimeSessionsOfTopic(topic.name)
-//                            .collect { sessions ->
-//                                sessions.forEach { session ->
-//                                    val newSession = HomeSessionItem(subject, topic, session)
-//                                    val newSessionList =
-//                                        (this@HomeViewModel.items.value + newSession).distinct()
-//                                    _sessions.value =
-//                                        newSessionList.sortedBy { it.session.startTime }
-//                                }
-//                            }
-//                    }
-//                }
-//            }
-
-            sessionDao.getSessionsWithSubjectAndTopic().collectLatest {
-                Log.d(TAG, "getSessionsWithSubjectAndTopic: $it")
-                for ((subject, topicSessions) in it) {
+            sessionDao.getSessionsWithSubjectAndTopic().collectLatest { subjectTopicsSessions ->
+                Log.d(TAG, "getSessionsWithSubjectAndTopic: $subjectTopicsSessions")
+                for ((subject, topicSessions) in subjectTopicsSessions) {
                     for ((topic, sessions) in topicSessions) {
                         sessions.forEach { session ->
                             val newSession = HomeSessionItem(subject, topic, session)
                             val newSessionList = (this@HomeViewModel.items.value + newSession).distinct()
-                            _sessions.value = newSessionList.sortedBy { it.session.startTime }
+                            val currentTime = System.currentTimeMillis()
+                            _sessions.value = newSessionList
+                                .filter { it.session.startTime > currentTime }
+                                .sortedBy { it.session.startTime }
                         }
-
                     }
                 }
             }

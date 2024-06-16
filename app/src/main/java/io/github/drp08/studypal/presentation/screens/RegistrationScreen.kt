@@ -1,5 +1,6 @@
 package io.github.drp08.studypal.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +32,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -67,7 +71,8 @@ data object RegistrationScreen : Screen {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 text = "StudyPal",
@@ -86,6 +91,33 @@ data object RegistrationScreen : Screen {
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 singleLine = true,
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.colors()
+            )
+
+            TextField(
+                value = viewModel.email,
+                onValueChange = viewModel::onEmailChange,
+                label = { Text("Email") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                singleLine = true,
+                shape = RoundedCornerShape(8.dp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                colors = TextFieldDefaults.colors()
+            )
+
+            TextField(
+                value = viewModel.password,
+                onValueChange = viewModel::onPasswordChange,
+                label = { Text("Password") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(8.dp),
                 colors = TextFieldDefaults.colors()
             )
@@ -228,7 +260,7 @@ data object RegistrationScreen : Screen {
             val timeToChoose = (1..8).toList().toIntArray()
             val expanded = remember { mutableStateOf(false) }
 
-            Row (
+            Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
@@ -308,6 +340,16 @@ data object RegistrationScreen : Screen {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(text = "Register", fontSize = 18.sp)
+            }
+
+            Button(
+                onClick = { navigator.push(LoginScreen) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(text = "Login Instead", fontSize = 18.sp)
             }
         }
     }

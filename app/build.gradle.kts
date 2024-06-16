@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.serialization)
     alias(libs.plugins.google.ksp)
     alias(libs.plugins.androidx.room)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -97,6 +98,11 @@ dependencies {
 
     implementation(libs.date.time.picker)
     implementation(libs.lifecycle.viewmodel.compose)
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation(libs.coil.compose)
     implementation(libs.androidx.datastore)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 }

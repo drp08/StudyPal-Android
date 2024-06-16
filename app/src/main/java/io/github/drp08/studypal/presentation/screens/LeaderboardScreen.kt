@@ -33,6 +33,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import coil.compose.AsyncImage
 import io.github.drp08.studypal.presentation.screens.NoLeaderboardFlowerGarden.SingleGardenScreen
 import io.github.drp08.studypal.presentation.viewmodels.FlowerViewModel
+import io.github.drp08.studypal.presentation.viewmodels.FriendsViewModel
 import io.github.drp08.studypal.presentation.viewmodels.LeaderboardItem
 import io.github.drp08.studypal.presentation.viewmodels.LeaderboardViewModel
 
@@ -41,7 +42,6 @@ object LeaderboardScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel: LeaderboardViewModel = viewModel()
-        val leaderboardItems by viewModel.leaderboardItems.collectAsState()
         val showLeaderboard by viewModel.isLeaderboard.collectAsState()
         val showSingleGarden by viewModel.isLeaderboardEnabled.collectAsState()
         val isLeaderboard by viewModel.currentlyInLeaderBoardView.collectAsState()
@@ -90,6 +90,8 @@ object LeaderboardScreen : Screen {
                 }
                 Spacer(modifier = Modifier.height(16.dp))
                 if (showLeaderboard) {
+                    val leaderboardItems by viewModel.leaderboardItems.collectAsState()
+
                     LeaderboardScreen(leaderboardItems = leaderboardItems)
                 } else {
                     val viewModel2: FlowerViewModel = viewModel()

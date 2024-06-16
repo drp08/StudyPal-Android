@@ -17,4 +17,7 @@ interface SubjectDao {
 
     @Query("SELECT * from subject JOIN topic ON subject.name = topic.subject")
     suspend fun getAllSubjectsWithTopics(): Map<SubjectEntity, List<TopicEntity>>
+
+    @Query("SELECT * from subject JOIN topic ON subject.name = topic.subject")
+    fun getRealtimeSubjectsWithTopics(): Flow<Map<SubjectEntity, List<TopicEntity>>>
 }

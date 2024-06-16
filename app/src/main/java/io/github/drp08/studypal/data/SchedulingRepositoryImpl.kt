@@ -39,7 +39,7 @@ class SchedulingRepositoryImpl @Inject constructor(
         val topics = topicDao.getAllTopics()
         val sessions = sessionDao.getAllSessions()
         try {
-            val user = userRepository.getUser().first()
+            val user = userRepository.getUser()
             val response = client.post("/schedule") {
                 val body1 = Json.encodeToString(
                     PostBody(

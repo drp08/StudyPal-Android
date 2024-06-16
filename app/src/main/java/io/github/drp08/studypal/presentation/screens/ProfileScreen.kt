@@ -51,6 +51,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import co.yml.charts.axis.AxisData
 import co.yml.charts.axis.DataCategoryOptions
 import co.yml.charts.common.model.Point
@@ -74,16 +77,18 @@ data object ProfileScreen : Screen {
 
         InnerContent(
             userName = user.name,
+            xp = user.xp,
             subjectList = subjects,
-            onAddNewFriend = viewModel::addNewFriend
+            navigator = LocalNavigator.currentOrThrow
         )
     }
 
     @Composable
     fun InnerContent(
         userName: String,
+        xp: Int,
         subjectList: List<SubjectEntity>,
-        onAddNewFriend: (String) -> Unit,
+        navigator: Navigator,
         modifier: Modifier = Modifier
     ) {
         Column(
@@ -114,7 +119,7 @@ data object ProfileScreen : Screen {
                 ) {
                     Text("Name: $userName", fontSize = 24.sp, color = Color.DarkGray)
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("Total XP: ") //Todo: Add XP from Leaderboard
+                    Text("Total XP: $xp")
                 }
             }
             Row(
@@ -125,15 +130,9 @@ data object ProfileScreen : Screen {
                 horizontalArrangement = Arrangement.Center,
             ) {
                 OutlinedButton(
-                    onClick = { onAddNewFriend(TODO("Friend name not implemented")) }
+                    onClick = { navigator.push(FriendsScreen) }
                 ) {
-                    Text("Add Friends")
-                }
-                Spacer(modifier = Modifier.width(45.dp))
-                OutlinedButton(
-                    onClick = { ProfileScreen }
-                ) {
-                    Text("Your Friends")
+                    Text("Manage your Friends")
                 }
             }
             var numTopicsExpanded by remember { mutableIntStateOf(0) }
@@ -733,7 +732,8 @@ data object ProfileScreen : Screen {
 fun PreviewProfileScreen() {
     ProfileScreen.InnerContent(
         userName = "Nishant",
+        xp = 0,
         subjectList = ProfileViewModel.dummySubjects,
-        onAddNewFriend = {}
+        navigator = LocalNavigator.currentOrThrow // doesn't effect preview
     )
 }

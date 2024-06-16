@@ -18,4 +18,7 @@ interface TopicDao {
 
     @Query("SELECT * FROM topic JOIN session ON topic.name = session.topic")
     suspend fun getAllTopicsWithSessions(): Map<TopicEntity, List<SessionEntity>>
+
+    @Query("SELECT * FROM topic JOIN session ON topic.name = session.topic")
+    fun getRealtimeTopicsWithSessions(): Flow<Map<TopicEntity, List<SessionEntity>>>
 }

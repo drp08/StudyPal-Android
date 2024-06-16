@@ -14,8 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val subjectDao: SubjectDao,
-    private val friendRepository: FriendRepository
+    private val subjectDao: SubjectDao
 ): ViewModel() {
 
     companion object {
@@ -36,12 +35,6 @@ class ProfileViewModel @Inject constructor(
 
     private val _totalStudyHours = MutableStateFlow(0)
     val totalStudyHours: StateFlow<Int> = _totalStudyHours
-
-    fun addNewFriend(friendName: String) {
-        viewModelScope.launch {
-            friendRepository.addNewFriend(friendName)
-        }
-    }
 
     private fun loadUserSubjects() {
         viewModelScope.launch {

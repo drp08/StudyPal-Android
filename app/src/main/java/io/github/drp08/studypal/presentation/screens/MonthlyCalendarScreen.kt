@@ -30,7 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.R
 import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
@@ -72,7 +72,7 @@ data object MonthlyCalendarScreen : Screen {
 
     @Composable
     fun MonthlyView() {
-        val viewModel = viewModel<MonthlyCalendarViewModel>()
+        val viewModel = hiltViewModel<MonthlyCalendarViewModel>()
         val currentDate by viewModel.currentDate.collectAsState()
         val currentMonth = remember { mutableStateOf(currentDate) }
 

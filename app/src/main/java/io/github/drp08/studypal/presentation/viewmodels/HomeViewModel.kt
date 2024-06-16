@@ -47,6 +47,16 @@ class HomeViewModel @Inject constructor(
 
             sessionDao.getSessionsWithSubjectAndTopic().collectLatest {
                 Log.d(TAG, "getSessionsWithSubjectAndTopic: $it")
+                for ((subject, topicSessions) in it) {
+                    for ((topic, sessions) in topicSessions) {
+                        sessions.forEach { session ->
+                            val newSession = HomeSessionItem(subject, topic, session)
+                            val newSessionList = (this@HomeViewModel.items.value + newSession).distinct()
+                            _sessions.value = newSessionList.sortedBy { it.session.startTime }
+                        }
+
+                    }
+                }
             }
         }
     }

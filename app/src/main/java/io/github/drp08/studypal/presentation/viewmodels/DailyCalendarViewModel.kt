@@ -5,20 +5,16 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SessionDao
 import io.github.drp08.studypal.presentation.models.DailyViewEvent
-import io.github.drp08.studypal.utils.toEpochMilliSecond
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toLocalDateTime
-import network.chaintech.utils.now
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,17 +36,15 @@ class DailyCalendarViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            val startOfDay =
-                LocalDate.now().toJavaLocalDate().atStartOfDay().atZone(ZoneId.of("UTC"))
-                    .toEpochMilliSecond()
-
             sessionDao.getSessionsWithSubjectAndTopic().collectLatest { subjectTopicsSessions ->
                 for ((subject, topicSessions) in subjectTopicsSessions) {
                     for ((_, sessions) in topicSessions) {
                         for (session in sessions) {
                             val dailyViewEvent = DailyViewEvent(
-                                LocalTime.fromMillisecondOfDay((session.startTime - startOfDay).toInt()),
-                                LocalTime.fromMillisecondOfDay((session.endTime - startOfDay).toInt()),
+                                Instant.fromEpochMilliseconds(session.startTime)
+                                    .toLocalDateTime(TimeZone.UTC).time,
+                                Instant.fromEpochMilliseconds(session.endTime)
+                                    .toLocalDateTime(TimeZone.UTC).time,
                                 title = subject.name
                             )
                             _events.value = (events.value + dailyViewEvent).distinct()

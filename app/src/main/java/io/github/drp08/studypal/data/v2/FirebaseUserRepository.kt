@@ -71,4 +71,10 @@ class FirebaseUserRepository @Inject constructor() : UserRepository {
         val uid = auth.currentUser!!.uid
         usersRef.document(uid).set(user)
     }
+    private suspend fun updateXp(){
+        val uid = auth.currentUser!!.uid
+        val xp = usersRef.document(uid).get().await().toObject(User::class.java)!!.xp
+        val increment = 100
+        usersRef.document(uid).update("xp",xp + increment)
+    }
 }

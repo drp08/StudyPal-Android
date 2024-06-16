@@ -17,12 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.presentation.components.CalendarViewSwitcher
 import io.github.drp08.studypal.presentation.models.CalendarView
-import io.github.drp08.studypal.presentation.viewmodels.DailyCalendarView
-import io.github.drp08.studypal.presentation.viewmodels.Event
+import io.github.drp08.studypal.presentation.viewmodels.DailyCalendarViewModel
+import io.github.drp08.studypal.presentation.models.DailyViewEvent
 import kotlinx.datetime.*
 
 
@@ -52,7 +53,7 @@ data object DailyCalendarScreen : Screen {
 
     @Composable
     fun DailyView() {
-        val viewModel = viewModel<DailyCalendarView>()
+        val viewModel = hiltViewModel<DailyCalendarViewModel>()
         val currentDate by viewModel.currentDate.collectAsState(
             initial = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         )
@@ -87,7 +88,7 @@ data object DailyCalendarScreen : Screen {
     }
 
     @Composable
-    fun TimeSlotRow(time: LocalTime, events: List<Event>) {
+    fun TimeSlotRow(time: LocalTime, events: List<DailyViewEvent>) {
         val eventsInSlot =
             events.filter { it.startTime <= time.plusMinutes(60) && it.endTime >= time }
 
@@ -120,7 +121,7 @@ data object DailyCalendarScreen : Screen {
     }
 
     @Composable
-    fun EventBlock(event: Event, time: LocalTime) {
+    fun EventBlock(event: DailyViewEvent, time: LocalTime) {
         val eventStartMinutes = if (event.startTime >= time) {
             (event.startTime.hour * 60 + event.startTime.minute) - (time.hour * 60 + time.minute)
         } else {

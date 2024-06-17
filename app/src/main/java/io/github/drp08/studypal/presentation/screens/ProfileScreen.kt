@@ -77,7 +77,7 @@ data object ProfileScreen : Screen {
 
         InnerContent(
             userName = user.name,
-            xp = user.xp,
+            xp = viewModel.realXp,
             subjectList = subjects,
             navigator = LocalNavigator.currentOrThrow
         )

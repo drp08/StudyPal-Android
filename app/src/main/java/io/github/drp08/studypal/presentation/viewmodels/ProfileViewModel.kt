@@ -1,7 +1,14 @@
 package io.github.drp08.studypal.presentation.viewmodels
 
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SubjectDao
 import io.github.drp08.studypal.domain.FriendRepository
@@ -16,6 +23,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val subjectDao: SubjectDao
 ): ViewModel() {
+    private val auth by lazy { Firebase.auth }
+    private val db by lazy { Firebase.firestore }
 
     companion object {
         private const val TAG = "ProfileViewModel"
@@ -28,6 +37,26 @@ class ProfileViewModel @Inject constructor(
 
     private val _subjects = MutableStateFlow<List<SubjectEntity>>(emptyList())
     val subjects: StateFlow<List<SubjectEntity>> = _subjects.asStateFlow()
+
+    var realXp by mutableIntStateOf(0)
+        private set
+
+    init {
+        viewModelScope.launch {
+            db.collection("users")
+                .document(auth.currentUser!!.uid)
+                .addSnapshotListener { value, error ->
+                    if (error != null) {
+                        Log.w(TAG, "Listen failed.", error)
+                        return@addSnapshotListener
+                    }
+
+                    if (value != null && value.exists()) {
+                        realXp = value.getLong("xp")!!.toInt()
+                    }
+                }
+        }
+    }
 
     init {
         _subjects.value = dummySubjects

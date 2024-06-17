@@ -79,8 +79,8 @@ data object HomeScreen : Screen {
                 if (items.size > 1)
                     RemainingSessions(items)
 
-//                Button(onClick = {viewModel.updateXP()}, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-//                    Text(text = "Finish Session")
+                Button(onClick = {viewModel.updateXP()}, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    Text(text = "Finish Session")
                 }
             }
 

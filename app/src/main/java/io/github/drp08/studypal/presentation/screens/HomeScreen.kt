@@ -37,6 +37,7 @@ import io.github.drp08.studypal.presentation.components.fab.ExpandableFab
 import io.github.drp08.studypal.presentation.components.fab.FabItem
 import io.github.drp08.studypal.presentation.models.HomeSessionItem
 import io.github.drp08.studypal.presentation.viewmodels.HomeViewModel
+import io.github.drp08.studypal.presentation.viewmodels.PomodoroViewModel
 import io.github.drp08.studypal.utils.formatTime
 import kotlinx.coroutines.delay
 
@@ -77,7 +78,12 @@ data object HomeScreen : Screen {
 
                 if (items.size > 1)
                     RemainingSessions(items)
+
+//                Button(onClick = {viewModel.updateXP()}, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+//                    Text(text = "Finish Session")
+                }
             }
+
         }
     }
 

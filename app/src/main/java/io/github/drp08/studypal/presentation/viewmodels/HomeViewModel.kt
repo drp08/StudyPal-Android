@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.drp08.studypal.db.daos.SessionDao
 import io.github.drp08.studypal.db.daos.SubjectDao
+import io.github.drp08.studypal.domain.UserRepository
 import io.github.drp08.studypal.presentation.models.HomeSessionItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val sessionDao: SessionDao
+    private val sessionDao: SessionDao,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _sessions = MutableStateFlow<List<HomeSessionItem>>(emptyList())
     val items = _sessions.asStateFlow()
@@ -42,6 +44,11 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+    fun updateXP(){
+        viewModelScope.launch{
+            userRepository.updateXp()
         }
     }
 }

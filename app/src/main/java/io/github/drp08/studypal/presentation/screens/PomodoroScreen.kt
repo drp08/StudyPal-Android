@@ -35,9 +35,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import io.github.drp08.studypal.data.v2.FirebaseUserRepository
 import io.github.drp08.studypal.domain.UserRepository
+import io.github.drp08.studypal.presentation.viewmodels.PomodoroViewModel
 import io.github.drp08.studypal.utils.formatTime
 import kotlinx.coroutines.delay
 
@@ -53,6 +55,7 @@ data class PomodoroScreen(
         var showDialog by remember { mutableStateOf(false) }
         var extendMinutes by remember { mutableStateOf("") }
         val isValidInput by remember { derivedStateOf { extendMinutes.toIntOrNull() != null && extendMinutes.isNotEmpty() } }
+        val viewModel = hiltViewModel<PomodoroViewModel>()
         LaunchedEffect(key1 = timeLeft) {
             if (timeLeft > 0) {
                 delay(1000L)
@@ -145,8 +148,8 @@ data class PomodoroScreen(
                         Text(text = "Extend Session")
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = {/* TODO call updateXp function */}, modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                        Text(text = "Extend Session")
+                    Button(onClick = {viewModel.updateXP()}, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                        Text(text = "Finish Session")
                     }
                 }
             }

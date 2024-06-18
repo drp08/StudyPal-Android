@@ -81,7 +81,7 @@ object NoLeaderboardFlowerGarden : Screen {
     fun BoxWithFlowers(modifier: Modifier, flowers: List<Offset>) {
         Box(modifier = modifier.background(Color.Green)) {
             FlowerViewScreen.InternetImageBackground(
-                url = "https://media.istockphoto.com/id/1287348587/vector/green-lawn-view-from-top-grass-and-bushes-summer-field.jpg?s=612x612&w=0&k=20&c=beeLyqiIditNPu-zQSZEznVz40bNEphK9Y6pcYHQWLk="
+                url = "https://img.freepik.com/free-vector/seamless-textured-grass-natural-grass-pattern_172107-1308.jpg?w=2000"
             )
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawFlowerGarden(flowers)
